@@ -9,4 +9,13 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
+  @Get('/zestawienie')
+  getZestawienie(): any {
+    const zest = {
+      name: 'Zestawienie',
+      id: 1,
+    };
+    return zest;
+  }
 }

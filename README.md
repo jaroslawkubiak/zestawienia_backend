@@ -17,3 +17,12 @@ DB:
 [ ] zestawienia pozycje: id, id zestawienia, id klienta, reszta kolumn
 [ ] users: imie, login, haslo
 [ ] klienci: id, imie, nazwisko, email, inne kolumny?
+
+
+pm2 start dist/main.js --name zestawienia
+pm2 save
+pm2 startup
+
+curl -i http://localhost:3005/
+
+netstat -tulnp | grep 3005

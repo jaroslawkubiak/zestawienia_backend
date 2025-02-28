@@ -13,11 +13,11 @@ TODO LIST
 
 
 DB:
-[ ] zestawienia nagłówek: id, nr zestawienia, id klienta, id usera, data dodania w czytelnym formacie, created by, create date (timestamp), updata by, updated date (timestamp)
+[ ] zestawienia nagłówek: id, nr zestawienia, id klienta, id usera, data dodania (w czytelnym formacie), created by, create date (timestamp), updata by, updated date (timestamp)
 [ ] zestawienia pozycje: id, id zestawienia, id klienta, reszta kolumn
 [ ] users: imie, login, haslo
 [ ] klienci: id, imie, nazwisko, email, inne kolumny?
-
+[ ] komentarze: id, productid, zestawienie id, comment, createBy, createDate, date timestamp
 
 pm2 start dist/main.js --name zestawienia
 pm2 save

@@ -1,0 +1,6 @@
+RewriteEngine On
+RewriteCond %{HTTP_HOST} ^zestawienia.zurawickidesign.pl/$ [NC]
+RewriteRule ^$ http://127.0.0.1:3005/ [P,L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ http://127.0.0.1:3005/$1 [P,L]

@@ -4,13 +4,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { LoginDto } from './dto/login.dto';
-import { User } from './entities/user.entity';
+import { Admin } from './entities/user.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(Admin) private readonly userRepository: Repository<Admin>,
   ) {}
 
   async comparePassword(password: string, hash: string): Promise<boolean> {

@@ -4,13 +4,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { LoginDto } from './dto/login.dto';
-import { Admin } from './entities/user.entity';
+import { User } from './entities/user.entity';
+import { ILoggedUser } from './types/ILoggedUser';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
-    @InjectRepository(Admin) private readonly userRepository: Repository<Admin>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
   async comparePassword(password: string, hash: string): Promise<boolean> {
@@ -19,16 +20,26 @@ export class AuthService {
 
   async validateUser(loginDto: LoginDto) {
     const { username, password } = loginDto;
+    console.log(`${username} chce zalogowac sie hasłem ${password}`);
 
     const user = await this.userRepository.findOne({ where: { username } });
+
+    if (!user) {
+      throw new UnauthorizedException("User don't exists");
+    }
 
     const passwordMatched = await this.comparePassword(password, user.password);
 
     if (!user || !passwordMatched) {
       throw new UnauthorizedException('Invalid credentials');
     }
+    
+    const loggedUser: ILoggedUser = {
+      accessToken: this.jwtService.sign({ username }),
+      name: user.name,
+    };
 
-    return { access_token: this.jwtService.sign({ username }) };
+    return loggedUser;
   }
 
   // dev use only

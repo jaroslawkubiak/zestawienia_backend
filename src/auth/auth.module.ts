@@ -4,7 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { LoginController } from './login.controller';
 import { AuthService } from './auth.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Admin } from './entities/user.entity';
+import { User } from './entities/user.entity';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
 import { JwtAuthGuard } from './jwt-auth.guard';
@@ -13,7 +13,7 @@ import { JwtAuthGuard } from './jwt-auth.guard';
   imports: [
     PassportModule,
     ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forFeature([Admin]),
+    TypeOrmModule.forFeature([User]),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -24,7 +24,7 @@ import { JwtAuthGuard } from './jwt-auth.guard';
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [Admin],
+        entities: [User],
         synchronize: true,
       }),
     }),

@@ -18,7 +18,7 @@ export class AuthService {
     return bcrypt.compare(password, hash);
   }
 
-  async validateUser(loginDto: LoginDto) {
+  async validateUser(loginDto: LoginDto): Promise<ILoggedUser> {
     const { username, password } = loginDto;
     console.log(`${username} chce zalogowac sie hasłem ${password}`);
 

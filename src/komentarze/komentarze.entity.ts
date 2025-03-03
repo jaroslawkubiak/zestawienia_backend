@@ -11,8 +11,17 @@ import { User } from '../user/user.entity';
 
 @Entity()
 export class Komentarze {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
+
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  createDate: string;
+
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  createTimeStamp: string;
+
+  @Column({ type: 'text', nullable: true })
+  tresc: string;
 
   @ManyToOne(() => Zestawienie, (zestawienie) => zestawienie.komentarze)
   @JoinColumn({ name: 'zestawienieId' })
@@ -25,13 +34,4 @@ export class Komentarze {
   @ManyToOne(() => User, (user) => user.komentarze)
   @JoinColumn({ name: 'createdBy' })
   createdByUser: User;
-
-  @Column({ nullable: true })
-  createDate: string;
-
-  @Column({ nullable: true })
-  createTimeStamp: string;
-
-  @Column({ nullable: true })
-  tresc: string;
 }

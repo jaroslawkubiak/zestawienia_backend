@@ -2,12 +2,12 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
 export class Produkt {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', length: 50, nullable: true })
   kolumna: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', length: 150, nullable: true })
   nazwa: string;
 }

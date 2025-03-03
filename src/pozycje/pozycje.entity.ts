@@ -13,8 +13,50 @@ import { Komentarze } from '../komentarze/komentarze.entity';
 
 @Entity()
 export class Pozycje {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
+
+  @Column({ type: 'varchar', length: 150, nullable: true })
+  produkt: string;
+
+  @Column({ type: 'varchar', length: 150, nullable: true })
+  producent: string;
+
+  @Column({ type: 'varchar', length: 150, nullable: true })
+  kolekcja: string;
+
+  @Column({ type: 'varchar', length: 150, nullable: true })
+  nrKatalogowy: string;
+
+  @Column({ type: 'varchar', length: 150, nullable: true })
+  kolor: string;
+
+  @Column({ nullable: true })
+  ilosc: number;
+
+  @Column({ type: 'double', nullable: true })
+  netto: number;
+
+  @Column({ type: 'double', nullable: true })
+  brutto: number;
+
+  @Column({ type: 'varchar', length: 200, nullable: true })
+  pomieszczenie: string;
+
+  @Column({ nullable: true })
+  link: string;
+
+  @Column({ type: 'varchar', length: 200, nullable: true })
+  image: string;
+
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  acceptedDate: string;
+
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  acceptedTimeStamp: string;
+
+  @OneToMany(() => Komentarze, (comment) => comment.zestawienie)
+  komentarze: Komentarze[];
 
   @ManyToOne(() => Zestawienie, (zestawienie) => zestawienie.pozycje)
   @JoinColumn({ name: 'zestawienieId' })
@@ -27,46 +69,4 @@ export class Pozycje {
   @ManyToOne(() => Dostawca, (dostawca) => dostawca.pozycje)
   @JoinColumn({ name: 'dostawcaId' })
   dostawca: Dostawca;
-
-  @Column({ nullable: true })
-  produkt: string;
-
-  @Column({ nullable: true })
-  producent: string;
-
-  @Column({ nullable: true })
-  kolekcja: string;
-
-  @Column({ nullable: true })
-  nrKatalogowy: string;
-
-  @Column({ nullable: true })
-  kolor: string;
-
-  @Column({ nullable: true })
-  ilosc: number;
-
-  @Column({ nullable: true })
-  netto: number;
-
-  @Column({ nullable: true })
-  brutto: number;
-
-  @Column({ nullable: true })
-  pomieszczenie: string;
-
-  @Column({ nullable: true })
-  link: string;
-
-  @Column({ nullable: true })
-  image: string;
-
-  @Column({ nullable: true })
-  acceptedDate: string;
-
-  @Column({ nullable: true })
-  acceptedTimeStamp: string;
-
-  @OneToMany(() => Komentarze, (comment) => comment.zestawienie)
-  komentarze: Komentarze[];
 }

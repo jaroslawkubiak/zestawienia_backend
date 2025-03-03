@@ -1,11 +1,35 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { Zestawienie } from '../zestawienie/zestawienie.entity';
 import { Klient } from '../klienci/klienci.entity';
 
 @Entity()
 export class PraceDoWykonania {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
+
+  @Column({ nullable: true })
+  rodzaj: string;
+  
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  jednostka: string;
+  
+  @Column({ type: 'double', nullable: true })
+  ilosc: number;
+  
+  @Column({ type: 'double', nullable: true })
+  netto: number;
+  
+  @Column({ type: 'double', nullable: true })
+  brutto: number;
+  
+  @Column({ type: 'text', nullable: true })
+  uwagi: string;
 
   @ManyToOne(() => Zestawienie, (zestawienie) => zestawienie.praceDoWykonania)
   @JoinColumn({ name: 'zestawienieId' })
@@ -14,22 +38,4 @@ export class PraceDoWykonania {
   @ManyToOne(() => Klient, (klient) => klient.praceDoWykonania)
   @JoinColumn({ name: 'klientId' })
   klient: Klient;
-
-  @Column({ nullable: true })
-  rodzaj: string;
-
-  @Column({ nullable: true })
-  jednostka: string;
-
-  @Column({ nullable: true })
-  ilosc: number;
-
-  @Column({ nullable: true })
-  netto: number;
-
-  @Column({ nullable: true })
-  brutto: number;
-
-  @Column({ nullable: true })
-  uwagi: string;
 }

@@ -4,23 +4,21 @@ import { Komentarze } from '../komentarze/komentarze.entity';
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
 
-  @Column({ unique: true })
+  @Column({ type: 'varchar', length: 30, unique: true })
   username: string;
 
-  @Column()
+  @Column({ nullable: true })
   password: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 30, nullable: true })
   name: string;
 
-  // Relacja z Zestawienie dla createdBy
   @OneToMany(() => Zestawienie, (zestawienie) => zestawienie.createdUser)
   createdZestawienia: Zestawienie[];
 
-  // Relacja z Zestawienie dla updatedBy
   @OneToMany(() => Zestawienie, (zestawienie) => zestawienie.updatedUser)
   updatedZestawienia: Zestawienie[];
 

@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { LoginDto } from './dto/login.dto';
-import { User } from './entities/user.entity';
+import { User } from '../user/user.entity';
 import { ILoggedUser } from './types/ILoggedUser';
 
 @Injectable()
@@ -33,7 +33,7 @@ export class AuthService {
     if (!user || !passwordMatched) {
       throw new UnauthorizedException('Invalid credentials');
     }
-    
+
     const loggedUser: ILoggedUser = {
       accessToken: this.jwtService.sign({ username }),
       name: user.name,

@@ -17,31 +17,34 @@ export class Zestawienie {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
 
-  @Column({ type: 'varchar', length: 50, nullable: true })
+  @Column({ type: 'varchar', length: 50, nullable: false })
   numer: string;
 
-  @Column({ type: 'varchar', length: 50, nullable: true })
+  @Column({ type: 'varchar', length: 50, nullable: false })
   createDate: string;
 
-  @Column({ type: 'varchar', length: 50, nullable: true })
+  @Column({ type: 'varchar', length: 50, nullable: false })
   createTimeStamp: string;
 
-  @Column({ type: 'varchar', length: 50, nullable: true })
+  @Column({ type: 'varchar', length: 50, nullable: false })
   updateDate: string;
 
-  @Column({ type: 'varchar', length: 50, nullable: true })
+  @Column({ type: 'varchar', length: 50, nullable: false })
   updateTimeStamp: string;
 
+  @Column({ type: 'varchar', length: 20, nullable: false })
+  hash: string;
+
   @ManyToOne(() => Klient, (klient) => klient.zestawienia)
-  @JoinColumn({ name: 'klientId' })
+  @JoinColumn({ name: 'klientId', referencedColumnName: 'id' })
   klient: Klient;
 
   @ManyToOne(() => User, (user) => user.createdZestawienia)
-  @JoinColumn({ name: 'createdBy' })
+  @JoinColumn({ name: 'createdBy', referencedColumnName: 'id' })
   createdUser: User;
 
   @ManyToOne(() => User, (user) => user.updatedZestawienia)
-  @JoinColumn({ name: 'updatedBy' })
+  @JoinColumn({ name: 'updatedBy', referencedColumnName: 'id' })
   updatedUser: User;
 
   @OneToMany(() => Pozycje, (pozycja) => pozycja.zestawienie)

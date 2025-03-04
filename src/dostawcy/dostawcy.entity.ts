@@ -6,7 +6,7 @@ export class Dostawca {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
 
-  @Column({ type: 'varchar', length: 200, nullable: true, unique: true })
+  @Column({ type: 'varchar', length: 200, nullable: false, unique: true })
   nazwa: string;
 
   @OneToMany(() => Pozycje, (pozycja) => pozycja.dostawca)

@@ -10,10 +10,10 @@ export class User {
   @Column({ type: 'varchar', length: 30, unique: true })
   username: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: false })
   password: string;
 
-  @Column({ type: 'varchar', length: 30, nullable: true })
+  @Column({ type: 'varchar', length: 30, nullable: false })
   name: string;
 
   @OneToMany(() => Zestawienie, (zestawienie) => zestawienie.createdUser)

@@ -58,15 +58,15 @@ export class Pozycje {
   @OneToMany(() => Komentarze, (comment) => comment.zestawienie)
   komentarze: Komentarze[];
 
-  @ManyToOne(() => Zestawienie, (zestawienie) => zestawienie.pozycje)
-  @JoinColumn({ name: 'zestawienieId' })
+  @ManyToOne(() => Zestawienie, (zestawienie) => zestawienie.pozycje, { onDelete: "CASCADE" })
+  @JoinColumn({ name: 'zestawienieId', referencedColumnName: 'id' })
   zestawienie: Zestawienie;
 
   @ManyToOne(() => Klient, (klient) => klient.pozycje)
-  @JoinColumn({ name: 'klientId' })
+  @JoinColumn({ name: 'klientId', referencedColumnName: 'id' })
   klient: Klient;
 
   @ManyToOne(() => Dostawca, (dostawca) => dostawca.pozycje)
-  @JoinColumn({ name: 'dostawcaId' })
+  @JoinColumn({ name: 'dostawcaId', referencedColumnName: 'id' })
   dostawca: Dostawca;
 }

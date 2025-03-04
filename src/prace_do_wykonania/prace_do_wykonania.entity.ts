@@ -32,10 +32,10 @@ export class PraceDoWykonania {
   uwagi: string;
 
   @ManyToOne(() => Zestawienie, (zestawienie) => zestawienie.praceDoWykonania)
-  @JoinColumn({ name: 'zestawienieId' })
+  @JoinColumn({ name: 'zestawienieId', referencedColumnName: 'id' })
   zestawienie: Zestawienie;
 
   @ManyToOne(() => Klient, (klient) => klient.praceDoWykonania)
-  @JoinColumn({ name: 'klientId' })
+  @JoinColumn({ name: 'klientId', referencedColumnName: 'id' })
   klient: Klient;
 }

@@ -10,7 +10,7 @@ import { User } from '../user/user.entity';
 import { Pozycje } from '../pozycje/pozycje.entity';
 import { PraceDoWykonania } from '../prace_do_wykonania/prace_do_wykonania.entity';
 import { Komentarze } from '../komentarze/komentarze.entity';
-import { Klient } from 'src/klienci/klienci.entity';
+import { Client } from 'src/clients/clients.entity';
 
 @Entity()
 export class Zestawienie {
@@ -35,9 +35,9 @@ export class Zestawienie {
   @Column({ type: 'varchar', length: 20, nullable: false })
   hash: string;
 
-  @ManyToOne(() => Klient, (klient) => klient.zestawienia)
+  @ManyToOne(() => Client, (klient) => klient.zestawienia)
   @JoinColumn({ name: 'klientId', referencedColumnName: 'id' })
-  klient: Klient;
+  klient: Client;
 
   @ManyToOne(() => User, (user) => user.createdZestawienia)
   @JoinColumn({ name: 'createdBy', referencedColumnName: 'id' })

@@ -7,7 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { ZestawienieModule } from './zestawienie/zestawienie.module';
 import { ProduktyModule } from './produkty/produkty.module';
 import { DostawcyModule } from './dostawcy/dostawcy.module';
-import { KlienciModule } from './klienci/klienci.module';
+import { ClientsModule } from './clients/clients.module';
 import { KomentarzeModule } from './komentarze/komentarze.module';
 import { PraceDoWykonaniaModule } from './prace_do_wykonania/prace_do_wykonania.module';
 import { PozycjeModule } from './pozycje/pozycje.module';
@@ -16,7 +16,7 @@ import { User } from './user/user.entity';
 import { Zestawienie } from './zestawienie/zestawienie.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Dostawca } from './dostawcy/dostawcy.entity';
-import { Klient } from './klienci/klienci.entity';
+import { Client } from './clients/clients.entity';
 import { Komentarze } from './komentarze/komentarze.entity';
 import { Pozycje } from './pozycje/pozycje.entity';
 import { PraceDoWykonania } from './prace_do_wykonania/prace_do_wykonania.entity';
@@ -40,7 +40,7 @@ import { Produkt } from './produkty/produkty.entity';
           User,
           Zestawienie,
           Dostawca,
-          Klient,
+          Client,
           Komentarze,
           Pozycje,
           PraceDoWykonania,
@@ -53,7 +53,7 @@ import { Produkt } from './produkty/produkty.entity';
     ZestawienieModule,
     ProduktyModule,
     DostawcyModule,
-    KlienciModule,
+    ClientsModule,
     KomentarzeModule,
     PraceDoWykonaniaModule,
     PozycjeModule,

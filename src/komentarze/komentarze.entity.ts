@@ -8,7 +8,7 @@ import {
 import { Zestawienie } from '../zestawienie/zestawienie.entity';
 import { Pozycje } from '../pozycje/pozycje.entity';
 import { User } from '../user/user.entity';
-import { Klient } from 'src/klienci/klienci.entity';
+import { Client } from 'src/clients/clients.entity';
 
 @Entity()
 export class Komentarze {
@@ -27,7 +27,9 @@ export class Komentarze {
   @Column({ type: 'text', nullable: false })
   comment: string;
 
-  @ManyToOne(() => Zestawienie, (zestawienie) => zestawienie.komentarze, { onDelete: "CASCADE" })
+  @ManyToOne(() => Zestawienie, (zestawienie) => zestawienie.komentarze, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'zestawienieId', referencedColumnName: 'id' })
   zestawienie: Zestawienie;
 
@@ -39,7 +41,7 @@ export class Komentarze {
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   createdByUser: User;
 
-  @ManyToOne(() => Klient, (klient) => klient.komentarze)
+  @ManyToOne(() => Client, (klient) => klient.komentarze)
   @JoinColumn({ name: 'klientId', referencedColumnName: 'id' })
-  createdByKlient: Klient;
+  createdByKlient: Client;
 }

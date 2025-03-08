@@ -7,7 +7,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Zestawienie } from '../zestawienie/zestawienie.entity';
-import { Klient } from '../klienci/klienci.entity';
+import { Client } from '../clients/clients.entity';
 import { Dostawca } from '../dostawcy/dostawcy.entity';
 import { Komentarze } from '../komentarze/komentarze.entity';
 
@@ -58,13 +58,15 @@ export class Pozycje {
   @OneToMany(() => Komentarze, (comment) => comment.zestawienie)
   komentarze: Komentarze[];
 
-  @ManyToOne(() => Zestawienie, (zestawienie) => zestawienie.pozycje, { onDelete: "CASCADE" })
+  @ManyToOne(() => Zestawienie, (zestawienie) => zestawienie.pozycje, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'zestawienieId', referencedColumnName: 'id' })
   zestawienie: Zestawienie;
 
-  @ManyToOne(() => Klient, (klient) => klient.pozycje)
+  @ManyToOne(() => Client, (klient) => klient.pozycje)
   @JoinColumn({ name: 'klientId', referencedColumnName: 'id' })
-  klient: Klient;
+  klient: Client;
 
   @ManyToOne(() => Dostawca, (dostawca) => dostawca.pozycje)
   @JoinColumn({ name: 'dostawcaId', referencedColumnName: 'id' })

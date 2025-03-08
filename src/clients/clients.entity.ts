@@ -5,7 +5,7 @@ import { Zestawienie } from 'src/zestawienie/zestawienie.entity';
 import { Komentarze } from 'src/komentarze/komentarze.entity';
 
 @Entity('klienci')
-export class Klient {
+export class Client {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
 

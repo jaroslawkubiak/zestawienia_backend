@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Pozycje } from './pozycje.entity';
 import { Zestawienie } from 'src/zestawienie/zestawienie.entity';
 import { Client } from 'src/clients/clients.entity';
-import { Dostawca } from 'src/dostawcy/dostawcy.entity';
+import { Supplier } from 'src/suppliers/suppliers.entity';
 import { Komentarze } from 'src/komentarze/komentarze.entity';
 
 @Module({
@@ -14,7 +14,7 @@ import { Komentarze } from 'src/komentarze/komentarze.entity';
       Pozycje,
       Zestawienie,
       Client,
-      Dostawca,
+      Supplier,
       Komentarze,
     ]),
   ],

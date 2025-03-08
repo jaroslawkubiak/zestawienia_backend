@@ -15,7 +15,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { IClient } from './types/IClient';
 import { CreateClientDto, UpdateClientDto } from './dto/client.dto';
 
-// TODO remove this
+//TODO add guards
 // @UseGuards(JwtAuthGuard)
 @Controller('clients')
 export class ClientsController {
@@ -46,8 +46,10 @@ export class ClientsController {
     return this.clientsService.create(createClientDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string): Promise<void> {
-    return this.clientsService.remove(+id);
+  @Delete('')
+  remove(@Body() body: { ids: number[] }) {
+    body.ids.forEach((id) => {
+      return this.clientsService.remove(+id);
+    });
   }
 }

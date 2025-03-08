@@ -31,11 +31,11 @@ export class PraceDoWykonania {
   @Column({ type: 'text', nullable: true })
   uwagi: string;
 
-  @ManyToOne(() => Zestawienie, (zestawienie) => zestawienie.praceDoWykonania)
+  @ManyToOne(() => Zestawienie, (zestawienie) => zestawienie.praceDoWykonania, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'zestawienieId', referencedColumnName: 'id' })
   zestawienie: Zestawienie;
 
-  @ManyToOne(() => Client, (klient) => klient.praceDoWykonania)
+  @ManyToOne(() => Client, (klient) => klient.praceDoWykonania, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'klientId', referencedColumnName: 'id' })
   klient: Client;
 }

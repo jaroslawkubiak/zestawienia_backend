@@ -35,15 +35,21 @@ export class Zestawienie {
   @Column({ type: 'varchar', length: 20, nullable: false })
   hash: string;
 
-  @ManyToOne(() => Client, (klient) => klient.zestawienia)
+  @ManyToOne(() => Client, (klient) => klient.zestawienia, {
+    onDelete: 'SET NULL',
+  })
   @JoinColumn({ name: 'klientId', referencedColumnName: 'id' })
   klient: Client;
 
-  @ManyToOne(() => User, (user) => user.createdZestawienia)
+  @ManyToOne(() => User, (user) => user.createdZestawienia, {
+    onDelete: 'SET NULL',
+  })
   @JoinColumn({ name: 'createdBy', referencedColumnName: 'id' })
   createdUser: User;
 
-  @ManyToOne(() => User, (user) => user.updatedZestawienia)
+  @ManyToOne(() => User, (user) => user.updatedZestawienia, {
+    onDelete: 'SET NULL',
+  })
   @JoinColumn({ name: 'updatedBy', referencedColumnName: 'id' })
   updatedUser: User;
 

@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class CreateClientDto {
+export class CreateSupplierDto {
   @IsString()
   @IsNotEmpty()
   firma: string;
@@ -18,11 +18,11 @@ export class CreateClientDto {
   telefon: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   email: string;
 }
 
-export class UpdateClientDto {
+export class UpdateSupplierDto {
   @IsString()
   @IsOptional()
   firma?: string;

@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { Zestawienie } from '../zestawienie/zestawienie.entity';
 import { Client } from '../clients/clients.entity';
-import { Dostawca } from '../dostawcy/dostawcy.entity';
+import { Supplier } from '../suppliers/suppliers.entity';
 import { Komentarze } from '../komentarze/komentarze.entity';
 
 @Entity()
@@ -64,11 +64,13 @@ export class Pozycje {
   @JoinColumn({ name: 'zestawienieId', referencedColumnName: 'id' })
   zestawienie: Zestawienie;
 
-  @ManyToOne(() => Client, (klient) => klient.pozycje)
+  @ManyToOne(() => Client, (klient) => klient.pozycje, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'klientId', referencedColumnName: 'id' })
   klient: Client;
 
-  @ManyToOne(() => Dostawca, (dostawca) => dostawca.pozycje)
+  @ManyToOne(() => Supplier, (supplier) => supplier.pozycje, {
+    onDelete: 'SET NULL',
+  })
   @JoinColumn({ name: 'dostawcaId', referencedColumnName: 'id' })
-  dostawca: Dostawca;
+  dostawca: Supplier;
 }

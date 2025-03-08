@@ -33,15 +33,15 @@ export class Komentarze {
   @JoinColumn({ name: 'zestawienieId', referencedColumnName: 'id' })
   zestawienie: Zestawienie;
 
-  @ManyToOne(() => Pozycje, (pozycje) => pozycje.komentarze)
+  @ManyToOne(() => Pozycje, (pozycje) => pozycje.komentarze, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'pozycjaId', referencedColumnName: 'id' })
   pozycja: Pozycje;
 
-  @ManyToOne(() => User, (user) => user.komentarze)
+  @ManyToOne(() => User, (user) => user.komentarze, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   createdByUser: User;
 
-  @ManyToOne(() => Client, (klient) => klient.komentarze)
+  @ManyToOne(() => Client, (klient) => klient.komentarze, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'klientId', referencedColumnName: 'id' })
   createdByKlient: Client;
 }

@@ -1,26 +1,26 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AppService } from './app.service';
-import { LoginController } from './auth/login.controller';
-import { AuthModule } from './auth/auth.module';
-import { ZestawienieModule } from './zestawienie/zestawienie.module';
-import { ProduktyModule } from './produkty/produkty.module';
-import { DostawcyModule } from './dostawcy/dostawcy.module';
-import { ClientsModule } from './clients/clients.module';
-import { KomentarzeModule } from './komentarze/komentarze.module';
-import { PraceDoWykonaniaModule } from './prace_do_wykonania/prace_do_wykonania.module';
-import { PozycjeModule } from './pozycje/pozycje.module';
-import { UserModule } from './user/user.module';
-import { User } from './user/user.entity';
-import { Zestawienie } from './zestawienie/zestawienie.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Dostawca } from './dostawcy/dostawcy.entity';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
+import { LoginController } from './auth/login.controller';
 import { Client } from './clients/clients.entity';
+import { ClientsModule } from './clients/clients.module';
 import { Komentarze } from './komentarze/komentarze.entity';
+import { KomentarzeModule } from './komentarze/komentarze.module';
 import { Pozycje } from './pozycje/pozycje.entity';
+import { PozycjeModule } from './pozycje/pozycje.module';
 import { PraceDoWykonania } from './prace_do_wykonania/prace_do_wykonania.entity';
+import { PraceDoWykonaniaModule } from './prace_do_wykonania/prace_do_wykonania.module';
 import { Produkt } from './produkty/produkty.entity';
+import { ProduktyModule } from './produkty/produkty.module';
+import { Supplier } from './suppliers/suppliers.entity';
+import { SuppliersModule } from './suppliers/suppliers.module';
+import { User } from './user/user.entity';
+import { UserModule } from './user/user.module';
+import { Zestawienie } from './zestawienie/zestawienie.entity';
+import { ZestawienieModule } from './zestawienie/zestawienie.module';
 
 @Module({
   imports: [
@@ -39,7 +39,7 @@ import { Produkt } from './produkty/produkty.entity';
         entities: [
           User,
           Zestawienie,
-          Dostawca,
+          Supplier,
           Client,
           Komentarze,
           Pozycje,
@@ -52,7 +52,7 @@ import { Produkt } from './produkty/produkty.entity';
     AuthModule,
     ZestawienieModule,
     ProduktyModule,
-    DostawcyModule,
+    SuppliersModule,
     ClientsModule,
     KomentarzeModule,
     PraceDoWykonaniaModule,

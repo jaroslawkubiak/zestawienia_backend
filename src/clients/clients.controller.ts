@@ -6,14 +6,12 @@ import {
   Param,
   Patch,
   Post,
-  UseGuards,
   UsePipes,
-  ValidationPipe,
+  ValidationPipe
 } from '@nestjs/common';
 import { ClientsService } from './clients.service';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { IClient } from './types/IClient';
 import { CreateClientDto, UpdateClientDto } from './dto/client.dto';
+import { IClient } from './types/IClient';
 
 //TODO add guards
 // @UseGuards(JwtAuthGuard)

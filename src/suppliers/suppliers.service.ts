@@ -13,7 +13,11 @@ export class SuppliersService {
   ) {}
 
   findAll(): Promise<ISupplier[]> {
-    return this.suppliersRepository.find();
+    return this.suppliersRepository.find({
+      order: {
+        id: 'DESC',
+      },
+    });
   }
 
   findOne(id: number): Promise<ISupplier> {

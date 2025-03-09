@@ -13,16 +13,18 @@ import { Comment } from './comments/comments.entity';
 import { CommentsModule } from './comments/comments.module';
 import { Position } from './position/positions.entity';
 import { PositionsModule } from './position/positions.module';
-import { Work } from './work/work.entity';
-import { WorkModule } from './work/work.module';
 import { Product } from './products/products.entity';
 import { ProductsModule } from './products/products.module';
+import { Set } from './sets/sets.entity';
+import { SetsModule } from './sets/sets.module';
+import { Setting } from './settings/settings.entity';
+import { SettingsModule } from './settings/settings.module';
 import { Supplier } from './suppliers/suppliers.entity';
 import { SuppliersModule } from './suppliers/suppliers.module';
 import { User } from './user/user.entity';
 import { UserModule } from './user/user.module';
-import { Set } from './sets/sets.entity';
-import { SetsModule } from './sets/sets.module';
+import { Work } from './work/work.entity';
+import { WorkModule } from './work/work.module';
 
 @Module({
   imports: [
@@ -48,6 +50,7 @@ import { SetsModule } from './sets/sets.module';
           Work,
           Product,
           Bookmark,
+          Setting,
         ],
         synchronize: true,
       }),
@@ -62,6 +65,7 @@ import { SetsModule } from './sets/sets.module';
     PositionsModule,
     UserModule,
     BookmarksModule,
+    SettingsModule,
   ],
   controllers: [AppController, LoginController],
   providers: [AppService],

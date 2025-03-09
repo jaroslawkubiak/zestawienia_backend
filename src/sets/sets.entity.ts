@@ -19,6 +19,9 @@ export class Set {
 
   @Column({ type: 'varchar', length: 50, nullable: false })
   numer: string;
+  
+  @Column({ type: 'varchar', length: 50, nullable: false })
+  status: string;
 
   @Column({ type: 'varchar', length: 50, nullable: false })
   createDate: string;

@@ -1,8 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Comment } from 'src/comments/comments.entity';
+import { Set } from 'src/sets/sets.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Position } from '../position/positions.entity';
 import { Work } from '../work/work.entity';
-import { Set } from 'src/sets/sets.entity';
-import { Comment } from 'src/comments/comments.entity';
 
 @Entity('')
 export class Client {

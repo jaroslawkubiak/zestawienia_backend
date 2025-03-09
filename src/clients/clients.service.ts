@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Client } from './clients.entity';
 import { Repository } from 'typeorm';
-import { IClient } from './types/IClient';
+import { Client } from './clients.entity';
 import { CreateClientDto, UpdateClientDto } from './dto/client.dto';
+import { IClient } from './types/IClient';
 
 @Injectable()
 export class ClientsService {
@@ -13,7 +13,11 @@ export class ClientsService {
   ) {}
 
   findAll(): Promise<IClient[]> {
-    return this.clientsRepository.find();
+    return this.clientsRepository.find({
+      order: {
+        id: 'DESC',
+      },
+    });
   }
 
   findOne(id: number): Promise<IClient> {

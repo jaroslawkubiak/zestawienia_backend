@@ -11,7 +11,6 @@ export class setsService {
   ) {}
 
   findAll() {
-    console.log(`##### service findall #####`);
     return this.setsRepository.find();
   }
 }

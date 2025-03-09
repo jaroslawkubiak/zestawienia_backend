@@ -6,17 +6,11 @@ import { Pozycje } from './pozycje.entity';
 import { Zestawienie } from 'src/zestawienie/zestawienie.entity';
 import { Client } from 'src/clients/clients.entity';
 import { Supplier } from 'src/suppliers/suppliers.entity';
-import { Komentarze } from 'src/komentarze/komentarze.entity';
+import { Comment } from 'src/comments/comments.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      Pozycje,
-      Zestawienie,
-      Client,
-      Supplier,
-      Komentarze,
-    ]),
+    TypeOrmModule.forFeature([Pozycje, Zestawienie, Client, Supplier, Comment]),
   ],
   controllers: [PozycjeController],
   providers: [PozycjeService],

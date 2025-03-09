@@ -2,9 +2,9 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Pozycje } from '../pozycje/pozycje.entity';
 import { PraceDoWykonania } from '../prace_do_wykonania/prace_do_wykonania.entity';
 import { Zestawienie } from 'src/zestawienie/zestawienie.entity';
-import { Komentarze } from 'src/komentarze/komentarze.entity';
+import { Comment } from 'src/comments/comments.entity';
 
-@Entity('klienci')
+@Entity('')
 export class Client {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
@@ -33,6 +33,6 @@ export class Client {
   @OneToMany(() => PraceDoWykonania, (prace) => prace.klient)
   praceDoWykonania: PraceDoWykonania[];
 
-  @OneToMany(() => Komentarze, (comment) => comment.createdByKlient)
-  komentarze: Komentarze[];
+  @OneToMany(() => Comment, (comment) => comment.createdByKlient)
+  comments: Comment[];
 }

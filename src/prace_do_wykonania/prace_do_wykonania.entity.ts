@@ -36,6 +36,6 @@ export class PraceDoWykonania {
   zestawienie: Zestawienie;
 
   @ManyToOne(() => Client, (klient) => klient.praceDoWykonania, { onDelete: 'SET NULL' })
-  @JoinColumn({ name: 'klientId', referencedColumnName: 'id' })
+  @JoinColumn({ name: 'clientId', referencedColumnName: 'id' })
   klient: Client;
 }

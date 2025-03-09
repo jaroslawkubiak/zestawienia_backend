@@ -9,7 +9,7 @@ import {
 import { User } from '../user/user.entity';
 import { Pozycje } from '../pozycje/pozycje.entity';
 import { PraceDoWykonania } from '../prace_do_wykonania/prace_do_wykonania.entity';
-import { Komentarze } from '../komentarze/komentarze.entity';
+import { Comment } from '../comments/comments.entity';
 import { Client } from 'src/clients/clients.entity';
 
 @Entity()
@@ -38,7 +38,7 @@ export class Zestawienie {
   @ManyToOne(() => Client, (klient) => klient.zestawienia, {
     onDelete: 'SET NULL',
   })
-  @JoinColumn({ name: 'klientId', referencedColumnName: 'id' })
+  @JoinColumn({ name: 'clientId', referencedColumnName: 'id' })
   klient: Client;
 
   @ManyToOne(() => User, (user) => user.createdZestawienia, {
@@ -59,6 +59,6 @@ export class Zestawienie {
   @OneToMany(() => PraceDoWykonania, (praca) => praca.zestawienie)
   praceDoWykonania: PraceDoWykonania[];
 
-  @OneToMany(() => Komentarze, (comment) => comment.zestawienie)
-  komentarze: Komentarze[];
+  @OneToMany(() => Comment, (comment) => comment.zestawienie)
+  comments: Comment[];
 }

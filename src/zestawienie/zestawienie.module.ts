@@ -6,7 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/user/user.entity';
 import { PraceDoWykonania } from 'src/prace_do_wykonania/prace_do_wykonania.entity';
 import { Pozycje } from 'src/pozycje/pozycje.entity';
-import { Komentarze } from 'src/komentarze/komentarze.entity';
+import { Comment } from 'src/comments/comments.entity';
 
 @Module({
   imports: [
@@ -15,7 +15,7 @@ import { Komentarze } from 'src/komentarze/komentarze.entity';
       User,
       PraceDoWykonania,
       Pozycje,
-      Komentarze,
+      Comment,
     ]),
   ],
   controllers: [ZestawienieController],

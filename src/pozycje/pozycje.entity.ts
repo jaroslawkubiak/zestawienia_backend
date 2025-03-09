@@ -9,7 +9,8 @@ import {
 import { Zestawienie } from '../zestawienie/zestawienie.entity';
 import { Client } from '../clients/clients.entity';
 import { Supplier } from '../suppliers/suppliers.entity';
-import { Komentarze } from '../komentarze/komentarze.entity';
+import { Comment } from '../comments/comments.entity';
+import { Bookmark } from 'src/bookmarks/bookmarks.entity';
 
 @Entity()
 export class Pozycje {
@@ -55,8 +56,8 @@ export class Pozycje {
   @Column({ type: 'varchar', length: 50, nullable: true })
   acceptedTimeStamp: string;
 
-  @OneToMany(() => Komentarze, (comment) => comment.zestawienie)
-  komentarze: Komentarze[];
+  @OneToMany(() => Comment, (comment) => comment.zestawienie)
+  comments: Comment[];
 
   @ManyToOne(() => Zestawienie, (zestawienie) => zestawienie.pozycje, {
     onDelete: 'CASCADE',
@@ -64,13 +65,17 @@ export class Pozycje {
   @JoinColumn({ name: 'zestawienieId', referencedColumnName: 'id' })
   zestawienie: Zestawienie;
 
+  @ManyToOne(() => Bookmark, (bookmark) => bookmark.pozycje)
+  @JoinColumn({ name: 'bookmarkId', referencedColumnName: 'id' })
+  bookmark: Bookmark;
+
   @ManyToOne(() => Client, (klient) => klient.pozycje, { onDelete: 'SET NULL' })
-  @JoinColumn({ name: 'klientId', referencedColumnName: 'id' })
+  @JoinColumn({ name: 'clientId', referencedColumnName: 'id' })
   klient: Client;
 
   @ManyToOne(() => Supplier, (supplier) => supplier.pozycje, {
     onDelete: 'SET NULL',
   })
-  @JoinColumn({ name: 'dostawcaId', referencedColumnName: 'id' })
+  @JoinColumn({ name: 'supplierId', referencedColumnName: 'id' })
   dostawca: Supplier;
 }

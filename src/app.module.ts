@@ -5,10 +5,12 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { LoginController } from './auth/login.controller';
+import { Bookmark } from './bookmarks/bookmarks.entity';
+import { BookmarksModule } from './bookmarks/bookmarks.module';
 import { Client } from './clients/clients.entity';
 import { ClientsModule } from './clients/clients.module';
-import { Komentarze } from './komentarze/komentarze.entity';
-import { KomentarzeModule } from './komentarze/komentarze.module';
+import { Comment } from './comments/comments.entity';
+import { CommentsModule } from './comments/comments.module';
 import { Pozycje } from './pozycje/pozycje.entity';
 import { PozycjeModule } from './pozycje/pozycje.module';
 import { PraceDoWykonania } from './prace_do_wykonania/prace_do_wykonania.entity';
@@ -41,10 +43,11 @@ import { ZestawienieModule } from './zestawienie/zestawienie.module';
           Zestawienie,
           Supplier,
           Client,
-          Komentarze,
+          Comment,
           Pozycje,
           PraceDoWykonania,
           Produkt,
+          Bookmark,
         ],
         synchronize: true,
       }),
@@ -54,10 +57,11 @@ import { ZestawienieModule } from './zestawienie/zestawienie.module';
     ProduktyModule,
     SuppliersModule,
     ClientsModule,
-    KomentarzeModule,
+    CommentsModule,
     PraceDoWykonaniaModule,
     PozycjeModule,
     UserModule,
+    BookmarksModule,
   ],
   controllers: [AppController, LoginController],
   providers: [AppService],

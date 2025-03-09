@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Zestawienie } from '../zestawienie/zestawienie.entity';
-import { Komentarze } from '../komentarze/komentarze.entity';
+import { Comment } from '../comments/comments.entity';
 
 @Entity()
 export class User {
@@ -22,6 +22,6 @@ export class User {
   @OneToMany(() => Zestawienie, (zestawienie) => zestawienie.updatedUser)
   updatedZestawienia: Zestawienie[];
 
-  @OneToMany(() => Komentarze, (comment) => comment.createdByUser)
-  komentarze: Komentarze[];
+  @OneToMany(() => Comment, (comment) => comment.createdByUser)
+  comments: Comment[];
 }

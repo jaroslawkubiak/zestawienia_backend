@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { Pozycje } from '../pozycje/pozycje.entity';
-import { PraceDoWykonania } from '../prace_do_wykonania/prace_do_wykonania.entity';
-import { Zestawienie } from 'src/zestawienie/zestawienie.entity';
+import { Position } from '../position/positions.entity';
+import { Work } from '../work/work.entity';
+import { Set } from 'src/sets/sets.entity';
 import { Comment } from 'src/comments/comments.entity';
 
 @Entity('')
@@ -24,14 +24,14 @@ export class Client {
   @Column({ type: 'varchar', length: 100, nullable: false, unique: true })
   email: string;
 
-  @OneToMany(() => Zestawienie, (zestawienie) => zestawienie.klient)
-  zestawienia: Zestawienie[];
+  @OneToMany(() => Set, (set) => set.klient)
+  set: Set[];
 
-  @OneToMany(() => Pozycje, (pozycja) => pozycja.klient)
-  pozycje: Pozycje[];
+  @OneToMany(() => Position, (position) => position.klient)
+  position: Position[];
 
-  @OneToMany(() => PraceDoWykonania, (prace) => prace.klient)
-  praceDoWykonania: PraceDoWykonania[];
+  @OneToMany(() => Work, (work) => work.klient)
+  work: Work[];
 
   @OneToMany(() => Comment, (comment) => comment.createdByKlient)
   comments: Comment[];

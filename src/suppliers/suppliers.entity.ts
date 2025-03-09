@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { Pozycje } from '../pozycje/pozycje.entity';
+import { Position } from '../position/positions.entity';
 
 @Entity('')
 export class Supplier {
@@ -21,6 +21,6 @@ export class Supplier {
   @Column({ type: 'varchar', length: 100, nullable: true, unique: true })
   email: string;
 
-  @OneToMany(() => Pozycje, (pozycja) => pozycja.dostawca)
-  pozycje: Pozycje[];
+  @OneToMany(() => Position, (position) => position.dostawca)
+  position: Position[];
 }

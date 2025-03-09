@@ -11,18 +11,18 @@ import { Client } from './clients/clients.entity';
 import { ClientsModule } from './clients/clients.module';
 import { Comment } from './comments/comments.entity';
 import { CommentsModule } from './comments/comments.module';
-import { Pozycje } from './pozycje/pozycje.entity';
-import { PozycjeModule } from './pozycje/pozycje.module';
-import { PraceDoWykonania } from './prace_do_wykonania/prace_do_wykonania.entity';
-import { PraceDoWykonaniaModule } from './prace_do_wykonania/prace_do_wykonania.module';
-import { Produkt } from './produkty/produkty.entity';
-import { ProduktyModule } from './produkty/produkty.module';
+import { Position } from './position/positions.entity';
+import { PositionsModule } from './position/positions.module';
+import { Work } from './work/work.entity';
+import { WorkModule } from './work/work.module';
+import { Product } from './products/products.entity';
+import { ProductsModule } from './products/products.module';
 import { Supplier } from './suppliers/suppliers.entity';
 import { SuppliersModule } from './suppliers/suppliers.module';
 import { User } from './user/user.entity';
 import { UserModule } from './user/user.module';
-import { Zestawienie } from './zestawienie/zestawienie.entity';
-import { ZestawienieModule } from './zestawienie/zestawienie.module';
+import { Set } from './sets/sets.entity';
+import { SetsModule } from './sets/sets.module';
 
 @Module({
   imports: [
@@ -40,26 +40,26 @@ import { ZestawienieModule } from './zestawienie/zestawienie.module';
         database: configService.get<string>('DB_NAME'),
         entities: [
           User,
-          Zestawienie,
+          Set,
           Supplier,
           Client,
           Comment,
-          Pozycje,
-          PraceDoWykonania,
-          Produkt,
+          Position,
+          Work,
+          Product,
           Bookmark,
         ],
         synchronize: true,
       }),
     }),
     AuthModule,
-    ZestawienieModule,
-    ProduktyModule,
+    SetsModule,
+    ProductsModule,
     SuppliersModule,
     ClientsModule,
     CommentsModule,
-    PraceDoWykonaniaModule,
-    PozycjeModule,
+    WorkModule,
+    PositionsModule,
     UserModule,
     BookmarksModule,
   ],

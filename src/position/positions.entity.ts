@@ -6,14 +6,14 @@ import {
   JoinColumn,
   OneToMany,
 } from 'typeorm';
-import { Zestawienie } from '../zestawienie/zestawienie.entity';
+import { Set } from '../sets/sets.entity';
 import { Client } from '../clients/clients.entity';
 import { Supplier } from '../suppliers/suppliers.entity';
 import { Comment } from '../comments/comments.entity';
 import { Bookmark } from 'src/bookmarks/bookmarks.entity';
 
 @Entity()
-export class Pozycje {
+export class Position {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
 
@@ -56,24 +56,24 @@ export class Pozycje {
   @Column({ type: 'varchar', length: 50, nullable: true })
   acceptedTimeStamp: string;
 
-  @OneToMany(() => Comment, (comment) => comment.zestawienie)
+  @OneToMany(() => Comment, (comment) => comment.set)
   comments: Comment[];
 
-  @ManyToOne(() => Zestawienie, (zestawienie) => zestawienie.pozycje, {
+  @ManyToOne(() => Set, (set) => set.position, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'zestawienieId', referencedColumnName: 'id' })
-  zestawienie: Zestawienie;
+  @JoinColumn({ name: 'setId', referencedColumnName: 'id' })
+  set: Set;
 
-  @ManyToOne(() => Bookmark, (bookmark) => bookmark.pozycje)
+  @ManyToOne(() => Bookmark, (bookmark) => bookmark.position)
   @JoinColumn({ name: 'bookmarkId', referencedColumnName: 'id' })
   bookmark: Bookmark;
 
-  @ManyToOne(() => Client, (klient) => klient.pozycje, { onDelete: 'SET NULL' })
+  @ManyToOne(() => Client, (klient) => klient.position, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'clientId', referencedColumnName: 'id' })
   klient: Client;
 
-  @ManyToOne(() => Supplier, (supplier) => supplier.pozycje, {
+  @ManyToOne(() => Supplier, (supplier) => supplier.position, {
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'supplierId', referencedColumnName: 'id' })

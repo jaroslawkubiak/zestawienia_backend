@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { Zestawienie } from '../zestawienie/zestawienie.entity';
+import { Set } from '../sets/sets.entity';
 import { Comment } from '../comments/comments.entity';
 
 @Entity()
@@ -16,11 +16,11 @@ export class User {
   @Column({ type: 'varchar', length: 30, nullable: false })
   name: string;
 
-  @OneToMany(() => Zestawienie, (zestawienie) => zestawienie.createdUser)
-  createdZestawienia: Zestawienie[];
+  @OneToMany(() => Set, (set) => set.createdUser)
+  createdSet: Set[];
 
-  @OneToMany(() => Zestawienie, (zestawienie) => zestawienie.updatedUser)
-  updatedZestawienia: Zestawienie[];
+  @OneToMany(() => Set, (set) => set.updatedUser)
+  updatedSet: Set[];
 
   @OneToMany(() => Comment, (comment) => comment.createdByUser)
   comments: Comment[];

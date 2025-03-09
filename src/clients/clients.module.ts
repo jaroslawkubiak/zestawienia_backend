@@ -3,11 +3,11 @@ import { ClientsController } from './clients.controller';
 import { ClientsService } from './clients.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Client } from './clients.entity';
-import { Pozycje } from 'src/pozycje/pozycje.entity';
-import { PraceDoWykonania } from 'src/prace_do_wykonania/prace_do_wykonania.entity';
+import { Position } from 'src/position/positions.entity';
+import { Work } from 'src/work/work.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Client, Pozycje, PraceDoWykonania])],
+  imports: [TypeOrmModule.forFeature([Client, Position, Work])],
   controllers: [ClientsController],
   providers: [ClientsService],
 })

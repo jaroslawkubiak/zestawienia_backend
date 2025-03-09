@@ -4,11 +4,11 @@ import { CommentsService } from './comments.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Comment } from './comments.entity';
 import { User } from 'src/user/user.entity';
-import { Pozycje } from 'src/pozycje/pozycje.entity';
-import { Zestawienie } from 'src/zestawienie/zestawienie.entity';
+import { Position } from 'src/position/positions.entity';
+import { Set } from 'src/sets/sets.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Comment, User, Pozycje, Zestawienie])],
+  imports: [TypeOrmModule.forFeature([Comment, User, Position, Set])],
   controllers: [CommentsController],
   providers: [CommentsService],
 })

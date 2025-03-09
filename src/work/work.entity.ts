@@ -5,11 +5,11 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { Zestawienie } from '../zestawienie/zestawienie.entity';
+import { Set } from '../sets/sets.entity';
 import { Client } from '../clients/clients.entity';
 
 @Entity()
-export class PraceDoWykonania {
+export class Work {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
 
@@ -31,11 +31,15 @@ export class PraceDoWykonania {
   @Column({ type: 'text', nullable: true })
   uwagi: string;
 
-  @ManyToOne(() => Zestawienie, (zestawienie) => zestawienie.praceDoWykonania, { onDelete: 'SET NULL' })
-  @JoinColumn({ name: 'zestawienieId', referencedColumnName: 'id' })
-  zestawienie: Zestawienie;
+  @ManyToOne(() => Set, (set) => set.work, {
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'setId', referencedColumnName: 'id' })
+  set: Set;
 
-  @ManyToOne(() => Client, (klient) => klient.praceDoWykonania, { onDelete: 'SET NULL' })
+  @ManyToOne(() => Client, (klient) => klient.work, {
+    onDelete: 'SET NULL',
+  })
   @JoinColumn({ name: 'clientId', referencedColumnName: 'id' })
   klient: Client;
 }

@@ -7,13 +7,13 @@ import {
   OneToMany,
 } from 'typeorm';
 import { User } from '../user/user.entity';
-import { Pozycje } from '../pozycje/pozycje.entity';
-import { PraceDoWykonania } from '../prace_do_wykonania/prace_do_wykonania.entity';
+import { Position } from '../position/positions.entity';
+import { Work } from '../work/work.entity';
 import { Comment } from '../comments/comments.entity';
 import { Client } from 'src/clients/clients.entity';
 
 @Entity()
-export class Zestawienie {
+export class Set {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
 
@@ -35,30 +35,30 @@ export class Zestawienie {
   @Column({ type: 'varchar', length: 20, nullable: false })
   hash: string;
 
-  @ManyToOne(() => Client, (klient) => klient.zestawienia, {
+  @ManyToOne(() => Client, (klient) => klient.set, {
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'clientId', referencedColumnName: 'id' })
   klient: Client;
 
-  @ManyToOne(() => User, (user) => user.createdZestawienia, {
+  @ManyToOne(() => User, (user) => user.createdSet, {
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'createdBy', referencedColumnName: 'id' })
   createdUser: User;
 
-  @ManyToOne(() => User, (user) => user.updatedZestawienia, {
+  @ManyToOne(() => User, (user) => user.updatedSet, {
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'updatedBy', referencedColumnName: 'id' })
   updatedUser: User;
 
-  @OneToMany(() => Pozycje, (pozycja) => pozycja.zestawienie)
-  pozycje: Pozycje[];
+  @OneToMany(() => Position, (position) => position.set)
+  position: Position[];
 
-  @OneToMany(() => PraceDoWykonania, (praca) => praca.zestawienie)
-  praceDoWykonania: PraceDoWykonania[];
+  @OneToMany(() => Work, (praca) => praca.set)
+  work: Work[];
 
-  @OneToMany(() => Comment, (comment) => comment.zestawienie)
+  @OneToMany(() => Comment, (comment) => comment.set)
   comments: Comment[];
 }

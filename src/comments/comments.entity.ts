@@ -5,8 +5,8 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { Zestawienie } from '../zestawienie/zestawienie.entity';
-import { Pozycje } from '../pozycje/pozycje.entity';
+import { Set } from '../sets/sets.entity';
+import { Position } from '../position/positions.entity';
 import { User } from '../user/user.entity';
 import { Client } from 'src/clients/clients.entity';
 
@@ -27,17 +27,17 @@ export class Comment {
   @Column({ type: 'text', nullable: false })
   comment: string;
 
-  @ManyToOne(() => Zestawienie, (zestawienie) => zestawienie.comments, {
+  @ManyToOne(() => Set, (set) => set.comments, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'zestawienieId', referencedColumnName: 'id' })
-  zestawienie: Zestawienie;
+  @JoinColumn({ name: 'setId', referencedColumnName: 'id' })
+  set: Set;
 
-  @ManyToOne(() => Pozycje, (pozycje) => pozycje.comments, {
+  @ManyToOne(() => Position, (position) => position.comments, {
     onDelete: 'SET NULL',
   })
-  @JoinColumn({ name: 'pozycjaId', referencedColumnName: 'id' })
-  pozycja: Pozycje;
+  @JoinColumn({ name: 'positionId', referencedColumnName: 'id' })
+  position: Position;
 
   @ManyToOne(() => User, (user) => user.comments, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })

@@ -7,6 +7,7 @@ export interface ISet {
   updateDate: string;
   updateTimeStamp: string;
   hash: string;
+  bookmarks: IBookmarks;
   client: {
     firma: string;
     email: string;
@@ -17,4 +18,9 @@ export interface ISet {
   updatedBy: {
     name: string;
   };
+}
+
+interface IBookmarks {
+  id: number;
+  nazwa: string;
 }

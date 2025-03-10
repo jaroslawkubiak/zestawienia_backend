@@ -38,6 +38,9 @@ export class Set {
   @Column({ type: 'varchar', length: 40, nullable: false })
   hash: string;
 
+  @Column({ type: 'json', nullable: false })
+  bookmarks: any;
+
   @ManyToOne(() => Client, (client) => client.set, {
     onDelete: 'SET NULL',
   })

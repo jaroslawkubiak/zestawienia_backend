@@ -9,11 +9,11 @@ import { ISupplier } from './types/ISupplier';
 export class SuppliersService {
   constructor(
     @InjectRepository(Supplier)
-    private readonly suppliersRepository: Repository<Supplier>,
+    private readonly suppliersRepo: Repository<Supplier>,
   ) {}
 
   findAll(): Promise<ISupplier[]> {
-    return this.suppliersRepository.find({
+    return this.suppliersRepo.find({
       order: {
         id: 'DESC',
       },
@@ -21,23 +21,23 @@ export class SuppliersService {
   }
 
   findOne(id: number): Promise<ISupplier> {
-    return this.suppliersRepository.findOneBy({ id });
+    return this.suppliersRepo.findOneBy({ id });
   }
 
   create(createSupplierDto: CreateSupplierDto): Promise<ISupplier> {
-    const newSupplier = this.suppliersRepository.create(createSupplierDto);
-    return this.suppliersRepository.save(newSupplier);
+    const newSupplier = this.suppliersRepo.create(createSupplierDto);
+    return this.suppliersRepo.save(newSupplier);
   }
 
   async update(
     id: number,
     updateSupplierDto: UpdateSupplierDto,
   ): Promise<ISupplier> {
-    await this.suppliersRepository.update(id, updateSupplierDto);
+    await this.suppliersRepo.update(id, updateSupplierDto);
     return this.findOne(id);
   }
 
   async remove(id: number): Promise<void> {
-    await this.suppliersRepository.delete(id);
+    await this.suppliersRepo.delete(id);
   }
 }

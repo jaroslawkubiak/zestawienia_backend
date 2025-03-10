@@ -9,11 +9,11 @@ import { IClient } from './types/IClient';
 export class ClientsService {
   constructor(
     @InjectRepository(Client)
-    private readonly clientsRepository: Repository<Client>,
+    private readonly clientsRepo: Repository<Client>,
   ) {}
 
   findAll(): Promise<IClient[]> {
-    return this.clientsRepository.find({
+    return this.clientsRepo.find({
       order: {
         id: 'DESC',
       },
@@ -21,20 +21,20 @@ export class ClientsService {
   }
 
   findOne(id: number): Promise<IClient> {
-    return this.clientsRepository.findOneBy({ id });
+    return this.clientsRepo.findOneBy({ id });
   }
 
   create(createClientDto: CreateClientDto): Promise<IClient> {
-    const newClient = this.clientsRepository.create(createClientDto);
-    return this.clientsRepository.save(newClient);
+    const newClient = this.clientsRepo.create(createClientDto);
+    return this.clientsRepo.save(newClient);
   }
 
   async update(id: number, updateClientDto: UpdateClientDto): Promise<IClient> {
-    await this.clientsRepository.update(id, updateClientDto);
+    await this.clientsRepo.update(id, updateClientDto);
     return this.findOne(id);
   }
 
   async remove(id: number): Promise<void> {
-    await this.clientsRepository.delete(id);
+    await this.clientsRepo.delete(id);
   }
 }

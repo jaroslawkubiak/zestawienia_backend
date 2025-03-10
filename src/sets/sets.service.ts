@@ -8,11 +8,11 @@ import { ISet } from './types/ISet';
 export class setsService {
   constructor(
     @InjectRepository(Set)
-    private readonly setsRepository: Repository<Set>,
+    private readonly setsRepo: Repository<Set>,
   ) {}
 
   findAll(): Promise<ISet[]> {
-    return this.setsRepository
+    return this.setsRepo
       .createQueryBuilder('set')
       .leftJoin('set.client', 'client')
       .addSelect(['client.firma', 'client.email'])

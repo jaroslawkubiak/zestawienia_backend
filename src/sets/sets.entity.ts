@@ -35,26 +35,26 @@ export class Set {
   @Column({ type: 'varchar', length: 50, nullable: false })
   updateTimeStamp: string;
 
-  @Column({ type: 'varchar', length: 20, nullable: false })
+  @Column({ type: 'varchar', length: 40, nullable: false })
   hash: string;
 
   @ManyToOne(() => Client, (klient) => klient.set, {
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'clientId', referencedColumnName: 'id' })
-  klient: Client;
+  clientId: Client;
 
   @ManyToOne(() => User, (user) => user.createdSet, {
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'createdBy', referencedColumnName: 'id' })
-  createdUser: User;
+  createdBy: User;
 
   @ManyToOne(() => User, (user) => user.updatedSet, {
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'updatedBy', referencedColumnName: 'id' })
-  updatedUser: User;
+  updatedBy: User;
 
   @OneToMany(() => Position, (position) => position.set)
   position: Position[];

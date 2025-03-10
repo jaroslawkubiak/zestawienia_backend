@@ -24,7 +24,7 @@ export class Client {
   @Column({ type: 'varchar', length: 100, nullable: false, unique: true })
   email: string;
 
-  @OneToMany(() => Set, (set) => set.klient)
+  @OneToMany(() => Set, (set) => set.clientId)
   set: Set[];
 
   @OneToMany(() => Position, (position) => position.klient)

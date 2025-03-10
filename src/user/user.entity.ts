@@ -16,10 +16,10 @@ export class User {
   @Column({ type: 'varchar', length: 30, nullable: false })
   name: string;
 
-  @OneToMany(() => Set, (set) => set.createdUser)
+  @OneToMany(() => Set, (set) => set.createdBy)
   createdSet: Set[];
 
-  @OneToMany(() => Set, (set) => set.updatedUser)
+  @OneToMany(() => Set, (set) => set.updatedBy)
   updatedSet: Set[];
 
   @OneToMany(() => Comment, (comment) => comment.createdByUser)

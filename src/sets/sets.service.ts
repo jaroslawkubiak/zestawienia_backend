@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Set } from './sets.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { ISet } from './types/ISet';
 
 @Injectable()
 export class setsService {
@@ -10,10 +11,10 @@ export class setsService {
     private readonly setsRepository: Repository<Set>,
   ) {}
 
-  findAll() {
+  findAll(): Promise<ISet[]> {
     return this.setsRepository
-      .createQueryBuilder('set') 
-      .leftJoin('set.clientId', 'client') 
+      .createQueryBuilder('set')
+      .leftJoin('set.client', 'client')
       .addSelect(['client.firma', 'client.email'])
       .leftJoin('set.createdBy', 'createdBy')
       .addSelect(['createdBy.name'])
@@ -32,5 +33,6 @@ function generateHash() {
     const randomIndex = Math.floor(Math.random() * characters.length);
     hash += characters[randomIndex];
   }
+
   return hash;
 }

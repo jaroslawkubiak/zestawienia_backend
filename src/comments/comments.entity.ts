@@ -47,5 +47,5 @@ export class Comment {
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'clientId', referencedColumnName: 'id' })
-  createdByKlient: Client;
+  createdByClient: Client;
 }

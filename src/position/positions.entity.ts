@@ -1,16 +1,17 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  JoinColumn,
-  OneToMany,
-} from 'typeorm';
-import { Set } from '../sets/sets.entity';
-import { Client } from '../clients/clients.entity';
-import { Supplier } from '../suppliers/suppliers.entity';
-import { Comment } from '../comments/comments.entity';
 import { Bookmark } from 'src/bookmarks/bookmarks.entity';
+import { User } from 'src/user/user.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Client } from '../clients/clients.entity';
+import { Comment } from '../comments/comments.entity';
+import { Set } from '../sets/sets.entity';
+import { Supplier } from '../suppliers/suppliers.entity';
 
 @Entity()
 export class Position {
@@ -69,13 +70,21 @@ export class Position {
   @JoinColumn({ name: 'bookmarkId', referencedColumnName: 'id' })
   bookmark: Bookmark;
 
-  @ManyToOne(() => Client, (klient) => klient.position, { onDelete: 'SET NULL' })
+  @ManyToOne(() => Client, (client) => client.position, {
+    onDelete: 'SET NULL',
+  })
   @JoinColumn({ name: 'clientId', referencedColumnName: 'id' })
-  klient: Client;
+  client: Client;
 
   @ManyToOne(() => Supplier, (supplier) => supplier.position, {
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'supplierId', referencedColumnName: 'id' })
   dostawca: Supplier;
+
+  @ManyToOne(() => User, (user) => user.createdPosition, {
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
+  createdPosition: Supplier;
 }

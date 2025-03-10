@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { Set } from '../sets/sets.entity';
+import { Position } from 'src/position/positions.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Comment } from '../comments/comments.entity';
+import { Set } from '../sets/sets.entity';
 
 @Entity()
 export class User {
@@ -21,6 +22,9 @@ export class User {
 
   @OneToMany(() => Set, (set) => set.updatedBy)
   updatedSet: Set[];
+
+  @OneToMany(() => Position, (position) => position.createdPosition)
+  createdPosition: Set[];
 
   @OneToMany(() => Comment, (comment) => comment.createdByUser)
   comments: Comment[];

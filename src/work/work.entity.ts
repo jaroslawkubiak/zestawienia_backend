@@ -37,9 +37,9 @@ export class Work {
   @JoinColumn({ name: 'setId', referencedColumnName: 'id' })
   set: Set;
 
-  @ManyToOne(() => Client, (klient) => klient.work, {
+  @ManyToOne(() => Client, (client) => client.work, {
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'clientId', referencedColumnName: 'id' })
-  klient: Client;
+  client: Client;
 }

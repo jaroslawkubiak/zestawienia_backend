@@ -24,15 +24,15 @@ export class Client {
   @Column({ type: 'varchar', length: 100, nullable: false, unique: true })
   email: string;
 
-  @OneToMany(() => Set, (set) => set.clientId)
+  @OneToMany(() => Set, (set) => set.client)
   set: Set[];
 
-  @OneToMany(() => Position, (position) => position.klient)
+  @OneToMany(() => Position, (position) => position.client)
   position: Position[];
 
-  @OneToMany(() => Work, (work) => work.klient)
+  @OneToMany(() => Work, (work) => work.client)
   work: Work[];
 
-  @OneToMany(() => Comment, (comment) => comment.createdByKlient)
+  @OneToMany(() => Comment, (comment) => comment.createdByClient)
   comments: Comment[];
 }

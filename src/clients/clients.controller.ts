@@ -7,7 +7,7 @@ import {
   Patch,
   Post,
   UsePipes,
-  ValidationPipe
+  ValidationPipe,
 } from '@nestjs/common';
 import { ClientsService } from './clients.service';
 import { CreateClientDto, UpdateClientDto } from './dto/client.dto';

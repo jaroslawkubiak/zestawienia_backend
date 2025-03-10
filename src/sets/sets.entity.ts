@@ -19,7 +19,7 @@ export class Set {
 
   @Column({ type: 'varchar', length: 50, nullable: false })
   numer: string;
-  
+
   @Column({ type: 'varchar', length: 50, nullable: false })
   status: string;
 
@@ -38,11 +38,11 @@ export class Set {
   @Column({ type: 'varchar', length: 40, nullable: false })
   hash: string;
 
-  @ManyToOne(() => Client, (klient) => klient.set, {
+  @ManyToOne(() => Client, (client) => client.set, {
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'clientId', referencedColumnName: 'id' })
-  clientId: Client;
+  client: Client;
 
   @ManyToOne(() => User, (user) => user.createdSet, {
     onDelete: 'SET NULL',

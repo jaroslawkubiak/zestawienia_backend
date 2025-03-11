@@ -36,6 +36,7 @@ export class AuthService {
     const loggedUser: ILoggedUser = {
       accessToken: this.jwtService.sign({ username }),
       name: user.name,
+      id: user.id,
     };
 
     return loggedUser;

@@ -22,7 +22,7 @@ export class SetsService {
   findAll(): Promise<ISet[]> {
     return this.setsRepo
       .createQueryBuilder('set')
-      .leftJoin('set.client', 'client')
+      .leftJoin('set.clientId', 'client')
       .addSelect(['client.firma', 'client.email'])
       .leftJoin('set.createdBy', 'createdBy')
       .addSelect(['createdBy.name'])

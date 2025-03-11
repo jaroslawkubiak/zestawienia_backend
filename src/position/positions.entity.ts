@@ -1,5 +1,5 @@
-import { Bookmark } from 'src/bookmarks/bookmarks.entity';
-import { User } from 'src/user/user.entity';
+import { Bookmark } from '../bookmarks/bookmarks.entity';
+import { User } from '../user/user.entity';
 import {
   Column,
   Entity,
@@ -35,6 +35,9 @@ export class Position {
 
   @Column({ nullable: true })
   ilosc: number;
+
+  @Column({ nullable: true })
+  kolejnosc: number;
 
   @Column({ type: 'double', nullable: true })
   netto: number;
@@ -74,7 +77,7 @@ export class Position {
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'clientId', referencedColumnName: 'id' })
-  client: Client;
+  clientId: Client;
 
   @ManyToOne(() => Supplier, (supplier) => supplier.position, {
     onDelete: 'SET NULL',

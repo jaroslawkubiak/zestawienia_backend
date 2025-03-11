@@ -10,7 +10,7 @@ import { User } from '../user/user.entity';
 import { Position } from '../position/positions.entity';
 import { Work } from '../work/work.entity';
 import { Comment } from '../comments/comments.entity';
-import { Client } from 'src/clients/clients.entity';
+import { Client } from '../clients/clients.entity';
 
 @Entity()
 export class Set {
@@ -45,7 +45,7 @@ export class Set {
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'clientId', referencedColumnName: 'id' })
-  client: Client;
+  clientId: Client;
 
   @ManyToOne(() => User, (user) => user.createdSet, {
     onDelete: 'SET NULL',

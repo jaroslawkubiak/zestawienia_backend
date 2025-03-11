@@ -1,4 +1,4 @@
-import { Position } from 'src/position/positions.entity';
+import { Position } from '../position/positions.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Comment } from '../comments/comments.entity';
 import { Set } from '../sets/sets.entity';

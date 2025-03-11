@@ -8,7 +8,7 @@ import {
 import { Set } from '../sets/sets.entity';
 import { Position } from '../position/positions.entity';
 import { User } from '../user/user.entity';
-import { Client } from 'src/clients/clients.entity';
+import { Client } from '../clients/clients.entity';
 
 @Entity()
 export class Comment {

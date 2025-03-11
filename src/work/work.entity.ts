@@ -41,5 +41,5 @@ export class Work {
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'clientId', referencedColumnName: 'id' })
-  client: Client;
+  clientId: Client;
 }

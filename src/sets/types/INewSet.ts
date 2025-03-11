@@ -1,23 +1,15 @@
 import { IBookmark } from '../../bookmarks/IBookmark';
 
-export interface ISet {
-  id: number;
+export interface INewSet {
   numer: string;
+  clientId: number;
+  bookmarks: IBookmark[];
   status: string;
   createDate: string;
   createTimeStamp: string;
   updateDate: string;
   updateTimeStamp: string;
   hash: string;
-  bookmarks: IBookmark[];
-  clientId: {
-    firma: string;
-    email: string;
-  };
-  createdBy: {
-    name: string;
-  };
-  updatedBy: {
-    name: string;
-  };
+  createdBy: number;
+  updatedBy: number;
 }

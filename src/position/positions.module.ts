@@ -3,10 +3,10 @@ import { PositionsController } from './positions.controller';
 import { PositionsService } from './positions.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Position } from './positions.entity';
-import { Set } from 'src/sets/sets.entity';
-import { Client } from 'src/clients/clients.entity';
-import { Supplier } from 'src/suppliers/suppliers.entity';
-import { Comment } from 'src/comments/comments.entity';
+import { Set } from '../sets/sets.entity';
+import { Client } from '../clients/clients.entity';
+import { Supplier } from '../suppliers/suppliers.entity';
+import { Comment } from '../comments/comments.entity';
 
 @Module({
   imports: [

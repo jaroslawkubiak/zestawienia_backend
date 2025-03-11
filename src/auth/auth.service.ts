@@ -20,7 +20,6 @@ export class AuthService {
 
   async validateUser(loginDto: LoginDto): Promise<ILoggedUser> {
     const { username, password } = loginDto;
-    console.log(`${username} chce zalogowac sie hasłem ${password}`);
 
     const user = await this.userRepository.findOne({ where: { username } });
 

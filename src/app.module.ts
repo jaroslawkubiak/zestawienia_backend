@@ -52,7 +52,8 @@ import { WorkModule } from './work/work.module';
           Bookmark,
           Setting,
         ],
-        synchronize: true,
+        synchronize:
+          configService.get<string>('TYPEORM_SYNCHRONIZE') === 'true',
       }),
     }),
     AuthModule,

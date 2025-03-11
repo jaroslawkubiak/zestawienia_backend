@@ -11,7 +11,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { SuppliersService } from './suppliers.service';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ISupplier } from './types/ISupplier';
 import { UpdateSupplierDto, CreateSupplierDto } from './dto/supplier.dto';
 

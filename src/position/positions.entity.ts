@@ -18,16 +18,16 @@ export class Position {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
 
-  @Column({ type: 'varchar', length: 150, nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   produkt: string;
 
-  @Column({ type: 'varchar', length: 150, nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   producent: string;
 
-  @Column({ type: 'varchar', length: 150, nullable: true })
+  @Column({ type: 'varchar', length: 200, nullable: true })
   kolekcja: string;
 
-  @Column({ type: 'varchar', length: 150, nullable: true })
+  @Column({ type: 'varchar', length: 200, nullable: true })
   nrKatalogowy: string;
 
   @Column({ type: 'varchar', length: 150, nullable: true })

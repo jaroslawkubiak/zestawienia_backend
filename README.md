@@ -1,32 +1,33 @@
 TODO LIST
 
-[x] Logowanie do aplikacji, 
+[x] Logowanie do aplikacji,
 
 Zakładka zestawienia:
-  [ ] Lista zestawień klientów
+[x] Lista zestawień klientów
 
 [ ] Nowe zestawienie:
 
-[ ] imię i nazwisko klienta, email, nr zestawienia generowany autmatycznie, hash (20 znaków) do podglądu generowany automatycznie
+[x] imię i nazwisko klienta, email, nr zestawienia generowany autmatycznie, hash (20 znaków) do podglądu generowany automatycznie
 
 [ ] hash łączony z id zestawienia do podglądu dla klientów np: /:id_zestawienia/:hash_zestawienia
 [ ] statusy do zestawień: w przygotowaniu, gotowy, otwarty, zamknięty
 
 Klienci:
-  [ ] dodawanie nowych klientów
-  [ ] edycja klienta
-  [ ] usuwanie klienta
+[x] dodawanie nowych klientów
+[x] edycja klienta
+[x] usuwanie klienta
 
 Dostawcy:
-  [ ] dodawanie nowych dostawców
-  [ ] edycja dostawcy
-  [ ] usuwanie dostawcy
+[x] dodawanie nowych dostawców
+[x] edycja dostawcy
+[x] usuwanie dostawcy
 
 Ustawienia:
-  [ ] dodawanie/usuwanie produktow
-  [ ] lista kolumn widocznych w danej kategorii zestawienia (lub na stałe w kodzie)
+[ ] dodawanie/usuwanie produktow
+[ ] lista kolumn widocznych w danej kategorii zestawienia (lub na stałe w kodzie)
 
-
+Pozycje:
+[ ] dodać createBy, updateBy, CreateDate, UpdateDate, createTimestamp, updateTimestamp
 
 DB:
 [x] zestawienia nagłówek: id, nr zestawienia, id klienta, id usera, data dodania (w czytelnym formacie), created by, create date (timestamp), update by, updated date (timestamp)

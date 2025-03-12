@@ -11,7 +11,9 @@ import { SettingsService } from '../settings/settings.service';
 import { Setting } from 'src/settings/settings.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Set, User, Work, Position, Comment, Setting])],
+  imports: [
+    TypeOrmModule.forFeature([Set, User, Work, Position, Comment, Setting]),
+  ],
   controllers: [SetsController],
   providers: [SetsService, SettingsService],
 })

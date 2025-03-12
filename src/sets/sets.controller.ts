@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   UsePipes,
   ValidationPipe,
@@ -35,4 +36,16 @@ export class SetsController {
     }
     return res;
   }
+
+  @Get('/position/:setId')
+  getPositions(@Param('setId') setId: string): Promise<any[]> {
+    return this.setsService.getPositions(+setId);
+  }
+
+  @Get(':setId')
+  findSet(@Param('setId') setId: string): Promise<any[]> {
+    return this.setsService.getSet(+setId);
+  }
+
+
 }

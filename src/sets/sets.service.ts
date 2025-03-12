@@ -2,12 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository } from 'typeorm';
 import { Client } from '../clients/clients.entity';
+import { Position } from '../position/positions.entity';
 import { Setting } from '../settings/settings.entity';
 import { SettingsService } from '../settings/settings.service';
 import { User } from '../user/user.entity';
 import { NewSetDto } from './dto/NewSet.dto';
 import { Set } from './sets.entity';
 import { INewSet } from './types/INewSet';
+import { IPosition } from './types/IPosition';
 import { ISet } from './types/ISet';
 import { SetStatus } from './types/SetStatus';
 
@@ -16,6 +18,8 @@ export class SetsService {
   constructor(
     @InjectRepository(Set)
     private readonly setsRepo: Repository<Set>,
+    @InjectRepository(Position)
+    private readonly positionsRepo: Repository<Position>,
     private settingsService: SettingsService,
   ) {}
 
@@ -28,6 +32,22 @@ export class SetsService {
       .addSelect(['createdBy.name'])
       .leftJoin('set.updatedBy', 'updatedBy')
       .addSelect(['updatedBy.name'])
+      .getMany();
+  }
+
+  getSet(setId: number): Promise<ISet[]> {
+    return this.setsRepo
+      .createQueryBuilder('set')
+      .where('set.id = :id', { id: setId })
+      .leftJoin('set.clientId', 'client')
+      .addSelect(['client.firma', 'client.email'])
+      .getMany();
+  }
+
+  getPositions(setId: number): Promise<IPosition[]> {
+    return this.positionsRepo
+      .createQueryBuilder('position')
+      .where('position.set = :id', { id: setId })
       .getMany();
   }
 

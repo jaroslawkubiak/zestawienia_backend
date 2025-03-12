@@ -4,7 +4,6 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
-  CreateDateColumn,
 } from 'typeorm';
 import { Set } from '../sets/sets.entity';
 import { Position } from '../position/positions.entity';
@@ -16,17 +15,20 @@ export class Comment {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
 
-  @Column({ type: 'varchar', length: 50, nullable: false })
-  createdAt: Date;
+  @Column({ type: 'boolean', default: false })
+  readByClient: boolean;
 
-  @CreateDateColumn({ type: 'timestamp' })
-  createdAtTimestamp: Date;
-
-  @Column({ type: 'varchar', length: 10, nullable: true })
-  readed: string;
+  @Column({ type: 'boolean', default: false })
+  readByUser: boolean;
 
   @Column({ type: 'text', nullable: false })
   comment: string;
+
+  @Column({ type: 'varchar', length: 50, nullable: false })
+  createdAt: string;
+
+  @Column({ type: 'bigint', nullable: false })
+  createdAtTimestamp: number;
 
   @ManyToOne(() => Position, (position) => position.comments, {
     onDelete: 'SET NULL',

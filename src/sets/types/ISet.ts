@@ -4,10 +4,10 @@ export interface ISet {
   id: number;
   name: string;
   status: string;
-  createdAt: Date;
-  createdAtTimestamp: Date;
-  updatedAt: Date;
-  updatedAtTimestamp: Date;
+  createdAt: string;
+  createdAtTimestamp: number;
+  updatedAt: string;
+  updatedAtTimestamp: number;
   hash: string;
   bookmarks: IBookmark[];
   clientId: {

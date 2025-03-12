@@ -2,7 +2,6 @@ import { Bookmark } from '../bookmarks/bookmarks.entity';
 import { User } from '../user/user.entity';
 import {
   Column,
-  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -56,22 +55,22 @@ export class Position {
   acceptedStatus: string;
 
   @Column({ type: 'varchar', length: 50, nullable: true })
-  acceptedAt: Date;
+  acceptedAt: string;
 
-  @CreateDateColumn({ type: 'timestamp' })
-  acceptedAtTimestamp: Date;
-
-  @Column({ type: 'varchar', length: 50, nullable: false })
-  createdAt: Date;
-
-  @CreateDateColumn({ type: 'timestamp' })
-  createdAtTimestamp: Date;
+  @Column({ type: 'bigint', nullable: false })
+  acceptedAtTimestamp: number;
 
   @Column({ type: 'varchar', length: 50, nullable: false })
-  updatedAt: Date;
+  createdAt: string;
 
-  @CreateDateColumn({ type: 'timestamp' })
-  updatedAtTimestamp: Date;
+  @Column({ type: 'bigint', nullable: false })
+  createdAtTimestamp: number;
+
+  @Column({ type: 'varchar', length: 50, nullable: false })
+  updatedAt: string;
+
+  @Column({ type: 'bigint', nullable: false })
+  updatedAtTimestamp: number;
 
   @OneToMany(() => Comment, (comment) => comment.positionId)
   comments: Comment[];

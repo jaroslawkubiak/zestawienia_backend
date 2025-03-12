@@ -7,7 +7,7 @@ export class Bookmark {
   id: number;
 
   @Column({ type: 'varchar', length: 150, nullable: false })
-  nazwa: string;
+  name: string;
 
   @Column({ type: 'boolean', default: true })
   default: boolean;

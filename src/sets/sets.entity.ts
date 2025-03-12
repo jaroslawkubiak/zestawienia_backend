@@ -1,6 +1,5 @@
 import {
   Column,
-  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -19,26 +18,26 @@ export class Set {
   @Column({ type: 'varchar', length: 150, nullable: false })
   name: string;
 
-  @Column({ type: 'varchar', length: 50, nullable: false })
-  status: string;
-
-  @Column({ type: 'varchar', length: 50, nullable: false })
-  createdAt: Date;
-
-  @CreateDateColumn({ type: 'timestamp' })
-  createdAtTimestamp: Date;
-
-  @Column({ type: 'varchar', length: 50, nullable: false })
-  updatedAt: Date;
-
-  @CreateDateColumn({ type: 'timestamp' })
-  updatedAtTimestamp: Date;
-
   @Column({ type: 'varchar', length: 40, nullable: false })
   hash: string;
 
   @Column({ type: 'json', nullable: false })
-  bookmarks: any;
+  bookmarks: any;  
+
+  @Column({ type: 'varchar', length: 50, nullable: false })
+  status: string;
+
+  @Column({ type: 'varchar', length: 50, nullable: false })
+  createdAt: string;
+
+  @Column({ type: 'bigint', nullable: false })
+  createdAtTimestamp: number;
+
+  @Column({ type: 'varchar', length: 50, nullable: false })
+  updatedAt: string;
+
+  @Column({ type: 'bigint', nullable: false })
+  updatedAtTimestamp: number;
 
   @ManyToOne(() => Client, (client) => client.set, {
     onDelete: 'SET NULL',

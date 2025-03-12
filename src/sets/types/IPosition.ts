@@ -1,4 +1,6 @@
-import { User } from "src/user/user.entity";
+import { IBookmark } from 'src/bookmarks/IBookmark';
+import { ISupplier } from 'src/suppliers/types/ISupplier';
+import { IUser } from 'src/user/IUser';
 
 export interface IPosition {
   id: number;
@@ -13,12 +15,14 @@ export interface IPosition {
   pomieszczenie: string;
   link: string;
   image: string;
-  acceptedAt: Date;
-  acceptedAtTimestamp: Date;
-  createdBy: User;
-  createdAt: Date;
-  createdAtTimestamp: Date;
-  updatedBy: User;
-  updatedAt: Date;
-  updatedAtTimestamp: Date;
+  acceptedAt: string;
+  acceptedAtTimestamp: number;
+  createdAt: string;
+  createdAtTimestamp: number;
+  updatedAt: string;
+  updatedAtTimestamp: number;
+  supplierId: ISupplier;
+  bookmarkId: IBookmark;
+  createdBy: IUser;
+  updatedBy: IUser;
 }

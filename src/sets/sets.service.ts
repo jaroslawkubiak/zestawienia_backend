@@ -13,6 +13,8 @@ import { IPosition } from './types/IPosition';
 import { ISet } from './types/ISet';
 import { SetStatus } from './types/SetStatus';
 import { Observable, from } from 'rxjs';
+import { generateHash } from '../helpers/generateHash';
+import { getFormatedDate } from '../helpers/getFormatedDate';
 
 @Injectable()
 export class SetsService {
@@ -33,9 +35,9 @@ export class SetsService {
       .addSelect(['createdBy.name'])
       .leftJoin('set.updatedBy', 'updatedBy')
       .addSelect(['updatedBy.name'])
-      .orderBy('set.id', 'DESC')
       .getMany();
   }
+  //.orderBy('set.id', 'DESC')
 
   getSet(setId: number): Observable<ISet[]> {
     return from(
@@ -52,7 +54,20 @@ export class SetsService {
     return from(
       this.positionsRepo
         .createQueryBuilder('position')
-        .where('position.set = :id', { id: setId })
+        .where('position.setId = :id', { id: setId })
+        .leftJoin('position.bookmarkId', 'bookmark')
+        .addSelect(['bookmark.name', 'bookmark.id'])
+        .leftJoin('position.supplierId', 'supplier')
+        .addSelect([
+          'supplier.id',
+          'supplier.firma',
+          'supplier.imie',
+          'supplier.nazwisko',
+        ])
+        .leftJoin('position.createdBy', 'createdBy')
+        .addSelect(['createdBy.id', 'createdBy.name'])
+        .leftJoin('position.updatedBy', 'updatedBy')
+        .addSelect(['updatedBy.id', 'updatedBy.name'])
         .getMany(),
     );
   }
@@ -69,9 +84,9 @@ export class SetsService {
       hash: generateHash(),
       status: SetStatus.new,
       createdAt: getFormatedDate(),
-      createdAtTimestamp: Date.now(),
+      createdAtTimestamp: Number(Date.now()),
       updatedAt: getFormatedDate(),
-      updatedAtTimestamp: Date.now(),
+      updatedAtTimestamp: Number(Date.now()),
     };
 
     const savedSet = await this.setsRepo.save(newSet);
@@ -83,31 +98,4 @@ export class SetsService {
       updatedBy: savedSet.updatedBy.id,
     };
   }
-}
-
-function generateHash() {
-  const length = 30;
-  const characters =
-    '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  let hash = '';
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    hash += characters[randomIndex];
-  }
-
-  return hash;
-}
-
-function getFormatedDate() {
-  const now = new Date();
-  const dd = String(now.getDate()).padStart(2, '0');
-  const mm = String(now.getMonth() + 1).padStart(2, '0'); // Miesiące od 0-11
-  const yyyy = now.getFullYear();
-  const hh = String(now.getHours()).padStart(2, '0');
-  const mi = String(now.getMinutes()).padStart(2, '0');
-  const ss = String(now.getSeconds()).padStart(2, '0');
-
-  const formattedDate = `${dd}-${mm}-${yyyy} ${hh}:${mi}:${ss}`;
-
-  return formattedDate;
 }

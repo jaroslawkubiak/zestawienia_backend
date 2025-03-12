@@ -14,12 +14,12 @@ export class Supplier {
 
   @Column({ type: 'varchar', length: 50, nullable: false })
   nazwisko: string;
-
-  @Column({ type: 'varchar', length: 50, nullable: true })
-  telefon: string;
-
+  
   @Column({ type: 'varchar', length: 100, nullable: false, unique: true })
   email: string;
+  
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  telefon: string;
   
   @Column({ type: 'varchar', length: 40, nullable: false })
   hash: string;

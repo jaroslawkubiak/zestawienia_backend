@@ -34,41 +34,25 @@ export class SetsService {
   async create(createSet: NewSetDto): Promise<INewSet> {
     const freshSetNumber: Setting[] = await this.settingsService.getSetNumber();
 
-    const newSet: Partial<INewSet> = {
-      ...createSet,
-      updatedBy: createSet.createdBy,
+    const newSet: DeepPartial<Set> = {
+      numer: `${String(freshSetNumber[0].value)}/${new Date().getFullYear()}`,
+      createdBy: { id: createSet.createdBy } as DeepPartial<User>,
+      updatedBy: { id: createSet.createdBy } as DeepPartial<User>,
+      clientId: { id: createSet.clientId } as DeepPartial<Client>,
+      bookmarks: createSet.bookmarks,
       hash: generateHash(),
       status: SetStatus.new,
       createDate: getFormatedDate(),
       createTimeStamp: String(Date.now()),
       updateDate: getFormatedDate(),
       updateTimeStamp: String(Date.now()),
-      numer: `${String(freshSetNumber[0].value)}/${new Date().getFullYear()}`,
     };
 
-    const createdNewSet: DeepPartial<Set> = {
-      ...newSet,
-      createdBy: { id: createSet.createdBy } as DeepPartial<User>,
-      updatedBy: { id: createSet.createdBy } as DeepPartial<User>,
-      clientId: { id: createSet.clientId } as DeepPartial<Client>,
-    };
-
-    const savedSet = await this.setsRepo.save(createdNewSet);
-
-    if (savedSet) {
-      await this.settingsService.increaseSetNumber();
-    }
+    const savedSet = await this.setsRepo.save(newSet);
 
     return {
-      numer: savedSet.numer,
+      ...savedSet,
       clientId: savedSet.clientId.id,
-      bookmarks: savedSet.bookmarks,
-      status: savedSet.status,
-      createDate: savedSet.createDate,
-      createTimeStamp: savedSet.createTimeStamp,
-      updateDate: savedSet.updateDate,
-      updateTimeStamp: savedSet.updateTimeStamp,
-      hash: savedSet.hash,
       createdBy: savedSet.createdBy.id,
       updatedBy: savedSet.updatedBy.id,
     } as INewSet;

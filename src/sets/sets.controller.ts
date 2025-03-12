@@ -1,22 +1,24 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
-  Param,
-  Patch,
   Post,
-  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { SetsService } from './sets.service';
+import { SettingsService } from '../settings/settings.service';
 import { NewSetDto } from './dto/NewSet.dto';
+import { SetsService } from './sets.service';
 import { INewSet } from './types/INewSet';
 
+//TODO add guards
+// @UseGuards(JwtAuthGuard)
 @Controller('sets')
 export class SetsController {
-  constructor(private setsService: SetsService) {}
+  constructor(
+    private setsService: SetsService,
+    private settingsService: SettingsService,
+  ) {}
 
   @Get()
   findAll() {
@@ -25,7 +27,12 @@ export class SetsController {
 
   @Post('new')
   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
-  create(@Body() newSet: NewSetDto): Promise<INewSet> {
-    return this.setsService.create(newSet);
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  async create(@Body() newSet: NewSetDto): Promise<INewSet> {
+    const res = await this.setsService.create(newSet);
+    if (res.id) {
+      this.settingsService.increaseSetNumber();
+    }
+    return res;
   }
 }

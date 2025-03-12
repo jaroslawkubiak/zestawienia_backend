@@ -6,14 +6,12 @@ import {
   Param,
   Patch,
   Post,
-  UseGuards,
   UsePipes,
-  ValidationPipe,
+  ValidationPipe
 } from '@nestjs/common';
+import { CreateSupplierDto, UpdateSupplierDto } from './dto/supplier.dto';
 import { SuppliersService } from './suppliers.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ISupplier } from './types/ISupplier';
-import { UpdateSupplierDto, CreateSupplierDto } from './dto/supplier.dto';
 
 // TODO remove this
 // @UseGuards(JwtAuthGuard)

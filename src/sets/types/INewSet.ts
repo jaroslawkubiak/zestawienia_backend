@@ -1,6 +1,7 @@
 import { IBookmark } from '../../bookmarks/IBookmark';
 
 export interface INewSet {
+  id: number;
   numer: string;
   clientId: number;
   bookmarks: IBookmark[];

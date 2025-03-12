@@ -23,8 +23,11 @@ export class User {
   @OneToMany(() => Set, (set) => set.updatedBy)
   updatedSet: Set[];
 
-  @OneToMany(() => Position, (position) => position.createdPosition)
-  createdPosition: Set[];
+  @OneToMany(() => Position, (position) => position.createdBy)
+  createdBy: Position[];
+
+  @OneToMany(() => Position, (position) => position.updatedBy)
+  updatedBy: Position[];
 
   @OneToMany(() => Comment, (comment) => comment.createdByUser)
   comments: Comment[];

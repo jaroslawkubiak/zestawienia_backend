@@ -21,13 +21,15 @@ Dostawcy:
 [x] dodawanie nowych dostawców
 [x] edycja dostawcy
 [x] usuwanie dostawcy
+[ ] email wymagany
+[ ] hash generowany do linków
 
 Ustawienia:
 [ ] dodawanie/usuwanie produktow
 [ ] lista kolumn widocznych w danej kategorii zestawienia (lub na stałe w kodzie)
 
 Pozycje:
-[ ] dodać createBy, updateBy, CreateDate, UpdateDate, createTimestamp, updateTimestamp
+[x] dodać createBy, updateBy, CreateDate, UpdateDate, createTimestamp, updateTimestamp
 
 DB:
 [x] zestawienia nagłówek: id, nr zestawienia, id klienta, id usera, data dodania (w czytelnym formacie), created by, create date (timestamp), update by, updated date (timestamp)
@@ -35,6 +37,23 @@ DB:
 [x] users: imie, login, haslo
 [x] klienci: id, imie, nazwisko, email, inne kolumny?
 [x] komentarze: id, productid, zestawienie id, comment, createBy, createDate, date timestamp
+
+
+
+generowanie PDF! :(
+wysyłka zestawień do wybranego dostawcy, do różnych dostawców, linki z hashami dostawców i id zestawienia
+klonowanie pozycji
+
+status pozycji:
+- do wyboru (różowy)
+- zapłacony/zamóiony (zielony)
+- w trakcie wyceny (czerwony)
+
+npx typeorm-model-generator -h localhost -d zestawienia -u root -x  -e mysql
+
+
+
+
 
 pm2 start dist/main.js --name zestawienia
 pm2 save

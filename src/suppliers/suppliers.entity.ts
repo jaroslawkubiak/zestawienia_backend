@@ -18,9 +18,12 @@ export class Supplier {
   @Column({ type: 'varchar', length: 50, nullable: true })
   telefon: string;
 
-  @Column({ type: 'varchar', length: 100, nullable: true, unique: true })
+  @Column({ type: 'varchar', length: 100, nullable: false, unique: true })
   email: string;
+  
+  @Column({ type: 'varchar', length: 40, nullable: false })
+  hash: string;
 
-  @OneToMany(() => Position, (position) => position.dostawca)
+  @OneToMany(() => Position, (position) => position.supplierId)
   position: Position[];
 }

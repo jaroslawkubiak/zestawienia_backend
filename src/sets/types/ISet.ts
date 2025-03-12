@@ -2,12 +2,12 @@ import { IBookmark } from '../../bookmarks/IBookmark';
 
 export interface ISet {
   id: number;
-  numer: string;
+  name: string;
   status: string;
-  createDate: string;
-  createTimeStamp: string;
-  updateDate: string;
-  updateTimeStamp: string;
+  createdAt: Date;
+  createdAtTimestamp: Date;
+  updatedAt: Date;
+  updatedAtTimestamp: Date;
   hash: string;
   bookmarks: IBookmark[];
   clientId: {

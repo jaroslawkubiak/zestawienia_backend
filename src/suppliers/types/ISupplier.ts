@@ -3,6 +3,6 @@ export interface ISupplier {
   firma: string;
   imie: string;
   nazwisko: string;
+  email: string;
   telefon?: string;
-  email?: string;
 }

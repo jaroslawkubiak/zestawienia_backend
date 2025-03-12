@@ -12,6 +12,6 @@ export class Bookmark {
   @Column({ type: 'boolean', default: true })
   default: boolean;
 
-  @OneToMany(() => Position, (positions) => positions.bookmark)
+  @OneToMany(() => Position, (positions) => positions.bookmarkId)
   position: Position[];
 }

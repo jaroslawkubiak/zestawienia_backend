@@ -4,6 +4,7 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  CreateDateColumn,
 } from 'typeorm';
 import { Set } from '../sets/sets.entity';
 import { Position } from '../position/positions.entity';
@@ -16,10 +17,10 @@ export class Comment {
   id: number;
 
   @Column({ type: 'varchar', length: 50, nullable: false })
-  createDate: string;
+  createdAt: Date;
 
-  @Column({ type: 'varchar', length: 50, nullable: false })
-  createTimeStamp: string;
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAtTimestamp: Date;
 
   @Column({ type: 'varchar', length: 10, nullable: true })
   readed: string;
@@ -27,17 +28,11 @@ export class Comment {
   @Column({ type: 'text', nullable: false })
   comment: string;
 
-  @ManyToOne(() => Set, (set) => set.comments, {
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn({ name: 'setId', referencedColumnName: 'id' })
-  set: Set;
-
   @ManyToOne(() => Position, (position) => position.comments, {
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'positionId', referencedColumnName: 'id' })
-  position: Position;
+  positionId: Position;
 
   @ManyToOne(() => User, (user) => user.comments, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })

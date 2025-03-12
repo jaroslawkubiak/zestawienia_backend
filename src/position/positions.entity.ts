@@ -2,6 +2,7 @@ import { Bookmark } from '../bookmarks/bookmarks.entity';
 import { User } from '../user/user.entity';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -36,58 +37,70 @@ export class Position {
   @Column({ nullable: true })
   ilosc: number;
 
-  @Column({ nullable: true })
-  kolejnosc: number;
-
   @Column({ type: 'double', nullable: true })
   netto: number;
 
-  @Column({ type: 'double', nullable: true })
-  brutto: number;
+  @Column({ nullable: true })
+  kolejnosc: number;
 
-  @Column({ type: 'varchar', length: 200, nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   pomieszczenie: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'text', nullable: true })
   link: string;
 
   @Column({ type: 'varchar', length: 200, nullable: true })
   image: string;
 
   @Column({ type: 'varchar', length: 50, nullable: true })
-  acceptedDate: string;
+  acceptedStatus: string;
 
   @Column({ type: 'varchar', length: 50, nullable: true })
-  acceptedTimeStamp: string;
+  acceptedAt: Date;
 
-  @OneToMany(() => Comment, (comment) => comment.set)
+  @CreateDateColumn({ type: 'timestamp' })
+  acceptedAtTimestamp: Date;
+
+  @Column({ type: 'varchar', length: 50, nullable: false })
+  createdAt: Date;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAtTimestamp: Date;
+
+  @Column({ type: 'varchar', length: 50, nullable: false })
+  updatedAt: Date;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  updatedAtTimestamp: Date;
+
+  @OneToMany(() => Comment, (comment) => comment.positionId)
   comments: Comment[];
 
   @ManyToOne(() => Set, (set) => set.position, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'setId', referencedColumnName: 'id' })
-  set: Set;
+  setId: Set;
 
   @ManyToOne(() => Bookmark, (bookmark) => bookmark.position)
   @JoinColumn({ name: 'bookmarkId', referencedColumnName: 'id' })
-  bookmark: Bookmark;
-
-  @ManyToOne(() => Client, (client) => client.position, {
-    onDelete: 'SET NULL',
-  })
-  @JoinColumn({ name: 'clientId', referencedColumnName: 'id' })
-  clientId: Client;
+  bookmarkId: Bookmark;
 
   @ManyToOne(() => Supplier, (supplier) => supplier.position, {
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'supplierId', referencedColumnName: 'id' })
-  dostawca: Supplier;
+  supplierId: Supplier;
 
-  @ManyToOne(() => User, (user) => user.createdPosition, {
+  @ManyToOne(() => User, (user) => user.createdSet, {
     onDelete: 'SET NULL',
   })
-  @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
-  createdPosition: Supplier;
+  @JoinColumn({ name: 'createdBy', referencedColumnName: 'id' })
+  createdBy: User;
+
+  @ManyToOne(() => User, (user) => user.updatedSet, {
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'updatedBy', referencedColumnName: 'id' })
+  updatedBy: User;
 }

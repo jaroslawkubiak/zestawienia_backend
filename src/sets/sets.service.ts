@@ -12,6 +12,7 @@ import { INewSet } from './types/INewSet';
 import { IPosition } from './types/IPosition';
 import { ISet } from './types/ISet';
 import { SetStatus } from './types/SetStatus';
+import { Observable, from } from 'rxjs';
 
 @Injectable()
 export class SetsService {
@@ -32,40 +33,45 @@ export class SetsService {
       .addSelect(['createdBy.name'])
       .leftJoin('set.updatedBy', 'updatedBy')
       .addSelect(['updatedBy.name'])
+      .orderBy('set.id', 'DESC')
       .getMany();
   }
 
-  getSet(setId: number): Promise<ISet[]> {
-    return this.setsRepo
-      .createQueryBuilder('set')
-      .where('set.id = :id', { id: setId })
-      .leftJoin('set.clientId', 'client')
-      .addSelect(['client.firma', 'client.email'])
-      .getMany();
+  getSet(setId: number): Observable<ISet[]> {
+    return from(
+      this.setsRepo
+        .createQueryBuilder('set')
+        .where('set.id = :id', { id: setId })
+        .leftJoin('set.clientId', 'client')
+        .addSelect(['client.firma', 'client.email'])
+        .getMany(),
+    );
   }
 
-  getPositions(setId: number): Promise<IPosition[]> {
-    return this.positionsRepo
-      .createQueryBuilder('position')
-      .where('position.set = :id', { id: setId })
-      .getMany();
+  getPositions(setId: number): Observable<IPosition[]> {
+    return from(
+      this.positionsRepo
+        .createQueryBuilder('position')
+        .where('position.set = :id', { id: setId })
+        .getMany(),
+    );
   }
 
-  async create(createSet: NewSetDto): Promise<INewSet> {
+  async create(createSet: NewSetDto): Promise<any> {
     const freshSetNumber: Setting[] = await this.settingsService.getSetNumber();
 
     const newSet: DeepPartial<Set> = {
-      numer: `${String(freshSetNumber[0].value)}/${new Date().getFullYear()}`,
+      name: `${String(freshSetNumber[0].value)}/${new Date().getFullYear()}`,
       createdBy: { id: createSet.createdBy } as DeepPartial<User>,
       updatedBy: { id: createSet.createdBy } as DeepPartial<User>,
       clientId: { id: createSet.clientId } as DeepPartial<Client>,
       bookmarks: createSet.bookmarks,
       hash: generateHash(),
       status: SetStatus.new,
-      createDate: getFormatedDate(),
-      createTimeStamp: String(Date.now()),
-      updateDate: getFormatedDate(),
-      updateTimeStamp: String(Date.now()),
+      createdAt: getFormatedDate(),
+      createdAtTimestamp: Date.now(),
+      updatedAt: getFormatedDate(),
+      updatedAtTimestamp: Date.now(),
     };
 
     const savedSet = await this.setsRepo.save(newSet);
@@ -75,7 +81,7 @@ export class SetsService {
       clientId: savedSet.clientId.id,
       createdBy: savedSet.createdBy.id,
       updatedBy: savedSet.updatedBy.id,
-    } as INewSet;
+    };
   }
 }
 

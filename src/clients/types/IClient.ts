@@ -3,6 +3,6 @@ export interface IClient {
   firma: string;
   imie: string;
   nazwisko: string;
-  telefon?: string;
   email: string;
+  telefon?: string;
 }

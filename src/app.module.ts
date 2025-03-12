@@ -23,8 +23,6 @@ import { Supplier } from './suppliers/suppliers.entity';
 import { SuppliersModule } from './suppliers/suppliers.module';
 import { User } from './user/user.entity';
 import { UserModule } from './user/user.module';
-import { Work } from './work/work.entity';
-import { WorkModule } from './work/work.module';
 
 @Module({
   imports: [
@@ -47,7 +45,6 @@ import { WorkModule } from './work/work.module';
           Client,
           Comment,
           Position,
-          Work,
           Product,
           Bookmark,
           Setting,
@@ -62,7 +59,6 @@ import { WorkModule } from './work/work.module';
     SuppliersModule,
     ClientsModule,
     CommentsModule,
-    WorkModule,
     PositionsModule,
     UserModule,
     BookmarksModule,

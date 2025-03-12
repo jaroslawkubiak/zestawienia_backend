@@ -1,3 +1,5 @@
+import { User } from "src/user/user.entity";
+
 export interface IPosition {
   id: number;
   produkt: string;
@@ -6,12 +8,17 @@ export interface IPosition {
   nrKatalogowy: string;
   kolor: string;
   ilosc: number;
-  kolejnosc: number;
   netto: number;
-  brutto: number;
+  kolejnosc: number;
   pomieszczenie: string;
   link: string;
   image: string;
-  acceptedDate: string;
-  acceptedTimeStamp: string;
+  acceptedAt: Date;
+  acceptedAtTimestamp: Date;
+  createdBy: User;
+  createdAt: Date;
+  createdAtTimestamp: Date;
+  updatedBy: User;
+  updatedAt: Date;
+  updatedAtTimestamp: Date;
 }

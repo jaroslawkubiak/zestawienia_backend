@@ -4,7 +4,6 @@ import { SetsService } from './sets.service';
 import { Set } from './sets.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../user/user.entity';
-import { Work } from '../work/work.entity';
 import { Position } from '../position/positions.entity';
 import { Comment } from '../comments/comments.entity';
 import { SettingsService } from '../settings/settings.service';
@@ -12,7 +11,7 @@ import { Setting } from 'src/settings/settings.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Set, User, Work, Position, Comment, Setting]),
+    TypeOrmModule.forFeature([Set, User, Position, Comment, Setting]),
   ],
   controllers: [SetsController],
   providers: [SetsService, SettingsService],

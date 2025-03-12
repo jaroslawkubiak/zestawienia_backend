@@ -2,7 +2,6 @@ import { Comment } from '../comments/comments.entity';
 import { Set } from '../sets/sets.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Position } from '../position/positions.entity';
-import { Work } from '../work/work.entity';
 
 @Entity('')
 export class Client {
@@ -26,12 +25,6 @@ export class Client {
 
   @OneToMany(() => Set, (set) => set.clientId)
   set: Set[];
-
-  @OneToMany(() => Position, (position) => position.clientId)
-  position: Position[];
-
-  @OneToMany(() => Work, (work) => work.clientId)
-  work: Work[];
 
   @OneToMany(() => Comment, (comment) => comment.createdByClient)
   comments: Comment[];

@@ -1,39 +1,38 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
+  CreateDateColumn,
+  Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
-import { User } from '../user/user.entity';
-import { Position } from '../position/positions.entity';
-import { Work } from '../work/work.entity';
-import { Comment } from '../comments/comments.entity';
 import { Client } from '../clients/clients.entity';
+import { Position } from '../position/positions.entity';
+import { User } from '../user/user.entity';
 
 @Entity()
 export class Set {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
 
-  @Column({ type: 'varchar', length: 50, nullable: false })
-  numer: string;
+  @Column({ type: 'varchar', length: 150, nullable: false })
+  name: string;
 
   @Column({ type: 'varchar', length: 50, nullable: false })
   status: string;
 
   @Column({ type: 'varchar', length: 50, nullable: false })
-  createDate: string;
+  createdAt: Date;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAtTimestamp: Date;
 
   @Column({ type: 'varchar', length: 50, nullable: false })
-  createTimeStamp: string;
+  updatedAt: Date;
 
-  @Column({ type: 'varchar', length: 50, nullable: false })
-  updateDate: string;
-
-  @Column({ type: 'varchar', length: 50, nullable: false })
-  updateTimeStamp: string;
+  @CreateDateColumn({ type: 'timestamp' })
+  updatedAtTimestamp: Date;
 
   @Column({ type: 'varchar', length: 40, nullable: false })
   hash: string;
@@ -59,12 +58,6 @@ export class Set {
   @JoinColumn({ name: 'updatedBy', referencedColumnName: 'id' })
   updatedBy: User;
 
-  @OneToMany(() => Position, (position) => position.set)
+  @OneToMany(() => Position, (position) => position.setId)
   position: Position[];
-
-  @OneToMany(() => Work, (praca) => praca.set)
-  work: Work[];
-
-  @OneToMany(() => Comment, (comment) => comment.set)
-  comments: Comment[];
 }

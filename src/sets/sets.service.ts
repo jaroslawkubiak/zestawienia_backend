@@ -73,10 +73,7 @@ export class SetsService {
   }
 
   async create(createSet: NewSetDto): Promise<any> {
-    const freshSetNumber: Setting[] = await this.settingsService.getSetNumber();
-
     const newSet: DeepPartial<Set> = {
-      name: `${String(freshSetNumber[0].value)}/${new Date().getFullYear()}`,
       createdBy: { id: createSet.createdBy } as DeepPartial<User>,
       updatedBy: { id: createSet.createdBy } as DeepPartial<User>,
       clientId: { id: createSet.clientId } as DeepPartial<Client>,

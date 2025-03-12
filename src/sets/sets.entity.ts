@@ -18,7 +18,7 @@ export class Set {
   @Column({ type: 'varchar', length: 150, nullable: false })
   name: string;
 
-  @Column({ type: 'varchar', length: 40, nullable: false })
+  @Column({ type: 'varchar', length: 40, nullable: false, unique: true })
   hash: string;
 
   @Column({ type: 'json', nullable: false })

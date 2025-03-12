@@ -20,7 +20,7 @@ export class SuppliersController {
   constructor(private suppliersService: SuppliersService) {}
 
   @Get()
-  findAll() {
+  findAll(): Promise<ISupplier[]> {
     return this.suppliersService.findAll();
   }
 

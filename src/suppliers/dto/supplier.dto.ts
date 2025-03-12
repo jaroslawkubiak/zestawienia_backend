@@ -14,12 +14,16 @@ export class CreateSupplierDto {
   nazwisko: string;
 
   @IsString()
+  @IsNotEmpty()
+  email: string;
+
+  @IsString()
   @IsOptional()
   telefon: string;
 
   @IsString()
   @IsOptional()
-  email: string;
+  hash: string;
 }
 
 export class UpdateSupplierDto {
@@ -42,4 +46,8 @@ export class UpdateSupplierDto {
   @IsString()
   @IsOptional()
   email?: string;
+
+  @IsString()
+  @IsOptional()
+  hash?: string;
 }

@@ -21,7 +21,7 @@ export class Supplier {
   @Column({ type: 'varchar', length: 50, nullable: true })
   telefon: string;
   
-  @Column({ type: 'varchar', length: 40, nullable: false })
+  @Column({ type: 'varchar', length: 40, nullable: false, unique: true })
   hash: string;
 
   @OneToMany(() => Position, (position) => position.supplierId)

@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { CreateSupplierDto, UpdateSupplierDto } from './dto/supplier.dto';
 import { Supplier } from './suppliers.entity';
 import { ISupplier } from './types/ISupplier';
+import { generateHash } from '../helpers/generateHash';
 
 @Injectable()
 export class SuppliersService {
@@ -25,8 +26,9 @@ export class SuppliersService {
   }
 
   create(createSupplierDto: CreateSupplierDto): Promise<ISupplier> {
-    const newSupplier = this.suppliersRepo.create(createSupplierDto);
-    return this.suppliersRepo.save(newSupplier);
+    const newSupplier = { ...createSupplierDto, hash: generateHash() };
+    const res = this.suppliersRepo.create(newSupplier);
+    return this.suppliersRepo.save(res);
   }
 
   async update(

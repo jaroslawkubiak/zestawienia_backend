@@ -37,12 +37,13 @@ DB:
 [x] users: imie, login, haslo
 [x] klienci: id, imie, nazwisko, email, inne kolumny?
 [x] komentarze: id, productid, zestawienie id, comment, createBy, createDate, date timestamp
-
+[ ] rejestracja wysłanych emaili do klientów i dostawców
 
 
 generowanie PDF! :(
 wysyłka zestawień do wybranego dostawcy, do różnych dostawców, linki z hashami dostawców i id zestawienia
 klonowanie pozycji
+
 
 status pozycji:
 - do wyboru (różowy)

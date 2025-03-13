@@ -27,7 +27,6 @@ export class SetsController {
 
   @Post('new')
   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
-  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   create(@Body() newSet: NewSetDto): Promise<INewSet> {
     return this.setsService.create(newSet);
   }

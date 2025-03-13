@@ -3,8 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository } from 'typeorm';
 import { Client } from '../clients/clients.entity';
 import { Position } from '../position/positions.entity';
-import { Setting } from '../settings/settings.entity';
-import { SettingsService } from '../settings/settings.service';
 import { User } from '../user/user.entity';
 import { NewSetDto } from './dto/NewSet.dto';
 import { Set } from './sets.entity';
@@ -23,7 +21,6 @@ export class SetsService {
     private readonly setsRepo: Repository<Set>,
     @InjectRepository(Position)
     private readonly positionsRepo: Repository<Position>,
-    private settingsService: SettingsService,
   ) {}
 
   findAll(): Promise<ISet[]> {
@@ -46,6 +43,10 @@ export class SetsService {
         .where('set.id = :id', { id: setId })
         .leftJoin('set.clientId', 'client')
         .addSelect(['client.firma', 'client.email'])
+        .leftJoin('set.createdBy', 'createdBy')
+        .addSelect(['createdBy.name'])
+        .leftJoin('set.updatedBy', 'updatedBy')
+        .addSelect(['updatedBy.name'])
         .getMany(),
     );
   }
@@ -72,12 +73,12 @@ export class SetsService {
     );
   }
 
-  async create(createSet: NewSetDto): Promise<any> {
+  async create(createSet: NewSetDto): Promise<INewSet> {
     const newSet: DeepPartial<Set> = {
+      ...createSet,
       createdBy: { id: createSet.createdBy } as DeepPartial<User>,
       updatedBy: { id: createSet.createdBy } as DeepPartial<User>,
       clientId: { id: createSet.clientId } as DeepPartial<Client>,
-      bookmarks: createSet.bookmarks,
       hash: generateHash(),
       status: SetStatus.new,
       createdAt: getFormatedDate(),
@@ -91,8 +92,8 @@ export class SetsService {
     return {
       ...savedSet,
       clientId: savedSet.clientId.id,
-      createdBy: savedSet.createdBy.id,
-      updatedBy: savedSet.updatedBy.id,
+      createdBy: savedSet.createdBy,
+      updatedBy: savedSet.updatedBy,
     };
   }
 }

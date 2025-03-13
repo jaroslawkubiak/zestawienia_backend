@@ -3,7 +3,7 @@ import { IsNumber, IsString, ValidateNested } from 'class-validator';
 
 export class NewSetDto {
   @IsString()
-  numer: string;
+  name: string;
 
   @IsNumber()
   clientId: number;
@@ -21,5 +21,5 @@ class BookmarkDto {
   id: number;
 
   @IsString()
-  nazwa: string;
+  name: string;
 }

@@ -23,6 +23,8 @@ import { Supplier } from './suppliers/suppliers.entity';
 import { SuppliersModule } from './suppliers/suppliers.module';
 import { User } from './user/user.entity';
 import { UserModule } from './user/user.module';
+import { ErrorsModule } from './errors/errors.module';
+import { Errors } from './errors/errors.entity';
 
 @Module({
   imports: [
@@ -48,6 +50,7 @@ import { UserModule } from './user/user.module';
           Product,
           Bookmark,
           Setting,
+          Errors,
         ],
         synchronize:
           configService.get<string>('TYPEORM_SYNCHRONIZE') === 'true',
@@ -63,6 +66,7 @@ import { UserModule } from './user/user.module';
     UserModule,
     BookmarksModule,
     SettingsModule,
+    ErrorsModule,
   ],
   controllers: [AppController, LoginController],
   providers: [AppService],

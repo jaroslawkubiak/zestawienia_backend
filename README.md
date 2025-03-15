@@ -4,8 +4,18 @@ TODO LIST
 
 Zakładka zestawienia:
 [x] Lista zestawień klientów
+[ ] checkbox do pokaza statusu zamkniętych zestawień (domyślnie zamknięte nie będą pobierane)
 
-[ ] Nowe zestawienie:
+Nowe zestawienie
+[x] dodawanie nowego zestawienia
+[ ] zapis pozycji do db
+
+Edycja zestawienia:
+[ ] zmiana statusu
+[ ] zmiana ilości zakłądek (bookmarks)
+[ ] obiekt z szerokościami zapisywany na etapie dodawania nowego zestawienia z domyślnymi wartościami
+[ ] odczyt i zapis szerokości kolumn dla każdej zakładki i dla każdego zestawienia
+[ ] dołączyć listę szerokości do obiektu bookmarks w zestwieniach
 
 [x] imię i nazwisko klienta, email, nr zestawienia generowany autmatycznie, hash (20 znaków) do podglądu generowany automatycznie
 
@@ -21,8 +31,8 @@ Dostawcy:
 [x] dodawanie nowych dostawców
 [x] edycja dostawcy
 [x] usuwanie dostawcy
-[ ] email wymagany
-[ ] hash generowany do linków
+[x] email wymagany
+[x] hash generowany do linków
 
 Ustawienia:
 [ ] dodawanie/usuwanie produktow
@@ -39,22 +49,23 @@ DB:
 [x] komentarze: id, productid, zestawienie id, comment, createBy, createDate, date timestamp
 [ ] rejestracja wysłanych emaili do klientów i dostawców
 
-
 generowanie PDF! :(
 wysyłka zestawień do wybranego dostawcy, do różnych dostawców, linki z hashami dostawców i id zestawienia
 klonowanie pozycji
 
+akcje: na liście pozycji
+
+- usunięcie
+- klonowanie pozycji (pytanie czy bezpośrednio pod spodem czy na końcu listy)
 
 status pozycji:
+
 - do wyboru (różowy)
 - zapłacony/zamóiony (zielony)
 - w trakcie wyceny (czerwony)
+  to może się przydać Conditional Style
 
-npx typeorm-model-generator -h localhost -d zestawienia -u root -x  -e mysql
-
-
-
-
+npx typeorm-model-generator -h localhost -d zestawienia -u root -x -e mysql
 
 pm2 start dist/main.js --name zestawienia
 pm2 save

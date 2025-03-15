@@ -11,13 +11,16 @@ export interface ISet {
   hash: string;
   bookmarks: IBookmark[];
   clientId: {
+    id: number;
     firma: string;
     email: string;
   };
   createdBy: {
+    id: number;
     name: string;
   };
   updatedBy: {
+    id: number;
     name: string;
   };
 }

@@ -5,5 +5,5 @@ export interface ISupplier {
   nazwisko: string;
   email: string;
   telefon?: string;
-  hash: string;
+  hash?: string;
 }

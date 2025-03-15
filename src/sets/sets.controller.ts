@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   UsePipes,
   ValidationPipe,
@@ -29,6 +30,12 @@ export class SetsController {
   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   create(@Body() newSet: NewSetDto): Promise<INewSet> {
     return this.setsService.create(newSet);
+  }
+
+  @Patch(':id')
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  updateSet(@Param('id') id: string, @Body() updateSetDto: any): Promise<any> {
+    return this.setsService.update(+id, updateSetDto);
   }
 
   @Get('/position/:setId')

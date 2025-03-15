@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Observable, from } from 'rxjs';
 import { DeepPartial, Repository } from 'typeorm';
@@ -13,6 +13,7 @@ import { INewSet } from './types/INewSet';
 import { IPosition } from './types/IPosition';
 import { ISet } from './types/ISet';
 import { SetStatus } from './types/SetStatus';
+import { ErrorsService } from '../errors/errors.service';
 
 @Injectable()
 export class SetsService {
@@ -21,6 +22,7 @@ export class SetsService {
     private readonly setsRepo: Repository<Set>,
     @InjectRepository(Position)
     private readonly positionsRepo: Repository<Position>,
+    private errorsService: ErrorsService,
   ) {}
 
   findAll(): Promise<ISet[]> {
@@ -43,7 +45,7 @@ export class SetsService {
       .leftJoin('set.clientId', 'client')
       .addSelect(['client.id', 'client.firma', 'client.email'])
       .leftJoin('set.createdBy', 'createdBy')
-      .addSelect(['createdBy.id','createdBy.name'])
+      .addSelect(['createdBy.id', 'createdBy.name'])
       .leftJoin('set.updatedBy', 'updatedBy')
       .addSelect(['updatedBy.id', 'updatedBy.name']);
 
@@ -74,26 +76,42 @@ export class SetsService {
   }
 
   async create(createSet: NewSetDto): Promise<INewSet> {
-    const newSet: DeepPartial<Set> = {
-      ...createSet,
-      createdBy: { id: createSet.createdBy } as DeepPartial<User>,
-      updatedBy: { id: createSet.createdBy } as DeepPartial<User>,
-      clientId: { id: createSet.clientId } as DeepPartial<Client>,
-      hash: generateHash(),
-      status: SetStatus.new,
-      createdAt: getFormatedDate(),
-      createdAtTimestamp: Number(Date.now()),
-      updatedAt: getFormatedDate(),
-      updatedAtTimestamp: Number(Date.now()),
-    };
+    try {
+      const newSet: DeepPartial<Set> = {
+        ...createSet,
+        createdBy: { id: createSet.createdBy } as DeepPartial<User>,
+        updatedBy: { id: createSet.createdBy } as DeepPartial<User>,
+        clientId: { id: createSet.clientId } as DeepPartial<Client>,
+        hash: generateHash(),
+        status: SetStatus.new,
+        createdAt: getFormatedDate(),
+        createdAtTimestamp: Number(Date.now()),
+        updatedAt: getFormatedDate(),
+        updatedAtTimestamp: Number(Date.now()),
+      };
 
-    const savedSet = await this.setsRepo.save(newSet);
+      const savedSet = await this.setsRepo.save(newSet);
 
-    return {
-      ...savedSet,
-      clientId: savedSet.clientId.id,
-      createdBy: savedSet.createdBy,
-      updatedBy: savedSet.updatedBy,
-    };
+      return {
+        ...savedSet,
+        clientId: savedSet.clientId.id,
+        createdBy: savedSet.createdBy,
+        updatedBy: savedSet.updatedBy,
+      };
+    } catch (error) {
+      await this.errorsService.prepareError(error);
+
+      throw new InternalServerErrorException({
+        message: 'Błąd bazy danych',
+        error: error.message,
+        details: error,
+      });
+    }
+  }
+
+  async update(id: number, updateSetDto: any): Promise<any> {
+    console.log(`##### updateSetDto service id=${id} #####`);
+    console.log(updateSetDto);
+    return;
   }
 }

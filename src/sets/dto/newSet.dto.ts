@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsNumber, IsString, ValidateNested } from 'class-validator';
+import { BookmarkDto } from './bookmark.dto';
 
 export class NewSetDto {
   @IsString()
@@ -14,12 +15,4 @@ export class NewSetDto {
   @ValidateNested()
   @Type(() => BookmarkDto)
   bookmarks: BookmarkDto[];
-}
-
-class BookmarkDto {
-  @IsNumber()
-  id: number;
-
-  @IsString()
-  name: string;
 }

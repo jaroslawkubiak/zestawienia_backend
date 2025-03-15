@@ -16,6 +16,7 @@ Edycja zestawienia:
 [ ] obiekt z szerokościami zapisywany na etapie dodawania nowego zestawienia z domyślnymi wartościami
 [ ] odczyt i zapis szerokości kolumn dla każdej zakładki i dla każdego zestawienia
 [ ] dołączyć listę szerokości do obiektu bookmarks w zestwieniach
+[ ] zmiana pozycji poprzed drag and drop i update property kolejność w db
 
 [x] imię i nazwisko klienta, email, nr zestawienia generowany autmatycznie, hash (20 znaków) do podglądu generowany automatycznie
 

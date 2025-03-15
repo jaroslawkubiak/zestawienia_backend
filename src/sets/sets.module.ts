@@ -6,14 +6,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../user/user.entity';
 import { Position } from '../position/positions.entity';
 import { Comment } from '../comments/comments.entity';
-import { SettingsService } from '../settings/settings.service';
-import { Setting } from 'src/settings/settings.entity';
+import { ErrorsModule } from '../errors/errors.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Set, User, Position, Comment, Setting]),
+    TypeOrmModule.forFeature([Set, User, Position, Comment, Error]),
+    ErrorsModule,
   ],
   controllers: [SetsController],
-  providers: [SetsService, SettingsService],
+  providers: [SetsService],
 })
 export class SetsModule {}

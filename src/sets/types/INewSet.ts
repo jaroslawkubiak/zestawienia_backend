@@ -1,4 +1,4 @@
-import { User } from 'src/user/user.entity';
+import { User } from '../../user/user.entity';
 import { IBookmark } from '../../bookmarks/IBookmark';
 
 export interface INewSet {

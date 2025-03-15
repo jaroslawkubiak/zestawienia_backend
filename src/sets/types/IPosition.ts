@@ -1,6 +1,6 @@
-import { IBookmark } from 'src/bookmarks/IBookmark';
-import { ISupplier } from 'src/suppliers/types/ISupplier';
-import { IUser } from 'src/user/IUser';
+import { IBookmark } from '../../bookmarks/IBookmark';
+import { ISupplier } from '../../suppliers/types/ISupplier';
+import { IUser } from '../../user/IUser';
 
 export interface IPosition {
   id: number;

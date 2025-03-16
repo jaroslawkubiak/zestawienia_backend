@@ -8,6 +8,9 @@ export class ErrorDto {
   message: string;
 
   @IsString()
+  url: string;
+
+  @IsString()
   error: string;
 
   @IsString()

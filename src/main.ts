@@ -1,7 +1,9 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { QueryFailedExceptionFilter } from './filters/exceptions.filter';
-import { ValidationPipe } from '@nestjs/common';
+import { ErrorsService } from './errors/errors.service';
+import { QueryFailedExceptionFilter } from './filters/queryFailedException.filter';
+import { ValidationExceptionFilter } from './filters/validationException.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,6 +22,8 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+  app.useGlobalFilters(new ValidationExceptionFilter(app.get(ErrorsService)));
 
   app.useGlobalFilters(new QueryFailedExceptionFilter());
 

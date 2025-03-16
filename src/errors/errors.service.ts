@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { Errors } from './errors.entity';
-import { IError } from './types/IError';
-import { ErrorDto } from './dto/error.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { getFormatedDate } from 'src/helpers/getFormatedDate';
+import { ErrorDto } from './dto/error.dto';
+import { Errors } from './errors.entity';
+import { IError } from './types/IError';
 
 @Injectable()
 export class ErrorsService {
@@ -24,17 +23,6 @@ export class ErrorsService {
   }
 
   async prepareError(error: any) {
-    const newError = {
-      type: 'MySQL',
-      message: 'Błąd bazy danych',
-      error: error.message,
-      query: error.query || null,
-      parameters: error.parameters[0] || null,
-      sql: error.driverError.sql || null,
-      createdAt: getFormatedDate(),
-      createdAtTimestamp: Number(Date.now()),
-    };
-
-    await this.create(newError);
+    await this.create(error);
   }
 }

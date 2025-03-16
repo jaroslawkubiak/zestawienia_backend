@@ -12,6 +12,9 @@ export class Errors {
   @Column({ type: 'varchar', length: 255, nullable: false })
   message: string;
 
+  @Column({ type: 'varchar', length: 200, nullable: false })
+  url: string;
+
   @Column({ type: 'text', nullable: false })
   error: string;
 

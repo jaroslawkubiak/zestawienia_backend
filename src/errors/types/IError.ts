@@ -1,7 +1,7 @@
 export interface IError {
-  id: number;
   type: string;
   message: string;
+  url: string;
   error: string;
   query?: string;
   parameters?: string;

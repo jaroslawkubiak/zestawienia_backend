@@ -6,9 +6,9 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Response } from 'express';
+import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
 import { getFormatedDate } from '../helpers/getFormatedDate';
-import { ErrorDto } from '../errors/dto/error.dto';
 
 @Catch(BadRequestException)
 export class ValidationExceptionFilter implements ExceptionFilter {
@@ -33,9 +33,9 @@ export class ValidationExceptionFilter implements ExceptionFilter {
       };
 
       await this.errorsService.prepareError(newError);
-      console.log('Błąd zapisany w bazie ✅');
+      console.log('✅✅✅ Błąd zapisany w bazie');
     } catch (dbError) {
-      console.error('❌ Błąd podczas zapisu błędu w bazie:', dbError);
+      console.error('❌❌❌ Błąd podczas zapisu błędu w bazie:', dbError);
     }
 
     response.status(HttpStatus.BAD_REQUEST).json({

@@ -1,4 +1,4 @@
-import { IBookmark } from '../../bookmarks/IBookmark';
+import { IBookmark } from '../../bookmarks/types/IBookmark';
 
 export interface ISet {
   id: number;

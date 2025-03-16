@@ -1,4 +1,4 @@
-import { IBookmark } from '../../bookmarks/IBookmark';
+import { IBookmark } from '../../bookmarks/types/IBookmark';
 import { ISupplier } from '../../suppliers/types/ISupplier';
 import { IUser } from '../../user/IUser';
 

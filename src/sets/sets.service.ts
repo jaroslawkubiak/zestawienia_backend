@@ -1,29 +1,38 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Request } from 'express';
 import { Observable, from } from 'rxjs';
 import { DeepPartial, Repository } from 'typeorm';
 import { Client } from '../clients/clients.entity';
+import { ErrorDto } from '../errors/dto/error.dto';
+import { ErrorsService } from '../errors/errors.service';
 import { generateHash } from '../helpers/generateHash';
 import { getFormatedDate } from '../helpers/getFormatedDate';
-import { Position } from '../position/positions.entity';
+import { PositionsService } from '../position/positions.service';
 import { User } from '../user/user.entity';
 import { NewSetDto } from './dto/NewSet.dto';
+import { UpdateSetAndPositionDto } from './dto/updateSetAndPosition.dto';
 import { Set } from './sets.entity';
 import { INewSet } from './types/INewSet';
-import { IPosition } from './types/IPosition';
 import { ISet } from './types/ISet';
 import { SetStatus } from './types/SetStatus';
-import { ErrorsService } from '../errors/errors.service';
 
 @Injectable()
 export class SetsService {
   constructor(
     @InjectRepository(Set)
     private readonly setsRepo: Repository<Set>,
-    @InjectRepository(Position)
-    private readonly positionsRepo: Repository<Position>,
-    private errorsService: ErrorsService,
+    private readonly errorsService: ErrorsService,
+    private readonly positionsService: PositionsService,
   ) {}
+
+  findOne(id: number): Promise<ISet> {
+    return this.setsRepo.findOneBy({ id });
+  }
 
   findAll(): Promise<ISet[]> {
     return this.setsRepo
@@ -53,29 +62,7 @@ export class SetsService {
     return from(query.getMany());
   }
 
-  getPositions(setId: number): Observable<IPosition[]> {
-    const query = this.positionsRepo
-      .createQueryBuilder('position')
-      .where('position.setId = :id', { id: setId })
-      .leftJoin('position.bookmarkId', 'bookmark')
-      .addSelect(['bookmark.name', 'bookmark.id'])
-      .leftJoin('position.supplierId', 'supplier')
-      .addSelect([
-        'supplier.id',
-        'supplier.firma',
-        'supplier.imie',
-        'supplier.nazwisko',
-      ])
-      .leftJoin('position.createdBy', 'createdBy')
-      .addSelect(['createdBy.id', 'createdBy.name'])
-      .leftJoin('position.updatedBy', 'updatedBy')
-      .addSelect(['updatedBy.id', 'updatedBy.name']);
-
-    // console.log(query.getQuery());
-    return from(query.getMany());
-  }
-
-  async create(createSet: NewSetDto): Promise<INewSet> {
+  async create(createSet: NewSetDto, req: Request): Promise<INewSet> {
     try {
       const newSet: DeepPartial<Set> = {
         ...createSet,
@@ -99,7 +86,19 @@ export class SetsService {
         updatedBy: savedSet.updatedBy,
       };
     } catch (error) {
-      await this.errorsService.prepareError(error);
+      const newError: ErrorDto = {
+        type: 'MySQL',
+        message: 'Błąd bazy danych',
+        url: req.originalUrl,
+        error: error.message,
+        query: error.query || null,
+        parameters: error.parameters[0] || null,
+        sql: error.driverError.sql || null,
+        createdAt: getFormatedDate(),
+        createdAtTimestamp: Number(Date.now()),
+      };
+
+      await this.errorsService.prepareError(newError);
 
       throw new InternalServerErrorException({
         message: 'Błąd bazy danych',
@@ -109,9 +108,49 @@ export class SetsService {
     }
   }
 
-  async update(id: number, updateSetDto: any): Promise<any> {
-    console.log(`##### updateSetDto service id=${id} #####`);
-    console.log(updateSetDto);
-    return;
+  async update(
+    id: number,
+    updateSetDto: UpdateSetAndPositionDto,
+    req: Request,
+  ): Promise<any> {
+    const { positions, userId } = updateSetDto;
+
+    try {
+      const savedSet = {
+        ...updateSetDto.set,
+        updatedBy: { id: userId } as DeepPartial<User>,
+        updatedAt: getFormatedDate(),
+        updatedAtTimestamp: Number(Date.now()),
+      };
+      const updateSetResult = await this.setsRepo.update(id, savedSet);
+
+      if (updateSetResult?.affected === 0) {
+        throw new NotFoundException(`Set with ID ${id} not found`);
+      }
+
+      await this.positionsService.update(userId, positions, req);
+
+      return this.findOne(id);
+    } catch (error) {
+      const newError: ErrorDto = {
+        type: 'MySQL',
+        message: 'Błąd bazy danych',
+        url: req.originalUrl,
+        error: error.message,
+        query: error.query || '',
+        parameters: error.parameters ? error.parameters[0] : '',
+        sql: error.driverError ? error.driverError.sql : '',
+        createdAt: getFormatedDate(),
+        createdAtTimestamp: Number(Date.now()),
+      };
+
+      await this.errorsService.prepareError(newError);
+
+      throw new InternalServerErrorException({
+        message: 'Błąd bazy danych',
+        error: error.message,
+        details: error,
+      });
+    }
   }
 }

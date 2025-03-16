@@ -12,10 +12,10 @@ Nowe zestawienie
 
 Edycja zestawienia:
 [ ] zmiana statusu
-[ ] zmiana ilości zakłądek (bookmarks)
-[ ] obiekt z szerokościami zapisywany na etapie dodawania nowego zestawienia z domyślnymi wartościami
+[ ] zmiana ilości zakładek (bookmarks)
+[x] obiekt z szerokościami zapisywany na etapie dodawania nowego zestawienia z domyślnymi wartościami
 [ ] odczyt i zapis szerokości kolumn dla każdej zakładki i dla każdego zestawienia
-[ ] dołączyć listę szerokości do obiektu bookmarks w zestwieniach
+[x] dołączyć listę szerokości do obiektu bookmarks w zestwieniach
 [ ] zmiana pozycji poprzed drag and drop i update property kolejność w db
 
 [x] imię i nazwisko klienta, email, nr zestawienia generowany autmatycznie, hash (20 znaków) do podglądu generowany automatycznie
@@ -38,6 +38,7 @@ Dostawcy:
 Ustawienia:
 [ ] dodawanie/usuwanie produktow
 [ ] lista kolumn widocznych w danej kategorii zestawienia (lub na stałe w kodzie)
+[ ] domyślna szerokość kolumn pozycji ładoawna z DB, a nie z const
 
 Pozycje:
 [x] dodać createBy, updateBy, CreateDate, UpdateDate, createTimestamp, updateTimestamp

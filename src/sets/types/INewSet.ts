@@ -1,5 +1,5 @@
 import { User } from '../../user/user.entity';
-import { IBookmark } from '../../bookmarks/IBookmark';
+import { IBookmark } from '../../bookmarks/types/IBookmark';
 
 export interface INewSet {
   id: number;

@@ -1,18 +1,10 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Patch,
-  Post,
-  UsePipes,
-  ValidationPipe,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Req } from '@nestjs/common';
+import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { NewSetDto } from './dto/NewSet.dto';
+import { UpdateSetAndPositionDto } from './dto/updateSetAndPosition.dto';
 import { SetsService } from './sets.service';
 import { INewSet } from './types/INewSet';
-import { IPosition } from './types/IPosition';
 import { ISet } from './types/ISet';
 
 //TODO add guards
@@ -27,20 +19,17 @@ export class SetsController {
   }
 
   @Post('new')
-  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
-  create(@Body() newSet: NewSetDto): Promise<INewSet> {
-    return this.setsService.create(newSet);
+  create(@Body() newSet: NewSetDto, @Req() req: Request): Promise<INewSet> {
+    return this.setsService.create(newSet, req);
   }
 
   @Patch(':id')
-  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
-  updateSet(@Param('id') id: string, @Body() updateSetDto: any): Promise<any> {
-    return this.setsService.update(+id, updateSetDto);
-  }
-
-  @Get('/position/:setId')
-  getPositions(@Param('setId') setId: string): Observable<IPosition[]> {
-    return this.setsService.getPositions(+setId);
+  updateSet(
+    @Param('id') id: string,
+    @Body() updateSetDto: UpdateSetAndPositionDto,
+    @Req() req: Request,
+  ): Promise<any> {
+    return this.setsService.update(+id, updateSetDto, req);
   }
 
   @Get(':setId')

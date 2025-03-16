@@ -6,10 +6,12 @@ import {
   Param,
   Patch,
   Post,
+  Req,
 } from '@nestjs/common';
 import { ClientsService } from './clients.service';
 import { CreateClientDto, UpdateClientDto } from './dto/client.dto';
 import { IClient } from './types/IClient';
+import { Request } from 'express';
 
 //TODO add guards
 // @UseGuards(JwtAuthGuard)
@@ -26,8 +28,9 @@ export class ClientsController {
   update(
     @Param('id') id: string,
     @Body() updateClientDto: UpdateClientDto,
+    @Req() req: Request,
   ): Promise<IClient> {
-    return this.clientsService.update(+id, updateClientDto);
+    return this.clientsService.update(+id, updateClientDto, req);
   }
 
   @Get(':id')

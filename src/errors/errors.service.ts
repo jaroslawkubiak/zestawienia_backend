@@ -22,7 +22,9 @@ export class ErrorsService {
     }
   }
 
-  async prepareError(error: any) {
+  async prepareError(error: ErrorDto) {
+    console.log(`##### error to save #####`);
+    console.log(error);
     await this.create(error);
   }
 }

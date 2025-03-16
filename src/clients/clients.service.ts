@@ -1,15 +1,24 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Client } from './clients.entity';
 import { CreateClientDto, UpdateClientDto } from './dto/client.dto';
 import { IClient } from './types/IClient';
+import { getFormatedDate } from '../helpers/getFormatedDate';
+import { ErrorsService } from '../errors/errors.service';
+import { ErrorDto } from '../errors/dto/error.dto';
+import { Request } from 'express';
 
 @Injectable()
 export class ClientsService {
   constructor(
     @InjectRepository(Client)
     private readonly clientsRepo: Repository<Client>,
+    private errorsService: ErrorsService,
   ) {}
 
   findAll(): Promise<IClient[]> {
@@ -29,9 +38,40 @@ export class ClientsService {
     return this.clientsRepo.save(newClient);
   }
 
-  async update(id: number, updateClientDto: UpdateClientDto): Promise<IClient> {
-    await this.clientsRepo.update(id, updateClientDto);
-    return this.findOne(id);
+  async update(
+    id: number,
+    updateClientDto: UpdateClientDto,
+    req: Request,
+  ): Promise<IClient> {
+    try {
+      const updateResult = await this.clientsRepo.update(id, updateClientDto);
+
+      if (updateResult?.affected === 0) {
+        throw new NotFoundException(`Client with ID ${id} not found`);
+      } else {
+        return this.findOne(id);
+      }
+    } catch (error) {
+      const newError: ErrorDto = {
+        type: 'MySQL',
+        message: 'Błąd bazy danych',
+        url: req.originalUrl,
+        error: error.message,
+        query: error.query || '',
+        parameters: error.parameters ? error.parameters[0] : '',
+        sql: error.driverError ? error.driverError.sql : '',
+        createdAt: getFormatedDate(),
+        createdAtTimestamp: Number(Date.now()),
+      };
+
+      await this.errorsService.prepareError(newError);
+
+      throw new InternalServerErrorException({
+        message: 'Błąd bazy danych',
+        error: error.message,
+        details: error,
+      });
+    }
   }
 
   async remove(id: number): Promise<void> {

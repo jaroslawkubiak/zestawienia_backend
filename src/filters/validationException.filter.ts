@@ -7,8 +7,8 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ErrorsService } from '../errors/errors.service';
-import { IError } from '../errors/types/IError';
 import { getFormatedDate } from '../helpers/getFormatedDate';
+import { ErrorDto } from '../errors/dto/error.dto';
 
 @Catch(BadRequestException)
 export class ValidationExceptionFilter implements ExceptionFilter {
@@ -20,12 +20,12 @@ export class ValidationExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
 
     try {
-      const newError: IError = {
+      const newError: ErrorDto = {
         type: 'DTO',
         message: exception.getResponse()['message'] || 'Błąd walidacji',
         url: request.url,
         error: 'BadRequestException',
-        query: '',
+        query: request.body ? JSON.stringify(request.body) : '',
         parameters: '',
         sql: '',
         createdAt: getFormatedDate(),

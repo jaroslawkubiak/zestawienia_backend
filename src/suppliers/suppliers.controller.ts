@@ -6,8 +6,6 @@ import {
   Param,
   Patch,
   Post,
-  UsePipes,
-  ValidationPipe
 } from '@nestjs/common';
 import { CreateSupplierDto, UpdateSupplierDto } from './dto/supplier.dto';
 import { SuppliersService } from './suppliers.service';
@@ -25,7 +23,6 @@ export class SuppliersController {
   }
 
   @Patch(':id')
-  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   update(
     @Param('id') id: string,
     @Body() updateSupplierDto: UpdateSupplierDto,
@@ -39,7 +36,6 @@ export class SuppliersController {
   }
 
   @Post()
-  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   create(@Body() createSupplierDto: CreateSupplierDto): Promise<ISupplier> {
     return this.suppliersService.create(createSupplierDto);
   }

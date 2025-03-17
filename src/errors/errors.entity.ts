@@ -7,9 +7,9 @@ export class Errors {
 
   @Column({ type: 'varchar', length: 20, nullable: false })
   type: string;
-  // db, email etc
+  // db, email, DDTO etc
 
-  @Column({ type: 'varchar', length: 255, nullable: false })
+  @Column({ type: 'text', nullable: false })
   message: string;
 
   @Column({ type: 'varchar', length: 200, nullable: false })

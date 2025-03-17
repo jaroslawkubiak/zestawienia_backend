@@ -54,13 +54,13 @@ export class ClientsService {
     } catch (error) {
       const newError: ErrorDto = {
         type: 'MySQL',
-        message: 'Błąd bazy danych',
+        message: 'Clients: Błąd bazy danych',
         url: req.originalUrl,
-        error: error.message,
-        query: error.query || '',
-        parameters: error.parameters ? error.parameters[0] : '',
-        sql: error.driverError ? error.driverError.sql : '',
-        createdAt: getFormatedDate(),
+        error: JSON.stringify(error.message) || 'null',
+        query: JSON.stringify(error.query) || 'null',
+        parameters: error.parameters ? error.parameters[0] : 'null',
+        sql: error.driverError ? error.driverError.sql : 'null',
+        createdAt: getFormatedDate() || new Date().toISOString(),
         createdAtTimestamp: Number(Date.now()),
       };
 

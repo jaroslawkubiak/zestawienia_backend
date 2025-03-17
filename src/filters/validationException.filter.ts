@@ -22,20 +22,22 @@ export class ValidationExceptionFilter implements ExceptionFilter {
     try {
       const newError: ErrorDto = {
         type: 'DTO',
-        message: exception.getResponse()['message'] || 'Błąd walidacji',
+        message:
+          JSON.stringify(exception.getResponse()['message']) ||
+          'Błąd walidacji',
         url: request.url,
         error: 'BadRequestException',
-        query: request.body ? JSON.stringify(request.body) : '',
-        parameters: '',
-        sql: '',
-        createdAt: getFormatedDate(),
+        query: request.body ? `BODY=${JSON.stringify(request.body)}` : '',
+        parameters: 'null',
+        sql: 'null',
+        createdAt: getFormatedDate() || new Date().toISOString(),
         createdAtTimestamp: Number(Date.now()),
       };
 
       await this.errorsService.prepareError(newError);
-      console.log('✅✅✅ Błąd zapisany w bazie');
+      console.log('✅ Validation filter ✅ Błąd zapisany w bazie');
     } catch (dbError) {
-      console.error('❌❌❌ Błąd podczas zapisu błędu w bazie:', dbError);
+      console.error('❌ Validation filter ❌ Błąd podczas zapisu błędu w bazie:', dbError);
     }
 
     response.status(HttpStatus.BAD_REQUEST).json({

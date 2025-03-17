@@ -116,7 +116,6 @@ export class SetsService {
     req: Request,
   ): Promise<any> {
     const { positions, userId } = updateSetDto;
-
     try {
       const savedSet = {
         ...updateSetDto.set,

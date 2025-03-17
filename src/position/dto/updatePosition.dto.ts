@@ -1,4 +1,11 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { UpdateSupplierDto } from '../../suppliers/dto/supplier.dto';
 
 export class UpdatePositionDto {
   @IsNumber()
@@ -47,6 +54,7 @@ export class UpdatePositionDto {
   @IsOptional()
   image: string;
 
-  @IsNumber()
-  supplierId: number;
+  @ValidateNested({ each: true })
+  @Type(() => UpdateSupplierDto)
+  supplierId: UpdateSupplierDto;
 }

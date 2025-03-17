@@ -17,6 +17,7 @@ export interface IPosition {
   image: string;
   acceptedAt: string;
   acceptedAtTimestamp: number;
+  acceptedStatus: string;
   createdAt: string;
   createdAtTimestamp: number;
   updatedAt: string;

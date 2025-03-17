@@ -4,16 +4,17 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Request } from 'express';
 import { Observable, from } from 'rxjs';
 import { DeepPartial, Repository } from 'typeorm';
+import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
+import { getFormatedDate } from '../helpers/getFormatedDate';
+import { Supplier } from '../suppliers/suppliers.entity';
+import { User } from '../user/user.entity';
+import { UpdatePositionDto } from './dto/updatePosition.dto';
 import { Position } from './positions.entity';
 import { IPosition } from './types/IPosition';
-import { UpdatePositionDto } from './dto/updatePosition.dto';
-import { ErrorDto } from '../errors/dto/error.dto';
-import { getFormatedDate } from '../helpers/getFormatedDate';
-import { Request } from 'express';
-import { User } from '../user/user.entity';
 
 @Injectable()
 export class PositionsService {
@@ -59,6 +60,7 @@ export class PositionsService {
         const savedPosition = {
           ...position,
           updatedBy: { id: userId } as DeepPartial<User>,
+          supplierId: position.supplierId as DeepPartial<Supplier>,
           updatedAt: getFormatedDate(),
           updatedAtTimestamp: Number(Date.now()),
         };
@@ -68,13 +70,15 @@ export class PositionsService {
     } catch (error) {
       const newError: ErrorDto = {
         type: 'MySQL',
-        message: 'Błąd bazy danych',
+        message: 'Positions: Błąd bazy danych',
         url: req.originalUrl,
-        error: error.message,
-        query: error.query || '',
-        parameters: error.parameters ? error.parameters[0] : '',
-        sql: error.driverError ? error.driverError.sql : '',
-        createdAt: getFormatedDate(),
+        error: JSON.stringify(error.message) || 'null',
+        query: JSON.stringify(error.query) || 'null',
+        parameters: error.parameters
+          ? JSON.stringify(error.parameters[0])
+          : 'null',
+        sql: error.driverError ? JSON.stringify(error.driverError.sql) : 'null',
+        createdAt: getFormatedDate() || new Date().toISOString(),
         createdAtTimestamp: Number(Date.now()),
       };
 
@@ -91,14 +95,10 @@ export class PositionsService {
   async updateOne(
     id: number,
     position: UpdatePositionDto,
-    url: string = '',
+    url: string = 'null',
   ): Promise<any> {
     try {
-      const updateData = {
-        ...position,
-        supplierId: { id: position.supplierId },
-      };
-      const updateResult = await this.positionsRepo.update(id, updateData);
+      const updateResult = await this.positionsRepo.update(id, position);
 
       if (updateResult?.affected === 0) {
         throw new NotFoundException(`Position with ID ${id} not found`);
@@ -108,13 +108,15 @@ export class PositionsService {
     } catch (error) {
       const newError: ErrorDto = {
         type: 'MySQL',
-        message: 'Błąd bazy danych',
+        message: 'Positions: Błąd bazy danych',
         url,
-        error: error.message,
-        query: error.query || '',
-        parameters: error.parameters ? error.parameters[0] : '',
-        sql: error.driverError ? error.driverError.sql : '',
-        createdAt: getFormatedDate(),
+        error: JSON.stringify(error.message) || 'null',
+        query: JSON.stringify(error.query) || 'null',
+        parameters: error.parameters
+          ? JSON.stringify(error.parameters[0])
+          : 'null',
+        sql: error.driverError ? JSON.stringify(error.driverError.sql) : 'null',
+        createdAt: getFormatedDate() || new Date().toISOString(),
         createdAtTimestamp: Number(Date.now()),
       };
 

@@ -21,7 +21,7 @@ Edycja zestawienia:
 [x] imię i nazwisko klienta, email, nr zestawienia generowany autmatycznie, hash (20 znaków) do podglądu generowany automatycznie
 
 [ ] hash łączony z id zestawienia do podglądu dla klientów np: /:id_zestawienia/:hash_zestawienia
-[ ] statusy do zestawień: w przygotowaniu, gotowy, otwarty, zamknięty
+[ ] statusy do zestawień: w przygotowaniu, gotowy, otwarty, w realizacji, zamknięty
 
 Klienci:
 [x] dodawanie nowych klientów

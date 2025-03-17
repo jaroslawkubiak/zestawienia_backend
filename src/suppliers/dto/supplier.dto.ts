@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateSupplierDto {
   @IsString()
@@ -27,6 +27,10 @@ export class CreateSupplierDto {
 }
 
 export class UpdateSupplierDto {
+  @IsNumber()
+  @IsOptional()
+  id?: number;
+
   @IsString()
   @IsOptional()
   firma?: string;

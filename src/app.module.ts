@@ -25,6 +25,8 @@ import { User } from './user/user.entity';
 import { UserModule } from './user/user.module';
 import { ErrorsModule } from './errors/errors.module';
 import { Errors } from './errors/errors.entity';
+import { ImagesService } from './images/images.service';
+import { ImagesController } from './images/images.controller';
 
 @Module({
   imports: [
@@ -68,7 +70,7 @@ import { Errors } from './errors/errors.entity';
     SettingsModule,
     ErrorsModule,
   ],
-  controllers: [AppController, LoginController],
-  providers: [AppService],
+  controllers: [AppController, LoginController, ImagesController],
+  providers: [AppService, ImagesService],
 })
 export class AppModule {}

@@ -129,4 +129,62 @@ export class PositionsService {
       });
     }
   }
+
+  async updateImage(
+    userId: number,
+    setId: number,
+    positionId: number,
+    filename: string,
+  ) {
+    try {
+      console.log(`##### setId=${setId} #####`);
+      console.log(`##### userId=${userId} #####`);
+      console.log(`##### positionId=${positionId} #####`);
+      console.log(`##### filename=${filename} #####`);
+
+      const updatedByUser = { id: userId } as DeepPartial<User>;
+
+      const query = await this.positionsRepo
+        .createQueryBuilder()
+        .update(Position)
+        .set({
+          image: filename,
+          updatedAt: getFormatedDate(),
+          updatedAtTimestamp: Number(Date.now()),
+          updatedBy: updatedByUser,
+        })
+        .where('setId = :setId AND id = :positionId', {
+          setId: setId,
+          positionId: positionId,
+        })
+        .execute();
+
+      if (query?.affected !== 0) {
+        return 'Obraz został przesłany na serwer';
+      }
+    } catch (error) {
+      const url = `/images/${setId}/${positionId}`;
+      const newError: ErrorDto = {
+        type: 'MySQL',
+        message: 'Images: Błąd bazy danych',
+        url,
+        error: JSON.stringify(error.message) || 'null',
+        query: JSON.stringify(error.query) || 'null',
+        parameters: error.parameters
+          ? JSON.stringify(error.parameters[0])
+          : 'null',
+        sql: error.driverError ? JSON.stringify(error.driverError.sql) : 'null',
+        createdAt: getFormatedDate() || new Date().toISOString(),
+        createdAtTimestamp: Number(Date.now()),
+      };
+
+      await this.errorsService.prepareError(newError);
+
+      throw new InternalServerErrorException({
+        message: 'Błąd bazy danych',
+        error: error.message,
+        details: error,
+      });
+    }
+  }
 }

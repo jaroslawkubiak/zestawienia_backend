@@ -8,17 +8,25 @@ Zakładka zestawienia:
 
 Nowe zestawienie
 [x] dodawanie nowego zestawienia
+[ ] przekierowanie do edit-set z jedną pustą pozycją
 [ ] zapis pozycji do db
 
 Edycja zestawienia:
-[ ] zmiana statusu
-[ ] zmiana ilości zakładek (bookmarks)
+[x] zmiana statusu
+[x] zmiana ilości zakładek (bookmarks)
 [x] obiekt z szerokościami zapisywany na etapie dodawania nowego zestawienia z domyślnymi wartościami
-[ ] odczyt i zapis szerokości kolumn dla każdej zakładki i dla każdego zestawienia
+[x] odczyt i zapis szerokości kolumn dla każdej zakładki i dla każdego zestawienia
 [x] dołączyć listę szerokości do obiektu bookmarks w zestwieniach
 [ ] zmiana pozycji poprzed drag and drop i update property kolejność w db
-
-[x] imię i nazwisko klienta, email, nr zestawienia generowany autmatycznie, hash (20 znaków) do podglądu generowany automatycznie
+[ ] domyślnie sortowanie po kolejności gdy wyświetlane są pozycje
+[ ] filtrowanie pozycji po zapisie, tylko faktycznie edytowane pozycje wysyłać na backend, aby nie ustawiać wszędzie updatedAt dla niezmienionych pozycji
+[ ] dodanie pustej pozycji
+[ ] klonowanie wybranej pozycji
+[ ] usuwanie pozycji
+[x] obliczanie ceny brutto, wartości netto i wartości brutto
+[x] update cen gdy zmienimy ilosc lub cene netto
+[x] update footera z sumami poszczególnych kolumn
+[ ] wysyłanie obrazów do katalogów /uploads/SETID/POSITIONID/ FILENAME
 
 [ ] hash łączony z id zestawienia do podglądu dla klientów np: /:id_zestawienia/:hash_zestawienia
 [ ] statusy do zestawień: w przygotowaniu, gotowy, otwarty, w realizacji, zamknięty
@@ -50,6 +58,7 @@ DB:
 [x] klienci: id, imie, nazwisko, email, inne kolumny?
 [x] komentarze: id, productid, zestawienie id, comment, createBy, createDate, date timestamp
 [ ] rejestracja wysłanych emaili do klientów i dostawców
+[x] imię i nazwisko klienta, email, nr zestawienia generowany autmatycznie, hash (20 znaków) do podglądu generowany automatycznie
 
 generowanie PDF! :(
 wysyłka zestawień do wybranego dostawcy, do różnych dostawców, linki z hashami dostawców i id zestawienia

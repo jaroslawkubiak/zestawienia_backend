@@ -1,11 +1,13 @@
 import {
+  forwardRef,
+  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
-import { Observable, from } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { DeepPartial, Repository } from 'typeorm';
 import { Client } from '../clients/clients.entity';
 import { ErrorDto } from '../errors/dto/error.dto';
@@ -27,6 +29,7 @@ export class SetsService {
     @InjectRepository(Set)
     private readonly setsRepo: Repository<Set>,
     private readonly errorsService: ErrorsService,
+    @Inject(forwardRef(() => PositionsService))
     private readonly positionsService: PositionsService,
   ) {}
 

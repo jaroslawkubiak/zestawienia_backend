@@ -1,15 +1,18 @@
 import {
+  forwardRef,
+  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
-import { Observable, from } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { DeepPartial, Repository } from 'typeorm';
 import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
 import { getFormatedDate } from '../helpers/getFormatedDate';
+import { SetsService } from '../sets/sets.service';
 import { Supplier } from '../suppliers/suppliers.entity';
 import { User } from '../user/user.entity';
 import { UpdatePositionDto } from './dto/updatePosition.dto';
@@ -22,6 +25,7 @@ export class PositionsService {
     @InjectRepository(Position)
     private readonly positionsRepo: Repository<Position>,
     private readonly errorsService: ErrorsService,
+    @Inject(forwardRef(() => SetsService)) private setsService: SetsService,
   ) {}
 
   findOne(id: number): Promise<IPosition> {
@@ -137,30 +141,37 @@ export class PositionsService {
     filename: string,
   ) {
     try {
-      console.log(`##### setId=${setId} #####`);
-      console.log(`##### userId=${userId} #####`);
-      console.log(`##### positionId=${positionId} #####`);
-      console.log(`##### filename=${filename} #####`);
-
       const updatedByUser = { id: userId } as DeepPartial<User>;
+      const positionFromDB = await this.findOne(positionId);
+      const setFromDB = await this.setsService.findOne(setId);
 
-      const query = await this.positionsRepo
-        .createQueryBuilder()
-        .update(Position)
-        .set({
-          image: filename,
-          updatedAt: getFormatedDate(),
-          updatedAtTimestamp: Number(Date.now()),
-          updatedBy: updatedByUser,
-        })
-        .where('setId = :setId AND id = :positionId', {
-          setId: setId,
-          positionId: positionId,
-        })
-        .execute();
+      if (positionFromDB && setFromDB) {
+        const query = await this.positionsRepo
+          .createQueryBuilder()
+          .update(Position)
+          .set({
+            image: filename,
+            updatedAt: getFormatedDate(),
+            updatedAtTimestamp: Number(Date.now()),
+            updatedBy: updatedByUser,
+          })
+          .where('setId = :setId AND id = :positionId', {
+            setId: setId,
+            positionId: positionId,
+          })
+          .execute();
 
-      if (query?.affected !== 0) {
-        return 'Obraz został przesłany na serwer';
+        if (query?.affected !== 0) {
+          return 'Obraz został przesłany na serwer.';
+        }
+      } else {
+        if (!positionFromDB) {
+          throw new Error(`Pozycja o ID ${positionId} nie istnieje w bazie.`);
+        }
+
+        if (!setFromDB) {
+          throw new Error(`Zestawienie o ID ${setId} nie istnieje w bazie.`);
+        }
       }
     } catch (error) {
       const url = `/images/${setId}/${positionId}`;

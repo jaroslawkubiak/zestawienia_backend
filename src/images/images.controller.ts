@@ -1,8 +1,8 @@
 import {
-  Body,
   Controller,
   Param,
   Post,
+  Query,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -18,21 +18,15 @@ export class ImagesController {
   async uploadImage(
     @Param('setId') setId: string,
     @Param('positionId') positionId: string,
-    @Body('metadata') metadata: string,
+    @Query('userId') userId: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    let parsedMetadata = null;
-    let userId = 1; //default, if parse has error
-
-    try {
-      parsedMetadata = JSON.parse(metadata);
-      userId = parsedMetadata?.userId;
-    } catch (err) {
-      console.warn('❌ Błąd parsowania JSON', err);
-    }
-
-    const { message, filename } =
-      await this.imagesService.saveImage(+userId, +setId, +positionId, file);
+    const { message, filename } = await this.imagesService.saveImage(
+      +userId,
+      +setId,
+      +positionId,
+      file,
+    );
     return {
       message,
       filename,

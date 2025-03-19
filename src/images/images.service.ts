@@ -43,6 +43,7 @@ export class ImagesService {
 
       return { message: res, filename };
     } catch (error) {
+      const message = error.response.error;
       if (error instanceof InternalServerErrorException) {
         console.error('❌ Błąd bazy danych:', error.message);
 
@@ -51,7 +52,7 @@ export class ImagesService {
 
         throw new InternalServerErrorException({
           message: 'Wystąpił problem podczas aktualizacji pozycji.',
-          error: error.message,
+          error: message,
           details: error,
         });
       } else {

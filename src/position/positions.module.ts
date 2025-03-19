@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Client } from '../clients/clients.entity';
 import { Comment } from '../comments/comments.entity';
 import { ErrorsModule } from '../errors/errors.module';
 import { Set } from '../sets/sets.entity';
+import { SetsModule } from '../sets/sets.module';
 import { Supplier } from '../suppliers/suppliers.entity';
 import { PositionsController } from './positions.controller';
 import { Position } from './positions.entity';
@@ -13,6 +14,7 @@ import { PositionsService } from './positions.service';
   imports: [
     TypeOrmModule.forFeature([Position, Set, Client, Supplier, Comment]),
     ErrorsModule,
+    forwardRef(() => SetsModule),  // Używamy forwardRef, aby rozwiązać cykliczną zależność
   ],
   controllers: [PositionsController],
   providers: [PositionsService],

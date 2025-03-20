@@ -118,7 +118,7 @@ export class SetsService {
     updateSetDto: UpdateSetAndPositionDto,
     req: Request,
   ): Promise<any> {
-    const { positions, userId } = updateSetDto;
+    const { positions, userId, positionToDelete } = updateSetDto;
     try {
       const savedSet = {
         ...updateSetDto.set,
@@ -133,6 +133,13 @@ export class SetsService {
       }
 
       await this.positionsService.update(userId, positions, req);
+
+      // delete positions
+      if (positionToDelete.length > 0) {
+        positionToDelete.forEach((item) => {
+          this.positionsService.removePosition(item);
+        });
+      }
 
       return this.findOne(id);
     } catch (error) {

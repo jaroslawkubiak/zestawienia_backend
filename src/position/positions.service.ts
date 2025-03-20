@@ -15,6 +15,7 @@ import { getFormatedDate } from '../helpers/getFormatedDate';
 import { SetsService } from '../sets/sets.service';
 import { Supplier } from '../suppliers/suppliers.entity';
 import { User } from '../user/user.entity';
+import { CreateEmptyPositionDto } from './dto/createEmptyPosition.dto';
 import { UpdatePositionDto } from './dto/updatePosition.dto';
 import { Position } from './positions.entity';
 import { IPosition } from './types/IPosition';
@@ -197,5 +198,27 @@ export class PositionsService {
         details: error,
       });
     }
+  }
+
+  async removePosition(id: number): Promise<void> {
+    const result = await this.positionsRepo.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Position with ID ${id} not found`);
+    }
+  }
+
+  async addPosition(
+    createEmptyPositionDto: CreateEmptyPositionDto,
+  ): Promise<IPosition> {
+    const positionToSave = {
+      ...createEmptyPositionDto,
+      createdAt: getFormatedDate(),
+      createdAtTimestamp: Number(Date.now()),
+      updatedAt: getFormatedDate(),
+      updatedAtTimestamp: Number(Date.now()),
+    };
+
+    const newPosition = this.positionsRepo.create(positionToSave);
+    return this.positionsRepo.save(newPosition);
   }
 }

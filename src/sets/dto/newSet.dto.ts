@@ -24,3 +24,8 @@ export class NewSetDto {
   @ArrayNotEmpty()
   bookmarks: BookmarkDto[];
 }
+
+export class NewSetForPositionDto {
+  @IsNumber()
+  id: number;
+}

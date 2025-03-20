@@ -21,4 +21,7 @@ export class UpdateSetAndPositionDto {
 
   @IsNumber()
   userId: number;
+
+  @IsArray()
+  positionToDelete: number[];
 }

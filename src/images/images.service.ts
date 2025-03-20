@@ -16,7 +16,7 @@ export class ImagesService {
       throw new Error('Plik nie został przesłany');
     }
 
-    const innerPath = `/${setId}/${positionId}`;
+    const innerPath = `/sets/${setId}/${positionId}`;
 
     const uploadPath = path.join(
       process.cwd(),

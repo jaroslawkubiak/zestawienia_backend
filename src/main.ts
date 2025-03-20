@@ -4,6 +4,8 @@ import { AppModule } from './app.module';
 import { ErrorsService } from './errors/errors.service';
 import { QueryFailedExceptionFilter } from './filters/queryFailedException.filter';
 import { ValidationExceptionFilter } from './filters/validationException.filter';
+import * as path from 'path';
+import * as express from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,8 +13,9 @@ async function bootstrap() {
   // Włączenie CORS
   app.enableCors({
     origin: 'http://localhost:4200', // Zezwól tylko na Angulara
-    methods: 'GET,POST,PUT,PATCH,DELETE,OPTIONS',
+    methods: 'GET,HEAD,POST,PUT,PATCH,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type, Authorization',
+    credentials: true,
   });
 
   app.useGlobalPipes(
@@ -22,6 +25,15 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+  // Serwowanie plików statycznych
+  app.use(
+    '/uploads',
+    express.static(
+      path.join(process.cwd(), process.env.UPLOADS_PATH, '..', 'uploads'),
+    ),
+  );
+
 
   app.useGlobalFilters(new ValidationExceptionFilter(app.get(ErrorsService)));
 

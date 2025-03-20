@@ -27,9 +27,11 @@ export class ImagesController {
       +positionId,
       file,
     );
+    
     return {
       message,
       filename,
+      positionId,
     };
   }
 }

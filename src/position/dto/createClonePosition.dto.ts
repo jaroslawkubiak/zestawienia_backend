@@ -5,12 +5,12 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
+import { BookmarkDto } from '../../bookmarks/dto/bookmark.dto';
+import { NewSetForPositionDto } from '../../sets/dto/NewSet.dto';
 import { UpdateSupplierDto } from '../../suppliers/dto/supplier.dto';
-import { BookmarkDto } from 'src/bookmarks/dto/bookmark.dto';
-import { CreateUserDto } from 'src/user/dto/user.dto';
-import { NewSetForPositionDto } from 'src/sets/dto/NewSet.dto';
+import { CreateUserDto } from '../../user/dto/user.dto';
 
-export class CreatePositionDto {
+export class CreateClonePositionDto {
   @IsString()
   @IsOptional()
   produkt: string;
@@ -49,10 +49,6 @@ export class CreatePositionDto {
   @IsString()
   @IsOptional()
   link: string;
-
-  @IsString()
-  @IsOptional()
-  image: string;
 
   @ValidateNested({ each: true })
   @Type(() => UpdateSupplierDto)

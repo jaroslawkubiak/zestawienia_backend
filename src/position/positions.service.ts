@@ -15,6 +15,7 @@ import { getFormatedDate } from '../helpers/getFormatedDate';
 import { SetsService } from '../sets/sets.service';
 import { Supplier } from '../suppliers/suppliers.entity';
 import { User } from '../user/user.entity';
+import { CreateClonePositionDto } from './dto/createClonePosition.dto';
 import { CreateEmptyPositionDto } from './dto/createEmptyPosition.dto';
 import { UpdatePositionDto } from './dto/updatePosition.dto';
 import { Position } from './positions.entity';
@@ -212,6 +213,21 @@ export class PositionsService {
   ): Promise<IPosition> {
     const positionToSave = {
       ...createEmptyPositionDto,
+      createdAt: getFormatedDate(),
+      createdAtTimestamp: Number(Date.now()),
+      updatedAt: getFormatedDate(),
+      updatedAtTimestamp: Number(Date.now()),
+    };
+
+    const newPosition = this.positionsRepo.create(positionToSave);
+    return this.positionsRepo.save(newPosition);
+  }
+
+  async clonePosition(
+    createClonePositionDto: CreateClonePositionDto,
+  ): Promise<IPosition> {
+    const positionToSave = {
+      ...createClonePositionDto,
       createdAt: getFormatedDate(),
       createdAtTimestamp: Number(Date.now()),
       updatedAt: getFormatedDate(),

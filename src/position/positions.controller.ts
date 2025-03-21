@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { IPosition } from '../position/types/IPosition';
-import { CreatePositionDto } from './dto/createPosition.dto';
+import { CreateClonePositionDto } from './dto/createClonePosition.dto';
 import { PositionsService } from './positions.service';
 import { CreateEmptyPositionDto } from './dto/createEmptyPosition.dto';
 
@@ -14,8 +14,15 @@ export class PositionsController {
     return this.positionsService.getPositions(+setId);
   }
 
-  @Post('')
+  @Post('/new')
   addPosition(@Body() newPosition: CreateEmptyPositionDto): Promise<IPosition> {
     return this.positionsService.addPosition(newPosition);
+  }
+
+  @Post('/clone')
+  clonePosition(
+    @Body() clonePosition: CreateClonePositionDto,
+  ): Promise<IPosition> {
+    return this.positionsService.clonePosition(clonePosition);
   }
 }

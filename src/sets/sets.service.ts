@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
-import { from, Observable } from 'rxjs';
+import { from, Observable, of, switchMap, throwError } from 'rxjs';
 import { DeepPartial, Repository } from 'typeorm';
 import { Client } from '../clients/clients.entity';
 import { ErrorDto } from '../errors/dto/error.dto';
@@ -50,7 +50,7 @@ export class SetsService {
   }
   //.orderBy('set.id', 'DESC')
 
-  getSet(setId: number): Observable<ISet[]> {
+  getSet(setId: number): Observable<ISet> {
     const query = this.setsRepo
       .createQueryBuilder('set')
       .where('set.id = :id', { id: setId })
@@ -62,7 +62,11 @@ export class SetsService {
       .addSelect(['updatedBy.id', 'updatedBy.name']);
 
     // console.log(query.getQuery());
-    return from(query.getMany());
+    return from(query.getOne()).pipe(
+      switchMap((set) =>
+        set ? of(set) : throwError(() => new Error('Set not found')),
+      ),
+    );
   }
 
   async create(createSet: NewSetDto, req: Request): Promise<INewSet> {

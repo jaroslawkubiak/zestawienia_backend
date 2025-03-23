@@ -33,7 +33,7 @@ export class SetsController {
   }
 
   @Get(':setId')
-  findSet(@Param('setId') setId: string): Observable<ISet[]> {
+  findSet(@Param('setId') setId: string): Observable<ISet> {
     return this.setsService.getSet(+setId);
   }
 }

@@ -17,19 +17,20 @@ Edycja zestawienia:
 [x] obiekt z szerokościami zapisywany na etapie dodawania nowego zestawienia z domyślnymi wartościami
 [x] odczyt i zapis szerokości kolumn dla każdej zakładki i dla każdego zestawienia
 [x] dołączyć listę szerokości do obiektu bookmarks w zestwieniach
-[ ] zmiana pozycji poprzed drag and drop i update property kolejność w db
-[ ] domyślnie sortowanie po kolejności gdy wyświetlane są pozycje
+[x] zmiana pozycji poprzed drag and drop i update property kolejność w db
+[x] domyślnie sortowanie po kolejności gdy wyświetlane są pozycje
 [ ] filtrowanie pozycji po zapisie, tylko faktycznie edytowane pozycje wysyłać na backend, aby nie ustawiać wszędzie updatedAt dla niezmienionych pozycji
-[ ] dodanie pustej pozycji
-[ ] klonowanie wybranej pozycji
-[ ] usuwanie pozycji
+[x] dodanie pustej pozycji
+[x] dodanie pustej pozycji gdy na zakładce nie ma ani jednej pozycji
+[x] klonowanie wybranej pozycji
+[x] usuwanie pozycji
 [x] obliczanie ceny brutto, wartości netto i wartości brutto
 [x] update cen gdy zmienimy ilosc lub cene netto
 [x] update footera z sumami poszczególnych kolumn
-[ ] wysyłanie obrazów do katalogów /uploads/SETID/POSITIONID/ FILENAME
+[x] wysyłanie obrazów do katalogów /uploads/sets/SETID/POSITIONID/ FILENAME
 
 [ ] hash łączony z id zestawienia do podglądu dla klientów np: /:id_zestawienia/:hash_zestawienia
-[ ] statusy do zestawień: w przygotowaniu, gotowy, otwarty, w realizacji, zamknięty
+[x] statusy do zestawień: w przygotowaniu, gotowy, otwarty, w realizacji, zamknięty
 
 Klienci:
 [x] dodawanie nowych klientów

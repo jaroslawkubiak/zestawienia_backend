@@ -20,6 +20,7 @@ import { CreateEmptyPositionDto } from './dto/createEmptyPosition.dto';
 import { UpdatePositionDto } from './dto/updatePosition.dto';
 import { Position } from './positions.entity';
 import { IPosition } from './types/IPosition';
+import { SuppliersService } from 'src/suppliers/suppliers.service';
 
 @Injectable()
 export class PositionsService {
@@ -28,6 +29,8 @@ export class PositionsService {
     private readonly positionsRepo: Repository<Position>,
     private readonly errorsService: ErrorsService,
     @Inject(forwardRef(() => SetsService)) private setsService: SetsService,
+    @Inject(forwardRef(() => SuppliersService))
+    private suppliersService: SuppliersService,
   ) {}
 
   findOne(id: number): Promise<IPosition> {
@@ -105,6 +108,19 @@ export class PositionsService {
   ): Promise<any> {
     try {
       const updateResult = await this.positionsRepo.update(id, position);
+
+      //update positionCount to supplier
+      if (position.supplierId.id) {
+        const findSupplierId = position.supplierId.id;
+        const positionCount =
+          await this.getPositionsCountBySupplierId(findSupplierId);
+
+        const updateSupplier = {
+          positionCount,
+        };
+
+        await this.suppliersService.update(findSupplierId, updateSupplier);
+      }
 
       if (updateResult?.affected === 0) {
         throw new NotFoundException(`Position with ID ${id} not found`);
@@ -236,5 +252,17 @@ export class PositionsService {
 
     const newPosition = this.positionsRepo.create(positionToSave);
     return this.positionsRepo.save(newPosition);
+  }
+
+  async getPositionsCountBySupplierId(supplierId: number): Promise<number> {
+    const query = await this.positionsRepo
+      .createQueryBuilder('position')
+      .select('COUNT(position.supplierId)', 'positionCount')
+      .where('position.supplierId = :supplierId', { supplierId })
+      .getRawOne();
+
+    const positionCount = parseInt(query.positionCount, 10);
+
+    return positionCount;
   }
 }

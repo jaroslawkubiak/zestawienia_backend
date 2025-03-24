@@ -6,7 +6,7 @@ import { CreateClonePositionDto } from './dto/createClonePosition.dto';
 import { CreateEmptyPositionDto } from './dto/createEmptyPosition.dto';
 import { PositionsService } from './positions.service';
 
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 @Controller('positions')
 export class PositionsController {
   constructor(private positionsService: PositionsService) {}

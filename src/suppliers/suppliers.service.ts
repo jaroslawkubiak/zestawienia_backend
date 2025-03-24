@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { generateHash } from '../helpers/generateHash';
 import { CreateSupplierDto, UpdateSupplierDto } from './dto/supplier.dto';
 import { Supplier } from './suppliers.entity';
 import { ISupplier } from './types/ISupplier';
-import { generateHash } from '../helpers/generateHash';
 
 @Injectable()
 export class SuppliersService {

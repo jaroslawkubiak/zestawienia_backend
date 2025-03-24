@@ -178,7 +178,7 @@ export class SetsService {
       }
 
       // delete positions
-      if (positionToDelete.length > 0) {
+      if (positionToDelete?.length > 0) {
         positionToDelete.forEach((item) => {
           this.positionsService.removePosition(item);
         });
@@ -189,7 +189,7 @@ export class SetsService {
       const newError: ErrorDto = {
         type: 'MySQL',
         message: 'Sets: Błąd bazy danych',
-        url: req.originalUrl,
+        url: req?.originalUrl,
         error: JSON.stringify(error.message) || 'null',
         query: JSON.stringify(error.query) || 'null',
         parameters: error.parameters

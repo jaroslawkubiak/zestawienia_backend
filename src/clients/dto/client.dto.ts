@@ -21,7 +21,7 @@ export class CreateClientDto {
   @IsNotEmpty()
   email: string;
 
-  @IsString()
+  @IsNumber()
   @IsOptional()
   setCount?: number;
 }

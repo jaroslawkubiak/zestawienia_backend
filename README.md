@@ -8,9 +8,9 @@ Zakładka zestawienia:
 
 Nowe zestawienie
 [x] dodawanie nowego zestawienia
-[ ] przekierowanie do edit-set z jedną pustą pozycją
-[ ] zapis pozycji do db
-[ ] aktualizacja setCount w klientach
+[x] przekierowanie do edit-set
+[x] zapis pozycji do db
+[x] aktualizacja setCount w klientach
 
 Edycja zestawienia:
 [x] zmiana statusu

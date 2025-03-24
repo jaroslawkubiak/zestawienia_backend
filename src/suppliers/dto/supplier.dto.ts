@@ -24,6 +24,10 @@ export class CreateSupplierDto {
   @IsString()
   @IsOptional()
   hash: string;
+
+  @IsNumber()
+  @IsOptional()
+  positionCount?: number;
 }
 
 export class UpdateSupplierDto {
@@ -54,4 +58,8 @@ export class UpdateSupplierDto {
   @IsString()
   @IsOptional()
   hash?: string;
+
+  @IsNumber()
+  @IsOptional()
+  positionCount?: number;
 }

@@ -10,12 +10,14 @@ import { PositionsController } from './positions.controller';
 import { Position } from './positions.entity';
 import { PositionsService } from './positions.service';
 import { ImagesModule } from '../images/images.module';
+import { SuppliersModule } from '../suppliers/suppliers.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Position, Set, Client, Supplier, Comment]),
     ErrorsModule,
     forwardRef(() => SetsModule),
+    forwardRef(() => SuppliersModule),
     forwardRef(() => ImagesModule), // Używamy forwardRef, aby rozwiązać cykliczną zależność
   ],
   controllers: [PositionsController],

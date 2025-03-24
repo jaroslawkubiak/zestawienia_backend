@@ -10,6 +10,7 @@ Nowe zestawienie
 [x] dodawanie nowego zestawienia
 [ ] przekierowanie do edit-set z jedną pustą pozycją
 [ ] zapis pozycji do db
+[ ] aktualizacja setCount w klientach
 
 Edycja zestawienia:
 [x] zmiana statusu
@@ -28,6 +29,7 @@ Edycja zestawienia:
 [x] update cen gdy zmienimy ilosc lub cene netto
 [x] update footera z sumami poszczególnych kolumn
 [x] wysyłanie obrazów do katalogów /uploads/sets/SETID/POSITIONID/ FILENAME
+[ ] przy edycji pozycji - aktualizacja positionCount w dostawcach
 
 [ ] hash łączony z id zestawienia do podglądu dla klientów np: /:id_zestawienia/:hash_zestawienia
 [x] statusy do zestawień: w przygotowaniu, gotowy, otwarty, w realizacji, zamknięty
@@ -60,6 +62,13 @@ DB:
 [x] komentarze: id, productid, zestawienie id, comment, createBy, createDate, date timestamp
 [ ] rejestracja wysłanych emaili do klientów i dostawców
 [x] imię i nazwisko klienta, email, nr zestawienia generowany autmatycznie, hash (20 znaków) do podglądu generowany automatycznie
+
+issue:
+[x] zmiana dostawcy w zestawieniach na ostatniej pozycji - menu się chowa pod tabele
+[x] klienci i dostawcy - form nie walidny - pokaż errors,
+[x] przerobić form klientów i dostawców na nowy styl z new set
+[x] oznaczyć pola obowiązkowe
+
 
 generowanie PDF! :(
 wysyłka zestawień do wybranego dostawcy, do różnych dostawców, linki z hashami dostawców i id zestawienia

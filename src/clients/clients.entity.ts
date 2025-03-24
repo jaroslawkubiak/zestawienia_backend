@@ -1,7 +1,6 @@
 import { Comment } from '../comments/comments.entity';
 import { Set } from '../sets/sets.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Position } from '../position/positions.entity';
 
 @Entity('')
 export class Client {
@@ -22,6 +21,9 @@ export class Client {
 
   @Column({ type: 'varchar', length: 50, nullable: true })
   telefon: string;
+
+  @Column({ nullable: true })
+  setCount: number;
 
   @OneToMany(() => Set, (set) => set.clientId)
   set: Set[];

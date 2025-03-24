@@ -1,10 +1,12 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { Observable } from 'rxjs';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { IPosition } from '../position/types/IPosition';
 import { CreateClonePositionDto } from './dto/createClonePosition.dto';
-import { PositionsService } from './positions.service';
 import { CreateEmptyPositionDto } from './dto/createEmptyPosition.dto';
+import { PositionsService } from './positions.service';
 
+@UseGuards(JwtAuthGuard)
 @Controller('positions')
 export class PositionsController {
   constructor(private positionsService: PositionsService) {}

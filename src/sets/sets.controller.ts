@@ -1,13 +1,23 @@
-import { Body, Controller, Get, Param, Patch, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { NewSetDto } from './dto/NewSet.dto';
 import { UpdateSetAndPositionDto } from './dto/updateSetAndPosition.dto';
 import { SetsService } from './sets.service';
-import { INewSet } from './types/INewSet';
+import { ISavedSet } from './types/ISavedSet';
 import { ISet } from './types/ISet';
 
-//TODO add guards
 // @UseGuards(JwtAuthGuard)
 @Controller('sets')
 export class SetsController {
@@ -19,7 +29,7 @@ export class SetsController {
   }
 
   @Post('new')
-  create(@Body() newSet: NewSetDto, @Req() req: Request): Promise<INewSet> {
+  create(@Body() newSet: NewSetDto, @Req() req: Request): Promise<ISavedSet> {
     return this.setsService.create(newSet, req);
   }
 
@@ -35,5 +45,10 @@ export class SetsController {
   @Get(':setId')
   findSet(@Param('setId') setId: string): Observable<ISet> {
     return this.setsService.getSet(+setId);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: number) {
+    return this.setsService.remove(+id);
   }
 }

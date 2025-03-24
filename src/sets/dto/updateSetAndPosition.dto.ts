@@ -16,7 +16,6 @@ export class UpdateSetAndPositionDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => UpdatePositionDto)
-  @ArrayNotEmpty()
   positions: UpdatePositionDto[];
 
   @IsNumber()

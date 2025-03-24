@@ -41,7 +41,7 @@ export class ClientsService {
   async update(
     id: number,
     updateClientDto: UpdateClientDto,
-    req: Request,
+    req?: Request,
   ): Promise<IClient> {
     try {
       const updateResult = await this.clientsRepo.update(id, updateClientDto);

@@ -1,11 +1,19 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
 import { PositionsService } from '../position/positions.service';
 
 @Injectable()
 export class ImagesService {
-  constructor(private positionService: PositionsService) {}
+  constructor(
+    @Inject(forwardRef(() => PositionsService))
+    private readonly positionsService: PositionsService,
+  ) {}
   async saveImage(
     userId: number,
     setId: number,
@@ -25,7 +33,7 @@ export class ImagesService {
     // const uploadPath = path.join(__dirname, '..', 'uploads'); // to zapisuje pliki w katalogu /dist
 
     try {
-      removeFolderContent(uploadPath);
+      this.removeFolderContent(uploadPath);
 
       fs.mkdirSync(uploadPath, { recursive: true });
 
@@ -34,7 +42,7 @@ export class ImagesService {
 
       fs.writeFileSync(filePath, file.buffer);
 
-      const res = await this.positionService.updateImage(
+      const res = await this.positionsService.updateImage(
         userId,
         setId,
         positionId,
@@ -48,7 +56,7 @@ export class ImagesService {
         console.error('❌ Błąd bazy danych:', error.message);
 
         // remove saved file
-        removeFolderContent(uploadPath);
+        this.removeFolderContent(uploadPath);
 
         throw new InternalServerErrorException({
           message: 'Wystąpił problem podczas aktualizacji pozycji.',
@@ -61,20 +69,24 @@ export class ImagesService {
       }
     }
   }
-}
 
-// remove folder and files inside
-const removeFolderContent = (folderPath: string) => {
-  if (fs.existsSync(folderPath)) {
-    const files = fs.readdirSync(folderPath);
-    files.forEach((file) => {
-      const filePath = path.join(folderPath, file);
-      if (fs.lstatSync(filePath).isDirectory()) {
-        removeFolderContent(filePath);
-        fs.rmdirSync(filePath);
-      } else {
-        fs.unlinkSync(filePath);
-      }
-    });
+  // remove folder and files inside
+  removeFolderContent(folderPath: string) {
+    if (fs.existsSync(folderPath)) {
+      const files = fs.readdirSync(folderPath);
+      files.forEach((file) => {
+        const filePath = path.join(folderPath, file);
+        if (fs.lstatSync(filePath).isDirectory()) {
+          this.removeFolderContent(filePath);
+          fs.rmdirSync(filePath);
+        } else {
+          fs.unlinkSync(filePath);
+        }
+      });
+    }
   }
-};
+
+  removeFolder(folderPath: string) {
+    fs.rmdirSync(folderPath);
+  }
+}

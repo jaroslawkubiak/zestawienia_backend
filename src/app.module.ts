@@ -27,6 +27,7 @@ import { ErrorsModule } from './errors/errors.module';
 import { Errors } from './errors/errors.entity';
 import { ImagesService } from './images/images.service';
 import { ImagesController } from './images/images.controller';
+import { ImagesModule } from './images/images.module';
 
 @Module({
   imports: [
@@ -69,6 +70,7 @@ import { ImagesController } from './images/images.controller';
     BookmarksModule,
     SettingsModule,
     ErrorsModule,
+    ImagesModule
   ],
   controllers: [AppController, LoginController, ImagesController],
   providers: [AppService, ImagesService],

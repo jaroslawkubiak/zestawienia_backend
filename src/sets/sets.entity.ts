@@ -22,7 +22,7 @@ export class Set {
   hash: string;
 
   @Column({ type: 'json', nullable: false })
-  bookmarks: any;  
+  bookmarks: any;
 
   @Column({ type: 'varchar', length: 50, nullable: false })
   status: string;
@@ -57,6 +57,8 @@ export class Set {
   @JoinColumn({ name: 'updatedBy', referencedColumnName: 'id' })
   updatedBy: User;
 
-  @OneToMany(() => Position, (position) => position.setId)
+  @OneToMany(() => Position, (position) => position.setId, {
+    onDelete: 'CASCADE',
+  })
   position: Position[];
 }

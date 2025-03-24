@@ -19,22 +19,38 @@ import { User } from '../user/user.entity';
 import { NewSetDto } from './dto/NewSet.dto';
 import { UpdateSetAndPositionDto } from './dto/updateSetAndPosition.dto';
 import { Set } from './sets.entity';
-import { INewSet } from './types/INewSet';
 import { ISet } from './types/ISet';
 import { SetStatus } from './types/SetStatus';
+import { ISavedSet } from './types/ISavedSet';
+import { ClientsService } from '../clients/clients.service';
+import * as path from 'path';
+import { ImagesService } from '../images/images.service';
 
 @Injectable()
 export class SetsService {
   constructor(
+    private readonly errorsService: ErrorsService,
+
     @InjectRepository(Set)
     private readonly setsRepo: Repository<Set>,
-    private readonly errorsService: ErrorsService,
+
+    @Inject(forwardRef(() => ClientsService))
+    private readonly clientsService: ClientsService,
+
+    @Inject(forwardRef(() => ImagesService))
+    private readonly imagesService: ImagesService,
+
     @Inject(forwardRef(() => PositionsService))
     private readonly positionsService: PositionsService,
   ) {}
 
   findOne(id: number): Promise<ISet> {
-    return this.setsRepo.findOneBy({ id });
+    return this.setsRepo
+      .createQueryBuilder('set')
+      .where('set.id = :id', { id: id })
+      .leftJoin('set.clientId', 'client')
+      .addSelect(['client.id'])
+      .getOne();
   }
 
   findAll(): Promise<ISet[]> {
@@ -69,7 +85,19 @@ export class SetsService {
     );
   }
 
-  async create(createSet: NewSetDto, req: Request): Promise<INewSet> {
+  async getSetsCountByClientId(clientId: number): Promise<number> {
+    const query = await this.setsRepo
+      .createQueryBuilder('set')
+      .select('COUNT(set.id)', 'setCount')
+      .where('set.clientId = :clientId', { clientId })
+      .getRawOne();
+
+    const setCount = parseInt(query.setCount, 10);
+
+    return setCount;
+  }
+
+  async create(createSet: NewSetDto, req: Request): Promise<ISavedSet> {
     try {
       const newSet: DeepPartial<Set> = {
         ...createSet,
@@ -84,14 +112,23 @@ export class SetsService {
         updatedAtTimestamp: Number(Date.now()),
       };
 
-      const savedSet = await this.setsRepo.save(newSet);
+      const response = await this.setsRepo.save(newSet);
 
-      return {
-        ...savedSet,
-        clientId: savedSet.clientId.id,
-        createdBy: savedSet.createdBy,
-        updatedBy: savedSet.updatedBy,
+      const savedSet: ISavedSet = {
+        ...response,
+        clientId: response.clientId.id,
       };
+
+      // update clients set count
+      const clientId = createSet.clientId;
+      const setCount = await this.getSetsCountByClientId(clientId);
+      const updateClient = {
+        setCount,
+      };
+
+      this.clientsService.update(clientId, updateClient);
+
+      return savedSet;
     } catch (error) {
       const newError: ErrorDto = {
         type: 'MySQL',
@@ -136,7 +173,9 @@ export class SetsService {
         throw new NotFoundException(`Set with ID ${id} not found`);
       }
 
-      await this.positionsService.update(userId, positions, req);
+      if (positions) {
+        await this.positionsService.update(userId, positions, req);
+      }
 
       // delete positions
       if (positionToDelete.length > 0) {
@@ -169,5 +208,29 @@ export class SetsService {
         details: error,
       });
     }
+  }
+
+  async remove(id: number): Promise<void> {
+    const set = await this.findOne(id);
+
+    await this.setsRepo.delete(id);
+
+    // update clients set count
+    const clientId = set.clientId.id;
+    const setCount = await this.getSetsCountByClientId(clientId);
+    const updateClient = {
+      setCount,
+    };
+    this.clientsService.update(clientId, updateClient);
+
+    // usunac wszystkie katalogi z obrazami
+    const innerPath = `/sets/${id}`;
+    const uploadPath = path.join(
+      process.cwd(),
+      process.env.UPLOADS_PATH + innerPath || 'uploads' + innerPath,
+    );
+
+    this.imagesService.removeFolderContent(uploadPath);
+    this.imagesService.removeFolder(uploadPath);
   }
 }

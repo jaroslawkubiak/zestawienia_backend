@@ -14,13 +14,13 @@ import { ErrorsService } from '../errors/errors.service';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { SetsService } from '../sets/sets.service';
 import { Supplier } from '../suppliers/suppliers.entity';
+import { SuppliersService } from '../suppliers/suppliers.service';
 import { User } from '../user/user.entity';
 import { CreateClonePositionDto } from './dto/createClonePosition.dto';
 import { CreateEmptyPositionDto } from './dto/createEmptyPosition.dto';
 import { UpdatePositionDto } from './dto/updatePosition.dto';
 import { Position } from './positions.entity';
 import { IPosition } from './types/IPosition';
-import { SuppliersService } from 'src/suppliers/suppliers.service';
 
 @Injectable()
 export class PositionsService {
@@ -34,7 +34,10 @@ export class PositionsService {
   ) {}
 
   findOne(id: number): Promise<IPosition> {
-    return this.positionsRepo.findOneBy({ id });
+    return this.positionsRepo.findOne({
+      where: { id },
+      relations: ['supplierId'],
+    });
   }
 
   getPositions(setId: number): Observable<IPosition[]> {
@@ -55,7 +58,6 @@ export class PositionsService {
       .leftJoin('position.updatedBy', 'updatedBy')
       .addSelect(['updatedBy.id', 'updatedBy.name']);
 
-    // console.log(query.getQuery());
     return from(query.getMany());
   }
 
@@ -69,7 +71,7 @@ export class PositionsService {
         const savedPosition = {
           ...position,
           updatedBy: { id: userId } as DeepPartial<User>,
-          supplierId: position.supplierId as DeepPartial<Supplier>,
+          supplierId: position?.supplierId as DeepPartial<Supplier>,
           updatedAt: getFormatedDate(),
           updatedAtTimestamp: Number(Date.now()),
         };
@@ -103,28 +105,28 @@ export class PositionsService {
 
   async updateOne(
     id: number,
-    position: UpdatePositionDto,
+    updatePosition: UpdatePositionDto,
     url: string = 'null',
   ): Promise<any> {
     try {
-      const updateResult = await this.positionsRepo.update(id, position);
-
-      //update positionCount to supplier
-      if (position.supplierId.id) {
-        const findSupplierId = position.supplierId.id;
-        const positionCount =
-          await this.getPositionsCountBySupplierId(findSupplierId);
-
-        const updateSupplier = {
-          positionCount,
-        };
-
-        await this.suppliersService.update(findSupplierId, updateSupplier);
-      }
+      const oldPosition = await this.findOne(id);
+      const oldSupplierId = oldPosition?.supplierId?.id;
+      const updateResult = await this.positionsRepo.update(id, updatePosition);
 
       if (updateResult?.affected === 0) {
         throw new NotFoundException(`Position with ID ${id} not found`);
       } else {
+        //update positionCount for new supplier
+        const findSupplierId = updatePosition?.supplierId?.id;
+        if (findSupplierId) {
+          this.updatePositionCountBySupplierId(findSupplierId);
+        }
+
+        //update positionCount for old supplier
+        if (findSupplierId !== oldSupplierId) {
+          this.updatePositionCountBySupplierId(oldSupplierId);
+        }
+
         return this.findOne(id);
       }
     } catch (error) {
@@ -217,13 +219,22 @@ export class PositionsService {
     }
   }
 
+  // delete position
   async removePosition(id: number): Promise<void> {
+    const removedPosition = await this.findOne(id);
     const result = await this.positionsRepo.delete(id);
     if (result.affected === 0) {
       throw new NotFoundException(`Position with ID ${id} not found`);
+    } else {
+      //update positionCount to supplier
+      const findSupplierId = removedPosition?.supplierId?.id;
+      if (findSupplierId) {
+        this.updatePositionCountBySupplierId(findSupplierId);
+      }
     }
   }
 
+  // when add new empty position
   async addPosition(
     createEmptyPositionDto: CreateEmptyPositionDto,
   ): Promise<IPosition> {
@@ -239,6 +250,7 @@ export class PositionsService {
     return this.positionsRepo.save(newPosition);
   }
 
+  // when clone position
   async clonePosition(
     createClonePositionDto: CreateClonePositionDto,
   ): Promise<IPosition> {
@@ -249,11 +261,18 @@ export class PositionsService {
       updatedAt: getFormatedDate(),
       updatedAtTimestamp: Number(Date.now()),
     };
-
     const newPosition = this.positionsRepo.create(positionToSave);
+
+    //update positionCount to supplier
+    const findSupplierId = positionToSave?.supplierId?.id;
+    if (findSupplierId) {
+      this.updatePositionCountBySupplierId(findSupplierId);
+    }
+
     return this.positionsRepo.save(newPosition);
   }
 
+  // count position count for supplierId
   async getPositionsCountBySupplierId(supplierId: number): Promise<number> {
     const query = await this.positionsRepo
       .createQueryBuilder('position')
@@ -264,5 +283,16 @@ export class PositionsService {
     const positionCount = parseInt(query.positionCount, 10);
 
     return positionCount;
+  }
+
+  async updatePositionCountBySupplierId(supplierId: number): Promise<void> {
+    if (!supplierId) return;
+    const positionCount = await this.getPositionsCountBySupplierId(supplierId);
+
+    const updateSupplier = {
+      positionCount,
+    };
+
+    await this.suppliersService.update(supplierId, updateSupplier);
   }
 }

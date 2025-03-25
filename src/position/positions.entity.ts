@@ -1,5 +1,3 @@
-import { Bookmark } from '../bookmarks/bookmarks.entity';
-import { User } from '../user/user.entity';
 import {
   Column,
   Entity,
@@ -8,10 +6,11 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Client } from '../clients/clients.entity';
+import { Bookmark } from '../bookmarks/bookmarks.entity';
 import { Comment } from '../comments/comments.entity';
 import { Set } from '../sets/sets.entity';
 import { Supplier } from '../suppliers/suppliers.entity';
+import { User } from '../user/user.entity';
 
 @Entity()
 export class Position {

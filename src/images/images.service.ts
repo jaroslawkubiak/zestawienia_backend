@@ -87,6 +87,8 @@ export class ImagesService {
   }
 
   removeFolder(folderPath: string) {
-    fs.rmdirSync(folderPath);
+    if (fs.existsSync(folderPath)) {
+      fs.rmdirSync(folderPath);
+    }
   }
 }

@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Position } from '../position/positions.entity';
+import { Email } from 'src/email/email.entity';
 
 @Entity('')
 export class Supplier {
@@ -29,4 +30,7 @@ export class Supplier {
 
   @OneToMany(() => Position, (position) => position.supplierId)
   position: Position[];
+
+  @OneToMany(() => Email, (email) => email.supplierId)
+  logEmail: Email;
 }

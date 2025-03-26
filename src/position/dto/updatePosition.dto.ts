@@ -13,49 +13,49 @@ export class UpdatePositionDto {
 
   @IsString()
   @IsOptional()
-  produkt: string;
+  produkt?: string;
 
   @IsString()
   @IsOptional()
-  producent: string;
+  producent?: string;
 
   @IsString()
   @IsOptional()
-  kolekcja: string;
+  kolekcja?: string;
 
   @IsString()
   @IsOptional()
-  nrKatalogowy: string;
+  nrKatalogowy?: string;
 
   @IsString()
   @IsOptional()
-  kolor: string;
+  kolor?: string;
 
   @IsNumber()
   @IsOptional()
-  ilosc: number;
+  ilosc?: number;
 
   @IsNumber()
   @IsOptional()
-  netto: number;
+  netto?: number;
 
   @IsNumber()
   kolejnosc: number;
 
   @IsString()
   @IsOptional()
-  pomieszczenie: string;
+  pomieszczenie?: string;
 
   @IsString()
   @IsOptional()
-  link: string;
+  link?: string;
 
   @IsString()
   @IsOptional()
-  image: string;
+  image?: string;
   
   @IsOptional()
   @ValidateNested({ each: true })
   @Type(() => UpdateSupplierDto)
-  supplierId: UpdateSupplierDto;
+  supplierId?: UpdateSupplierDto | null;
 }

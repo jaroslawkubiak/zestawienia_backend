@@ -13,46 +13,46 @@ import { CreateUserDto } from '../../user/dto/user.dto';
 export class CreateClonePositionDto {
   @IsString()
   @IsOptional()
-  produkt: string;
+  produkt?: string;
 
   @IsString()
   @IsOptional()
-  producent: string;
+  producent?: string;
 
   @IsString()
   @IsOptional()
-  kolekcja: string;
+  kolekcja?: string;
 
   @IsString()
   @IsOptional()
-  nrKatalogowy: string;
+  nrKatalogowy?: string;
 
   @IsString()
   @IsOptional()
-  kolor: string;
+  kolor?: string;
 
   @IsNumber()
   @IsOptional()
-  ilosc: number;
+  ilosc?: number;
 
   @IsNumber()
   @IsOptional()
-  netto: number;
+  netto?: number;
 
   @IsNumber()
   kolejnosc: number;
 
   @IsString()
   @IsOptional()
-  pomieszczenie: string;
+  pomieszczenie?: string;
 
   @IsString()
   @IsOptional()
-  link: string;
+  link?: string;
 
   @ValidateNested({ each: true })
   @Type(() => UpdateSupplierDto)
-  supplierId: UpdateSupplierDto;
+  supplierId?: UpdateSupplierDto | null;
 
   @ValidateNested({ each: true })
   @Type(() => BookmarkDto)

@@ -8,22 +8,39 @@ export class ErrorDto {
   message: string;
 
   @IsString()
-  url: string;
-
-  @IsString()
   error: string;
 
-  @IsString()
   @IsOptional()
-  query: string;
+  @IsString()
+  url?: string;
 
   @IsString()
   @IsOptional()
-  parameters: string;
+  query?: string;
 
   @IsString()
   @IsOptional()
-  sql: string;
+  parameters?: string;
+
+  @IsString()
+  @IsOptional()
+  sql?: string;
+
+  @IsNumber()
+  @IsOptional()
+  setId?: number;
+
+  @IsNumber()
+  @IsOptional()
+  recipientId?: number;
+
+  @IsString()
+  @IsOptional()
+  recipientEmail?: string;
+
+  @IsString()
+  @IsOptional()
+  link?: string;
 
   @IsString()
   createdAt: string;

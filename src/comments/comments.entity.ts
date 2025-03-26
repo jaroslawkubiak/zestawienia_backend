@@ -36,13 +36,17 @@ export class Comment {
   @JoinColumn({ name: 'positionId', referencedColumnName: 'id' })
   positionId: Position;
 
-  @ManyToOne(() => User, (user) => user.comments, { onDelete: 'SET NULL' })
+  @ManyToOne(() => User, (user) => user.comments, {
+    onDelete: 'SET NULL',
+    nullable: true,
+  })
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
-  createdByUser: User;
+  createdByUser?: User | null;
 
   @ManyToOne(() => Client, (client) => client.comments, {
     onDelete: 'SET NULL',
+    nullable: true,
   })
   @JoinColumn({ name: 'clientId', referencedColumnName: 'id' })
-  createdByClient: Client;
+  createdByClient?: Client | null;
 }

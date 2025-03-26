@@ -1,3 +1,4 @@
+import { Email } from 'src/email/email.entity';
 import { Comment } from '../comments/comments.entity';
 import { Set } from '../sets/sets.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
@@ -27,6 +28,9 @@ export class Client {
 
   @OneToMany(() => Set, (set) => set.clientId)
   set: Set[];
+
+  @OneToMany(() => Email, (email) => email.clientId)
+  logEmail: Email;
 
   @OneToMany(() => Comment, (comment) => comment.createdByClient)
   comments: Comment[];

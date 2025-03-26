@@ -7,25 +7,36 @@ export class Errors {
 
   @Column({ type: 'varchar', length: 20, nullable: false })
   type: string;
-  // db, email, DDTO etc
 
   @Column({ type: 'text', nullable: false })
   message: string;
 
-  @Column({ type: 'varchar', length: 200, nullable: false })
-  url: string;
-
   @Column({ type: 'text', nullable: false })
   error: string;
 
-  @Column({ type: 'text', nullable: false })
-  query: string;
+  @Column({ type: 'varchar', length: 200, nullable: true })
+  url?: string | null;
 
-  @Column({ type: 'text', nullable: false })
-  parameters: string;
+  @Column({ type: 'text', nullable: true })
+  query?: string | null;
 
-  @Column({ type: 'text', nullable: false })
-  sql: string;
+  @Column({ type: 'text', nullable: true })
+  parameters?: string | null;
+
+  @Column({ type: 'text', nullable: true })
+  sql?: string | null;
+
+  @Column({ type: 'int', nullable: true })
+  setId?: number | null;
+
+  @Column({ type: 'int', nullable: true })
+  recipientId?: number | null;
+
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  recipientEmail?: string | null;
+
+  @Column({ type: 'text', nullable: true })
+  link?: string | null;
 
   @Column({ type: 'varchar', length: 50, nullable: false })
   createdAt: string;

@@ -19,11 +19,11 @@ export class CreateSupplierDto {
 
   @IsString()
   @IsOptional()
-  telefon: string;
+  telefon?: string;
 
   @IsString()
   @IsOptional()
-  hash: string;
+  hash?: string;
 
   @IsNumber()
   @IsOptional()

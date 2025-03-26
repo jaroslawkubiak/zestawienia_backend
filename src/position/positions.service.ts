@@ -21,6 +21,7 @@ import { CreateEmptyPositionDto } from './dto/createEmptyPosition.dto';
 import { UpdatePositionDto } from './dto/updatePosition.dto';
 import { Position } from './positions.entity';
 import { IPosition } from './types/IPosition';
+import { ErrorsType } from 'src/errors/types/Errors';
 
 @Injectable()
 export class PositionsService {
@@ -80,8 +81,8 @@ export class PositionsService {
       });
     } catch (error) {
       const newError: ErrorDto = {
-        type: 'MySQL',
-        message: 'Positions: Błąd bazy danych',
+        type: ErrorsType.sql,
+        message: 'Position: update()',
         url: req.originalUrl,
         error: JSON.stringify(error.message) || 'null',
         query: JSON.stringify(error.query) || 'null',
@@ -131,8 +132,8 @@ export class PositionsService {
       }
     } catch (error) {
       const newError: ErrorDto = {
-        type: 'MySQL',
-        message: 'Positions: Błąd bazy danych',
+        type: ErrorsType.sql,
+        message: 'Position: updateOne()',
         url,
         error: JSON.stringify(error.message) || 'null',
         query: JSON.stringify(error.query) || 'null',
@@ -196,8 +197,8 @@ export class PositionsService {
     } catch (error) {
       const url = `/images/${setId}/${positionId}`;
       const newError: ErrorDto = {
-        type: 'MySQL',
-        message: 'Images: Błąd bazy danych',
+        type: ErrorsType.sql,
+        message: 'Images: updateImage()',
         url,
         error: JSON.stringify(error.message) || 'null',
         query: JSON.stringify(error.query) || 'null',

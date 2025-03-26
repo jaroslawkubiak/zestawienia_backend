@@ -86,9 +86,10 @@ export class Position {
 
   @ManyToOne(() => Supplier, (supplier) => supplier.position, {
     onDelete: 'SET NULL',
+    nullable: true,
   })
   @JoinColumn({ name: 'supplierId', referencedColumnName: 'id' })
-  supplierId: Supplier;
+  supplierId?: Supplier | null;
 
   @ManyToOne(() => User, (user) => user.createdSet, {
     onDelete: 'SET NULL',

@@ -10,4 +10,7 @@ export class Setting {
 
   @Column({ type: 'varchar', length: 150, nullable: false })
   value: string;
+
+  @Column({ type: 'json', nullable: false })
+  json: any;
 }

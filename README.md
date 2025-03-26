@@ -29,9 +29,8 @@ Edycja zestawienia:
 [x] update cen gdy zmienimy ilosc lub cene netto
 [x] update footera z sumami poszczególnych kolumn
 [x] wysyłanie obrazów do katalogów /uploads/sets/SETID/POSITIONID/ FILENAME
-[ ] przy edycji pozycji - aktualizacja positionCount w dostawcach
+[x] przy edycji pozycji - aktualizacja positionCount w dostawcach
 
-[ ] hash łączony z id zestawienia do podglądu dla klientów np: /:id_zestawienia/:hash_zestawienia
 [x] statusy do zestawień: w przygotowaniu, gotowy, otwarty, w realizacji, zamknięty
 
 Klienci:
@@ -50,9 +49,23 @@ Ustawienia:
 [ ] dodawanie/usuwanie produktow
 [ ] lista kolumn widocznych w danej kategorii zestawienia (lub na stałe w kodzie)
 [ ] domyślna szerokość kolumn pozycji ładoawna z DB, a nie z const
+[ ] edycja wiadomości email do klientów
+[ ] edycja wiadomości email do dostawców
 
 Pozycje:
 [x] dodać createBy, updateBy, CreateDate, UpdateDate, createTimestamp, updateTimestamp
+
+Emails:
+[x] wysyłka email z linkiem do zestawienia do klientów (setId/setHash)
+[ ] działający link bez logowania hash łączony z id zestawienia do podglądu dla klientów np: /:id_zestawienia/:hash_zestawienia
+[ ] wysyłka email z linkiem do części pozycji do której przypisany jest dostawaca (/setId/setHash/SupplierHash)
+[ ] lista wysłanych emaili do klientów
+[ ] przed wysyłką możliwa edycja wiadomości?
+
+comments:
+[ ] dodawanie komentarzy przez klientów
+[ ] notyfikacja o nowych komentarzach
+[ ] odpowiedź na komentarze w formie iMessage :)
 
 DB:
 [x] zestawienia nagłówek: id, nr zestawienia, id klienta, id usera, data dodania (w czytelnym formacie), created by, create date (timestamp), update by, updated date (timestamp)
@@ -68,7 +81,6 @@ issue:
 [x] klienci i dostawcy - form nie walidny - pokaż errors,
 [x] przerobić form klientów i dostawców na nowy styl z new set
 [x] oznaczyć pola obowiązkowe
-
 
 generowanie PDF! :(
 wysyłka zestawień do wybranego dostawcy, do różnych dostawców, linki z hashami dostawców i id zestawienia

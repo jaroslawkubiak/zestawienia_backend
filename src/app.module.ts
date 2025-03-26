@@ -11,6 +11,14 @@ import { Client } from './clients/clients.entity';
 import { ClientsModule } from './clients/clients.module';
 import { Comment } from './comments/comments.entity';
 import { CommentsModule } from './comments/comments.module';
+import { Email } from './email/email.entity';
+import { EmailModule } from './email/email.module';
+import { EmailService } from './email/email.service';
+import { Errors } from './errors/errors.entity';
+import { ErrorsModule } from './errors/errors.module';
+import { ImagesController } from './images/images.controller';
+import { ImagesModule } from './images/images.module';
+import { ImagesService } from './images/images.service';
 import { Position } from './position/positions.entity';
 import { PositionsModule } from './position/positions.module';
 import { Product } from './products/products.entity';
@@ -23,11 +31,6 @@ import { Supplier } from './suppliers/suppliers.entity';
 import { SuppliersModule } from './suppliers/suppliers.module';
 import { User } from './user/user.entity';
 import { UserModule } from './user/user.module';
-import { ErrorsModule } from './errors/errors.module';
-import { Errors } from './errors/errors.entity';
-import { ImagesService } from './images/images.service';
-import { ImagesController } from './images/images.controller';
-import { ImagesModule } from './images/images.module';
 
 @Module({
   imports: [
@@ -54,6 +57,7 @@ import { ImagesModule } from './images/images.module';
           Bookmark,
           Setting,
           Errors,
+          Email,
         ],
         synchronize:
           configService.get<string>('TYPEORM_SYNCHRONIZE') === 'true',
@@ -70,7 +74,8 @@ import { ImagesModule } from './images/images.module';
     BookmarksModule,
     SettingsModule,
     ErrorsModule,
-    ImagesModule
+    ImagesModule,
+    EmailModule,
   ],
   controllers: [AppController, LoginController, ImagesController],
   providers: [AppService, ImagesService],

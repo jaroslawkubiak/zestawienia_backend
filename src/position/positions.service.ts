@@ -11,6 +11,7 @@ import { from, Observable } from 'rxjs';
 import { DeepPartial, Repository } from 'typeorm';
 import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
+import { ErrorsType } from '../errors/types/Errors';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { SetsService } from '../sets/sets.service';
 import { Supplier } from '../suppliers/suppliers.entity';
@@ -21,7 +22,6 @@ import { CreateEmptyPositionDto } from './dto/createEmptyPosition.dto';
 import { UpdatePositionDto } from './dto/updatePosition.dto';
 import { Position } from './positions.entity';
 import { IPosition } from './types/IPosition';
-import { ErrorsType } from 'src/errors/types/Errors';
 
 @Injectable()
 export class PositionsService {

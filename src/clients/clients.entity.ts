@@ -1,7 +1,7 @@
-import { Email } from 'src/email/email.entity';
-import { Comment } from '../comments/comments.entity';
-import { Set } from '../sets/sets.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Comment } from '../comments/comments.entity';
+import { Email } from '../email/email.entity';
+import { Set } from '../sets/sets.entity';
 
 @Entity('')
 export class Client {

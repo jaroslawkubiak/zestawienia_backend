@@ -8,8 +8,8 @@ import {
 import { Response } from 'express';
 import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
+import { ErrorsType } from '../errors/types/Errors';
 import { getFormatedDate } from '../helpers/getFormatedDate';
-import { ErrorsType } from 'src/errors/types/Errors';
 
 @Catch(BadRequestException)
 export class ValidationExceptionFilter implements ExceptionFilter {

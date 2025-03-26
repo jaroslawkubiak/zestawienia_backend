@@ -4,15 +4,15 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Request } from 'express';
 import { Repository } from 'typeorm';
+import { ErrorDto } from '../errors/dto/error.dto';
+import { ErrorsService } from '../errors/errors.service';
+import { ErrorsType } from '../errors/types/Errors';
+import { getFormatedDate } from '../helpers/getFormatedDate';
 import { Client } from './clients.entity';
 import { CreateClientDto, UpdateClientDto } from './dto/client.dto';
 import { IClient } from './types/IClient';
-import { getFormatedDate } from '../helpers/getFormatedDate';
-import { ErrorsService } from '../errors/errors.service';
-import { ErrorDto } from '../errors/dto/error.dto';
-import { Request } from 'express';
-import { ErrorsType } from 'src/errors/types/Errors';
 
 @Injectable()
 export class ClientsService {

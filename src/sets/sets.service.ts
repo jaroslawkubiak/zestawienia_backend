@@ -7,25 +7,25 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
+import * as path from 'path';
 import { from, Observable, of, switchMap, throwError } from 'rxjs';
 import { DeepPartial, Repository } from 'typeorm';
 import { Client } from '../clients/clients.entity';
+import { ClientsService } from '../clients/clients.service';
 import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
+import { ErrorsType } from '../errors/types/Errors';
 import { generateHash } from '../helpers/generateHash';
 import { getFormatedDate } from '../helpers/getFormatedDate';
+import { ImagesService } from '../images/images.service';
 import { PositionsService } from '../position/positions.service';
 import { User } from '../user/user.entity';
 import { NewSetDto } from './dto/NewSet.dto';
 import { UpdateSetAndPositionDto } from './dto/updateSetAndPosition.dto';
 import { Set } from './sets.entity';
+import { ISavedSet } from './types/ISavedSet';
 import { ISet } from './types/ISet';
 import { SetStatus } from './types/SetStatus';
-import { ISavedSet } from './types/ISavedSet';
-import { ClientsService } from '../clients/clients.service';
-import * as path from 'path';
-import { ImagesService } from '../images/images.service';
-import { ErrorsType } from 'src/errors/types/Errors';
 
 @Injectable()
 export class SetsService {

@@ -1,6 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Email } from '../email/email.entity';
 import { Position } from '../position/positions.entity';
-import { Email } from 'src/email/email.entity';
 
 @Entity('')
 export class Supplier {

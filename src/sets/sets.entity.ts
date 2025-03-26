@@ -7,9 +7,9 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Client } from '../clients/clients.entity';
+import { Email } from '../email/email.entity';
 import { Position } from '../position/positions.entity';
 import { User } from '../user/user.entity';
-import { Email } from 'src/email/email.entity';
 
 @Entity()
 export class Set {

@@ -25,6 +25,7 @@ import { ISavedSet } from './types/ISavedSet';
 import { ClientsService } from '../clients/clients.service';
 import * as path from 'path';
 import { ImagesService } from '../images/images.service';
+import { ErrorsType } from 'src/errors/types/Errors';
 
 @Injectable()
 export class SetsService {
@@ -131,8 +132,8 @@ export class SetsService {
       return savedSet;
     } catch (error) {
       const newError: ErrorDto = {
-        type: 'MySQL',
-        message: 'Sets: Błąd bazy danych',
+        type: ErrorsType.sql,
+        message: 'Set: create()',
         url: req.originalUrl,
         error: JSON.stringify(error.message) || 'null',
         query: JSON.stringify(error.query) || 'null',
@@ -187,8 +188,8 @@ export class SetsService {
       return this.findOne(id);
     } catch (error) {
       const newError: ErrorDto = {
-        type: 'MySQL',
-        message: 'Sets: Błąd bazy danych',
+        type: ErrorsType.sql,
+        message: 'Sets: update()',
         url: req?.originalUrl,
         error: JSON.stringify(error.message) || 'null',
         query: JSON.stringify(error.query) || 'null',

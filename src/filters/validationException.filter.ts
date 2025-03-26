@@ -9,6 +9,7 @@ import { Response } from 'express';
 import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
 import { getFormatedDate } from '../helpers/getFormatedDate';
+import { ErrorsType } from 'src/errors/types/Errors';
 
 @Catch(BadRequestException)
 export class ValidationExceptionFilter implements ExceptionFilter {
@@ -21,7 +22,7 @@ export class ValidationExceptionFilter implements ExceptionFilter {
 
     try {
       const newError: ErrorDto = {
-        type: 'DTO',
+        type: ErrorsType.dto,
         message:
           JSON.stringify(exception.getResponse()['message']) ||
           'Błąd walidacji',

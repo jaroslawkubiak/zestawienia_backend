@@ -22,7 +22,7 @@ export interface IPosition {
   createdAtTimestamp: number;
   updatedAt: string;
   updatedAtTimestamp: number;
-  supplierId: ISupplier;
+  supplierId?: ISupplier;
   bookmarkId: IBookmark;
   createdBy: IUser;
   updatedBy: IUser;

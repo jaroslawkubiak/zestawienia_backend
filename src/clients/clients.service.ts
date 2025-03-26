@@ -12,6 +12,7 @@ import { getFormatedDate } from '../helpers/getFormatedDate';
 import { ErrorsService } from '../errors/errors.service';
 import { ErrorDto } from '../errors/dto/error.dto';
 import { Request } from 'express';
+import { ErrorsType } from 'src/errors/types/Errors';
 
 @Injectable()
 export class ClientsService {
@@ -53,8 +54,8 @@ export class ClientsService {
       }
     } catch (error) {
       const newError: ErrorDto = {
-        type: 'MySQL',
-        message: 'Clients: Błąd bazy danych',
+        type: ErrorsType.sql,
+        message: 'Client: update()',
         url: req.originalUrl,
         error: JSON.stringify(error.message) || 'null',
         query: JSON.stringify(error.query) || 'null',

@@ -37,7 +37,7 @@ export class EmailService {
       from: process.env.EMAIL_USER,
       to,
       subject,
-      text: content,
+      html: content,
     };
 
     try {

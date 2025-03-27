@@ -98,6 +98,17 @@ status pozycji:
 - w trakcie wyceny (czerwony)
   to może się przydać Conditional Style
 
+obgadać:
+- statusy, kiedy jaki ma się zmienić
+- email: tytuły i treść emaili do klientów i dostawców
+- skąd wysyłać email do dostawcy? gdzie guzik?
+- upload dodatkowych plików do zestawień
+- KOLORY! Design itp :)
+- jaki design dla klientów? jaki layout?
+
+
+
+
 npx typeorm-model-generator -h localhost -d zestawienia -u root -x -e mysql
 
 pm2 start dist/main.js --name zestawienia

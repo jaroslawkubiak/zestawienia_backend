@@ -228,7 +228,7 @@ export class SetsService {
     const innerPath = `/sets/${id}`;
     const uploadPath = path.join(
       process.cwd(),
-      process.env.UPLOADS_PATH + innerPath || 'uploads' + innerPath,
+      process.env.UPLOAD_PATH + innerPath || 'uploads' + innerPath,
     );
 
     this.imagesService.removeFolderContent(uploadPath);

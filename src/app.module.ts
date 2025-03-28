@@ -31,6 +31,8 @@ import { Supplier } from './suppliers/suppliers.entity';
 import { SuppliersModule } from './suppliers/suppliers.module';
 import { User } from './user/user.entity';
 import { UserModule } from './user/user.module';
+import { FilesController } from './files/files.controller';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -76,8 +78,9 @@ import { UserModule } from './user/user.module';
     ErrorsModule,
     ImagesModule,
     EmailModule,
+    FilesModule,
   ],
-  controllers: [AppController, LoginController, ImagesController],
+  controllers: [AppController, LoginController, ImagesController, FilesController],
   providers: [AppService, ImagesService],
 })
 export class AppModule {}

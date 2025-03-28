@@ -28,7 +28,7 @@ export class ImagesService {
 
     const uploadPath = path.join(
       process.cwd(),
-      process.env.UPLOADS_PATH + innerPath || 'uploads' + innerPath,
+      process.env.UPLOAD_PATH + innerPath || 'uploads' + innerPath,
     );
     // const uploadPath = path.join(__dirname, '..', 'uploads'); // to zapisuje pliki w katalogu /dist
 

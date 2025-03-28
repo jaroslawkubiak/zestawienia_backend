@@ -30,7 +30,7 @@ async function bootstrap() {
   app.use(
     '/uploads',
     express.static(
-      path.join(process.cwd(), process.env.UPLOADS_PATH, '..', 'uploads'),
+      path.join(process.cwd(), process.env.UPLOAD_PATH, '..', 'uploads'),
     ),
   );
 

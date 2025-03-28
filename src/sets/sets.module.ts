@@ -10,11 +10,13 @@ import { Set } from './sets.entity';
 import { SetsService } from './sets.service';
 import { ClientsModule } from '../clients/clients.module';
 import { ImagesModule } from '../images/images.module';
+import { FilesModule } from '../files/files.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Set, User, Position, Comment]),
     ErrorsModule,
+    FilesModule,
     forwardRef(() => ImagesModule),
     forwardRef(() => PositionsModule), // Używamy forwardRef, aby rozwiązać cykliczną zależność
     forwardRef(() => ClientsModule),

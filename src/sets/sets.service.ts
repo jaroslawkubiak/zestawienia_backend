@@ -26,6 +26,7 @@ import { Set } from './sets.entity';
 import { ISavedSet } from './types/ISavedSet';
 import { ISet } from './types/ISet';
 import { SetStatus } from './types/SetStatus';
+import { FilesService } from '../files/files.service';
 
 @Injectable()
 export class SetsService {
@@ -43,6 +44,7 @@ export class SetsService {
 
     @Inject(forwardRef(() => PositionsService))
     private readonly positionsService: PositionsService,
+    private filesService: FilesService,
   ) {}
 
   findOne(id: number): Promise<ISet> {
@@ -54,8 +56,8 @@ export class SetsService {
       .getOne();
   }
 
-  findAll(): Promise<ISet[]> {
-    return this.setsRepo
+  async findAll(): Promise<ISet[]> {
+    const set = await this.setsRepo
       .createQueryBuilder('set')
       .leftJoin('set.clientId', 'client')
       .addSelect(['client.firma', 'client.email'])
@@ -64,25 +66,36 @@ export class SetsService {
       .leftJoin('set.updatedBy', 'updatedBy')
       .addSelect(['updatedBy.name'])
       .getMany();
+
+    const updatedSet = set.map((item) => {
+      const files = this.filesService.getFileList(item.id);
+      return { ...item, files };
+    });
+
+    return updatedSet;
   }
   //.orderBy('set.id', 'DESC')
 
   getSet(setId: number): Observable<ISet> {
-    const query = this.setsRepo
-      .createQueryBuilder('set')
-      .where('set.id = :id', { id: setId })
-      .leftJoin('set.clientId', 'client')
-      .addSelect(['client.id', 'client.firma', 'client.email'])
-      .leftJoin('set.createdBy', 'createdBy')
-      .addSelect(['createdBy.id', 'createdBy.name'])
-      .leftJoin('set.updatedBy', 'updatedBy')
-      .addSelect(['updatedBy.id', 'updatedBy.name']);
-
-    // console.log(query.getQuery());
-    return from(query.getOne()).pipe(
-      switchMap((set) =>
-        set ? of(set) : throwError(() => new Error('Set not found')),
-      ),
+    return from(
+      this.setsRepo
+        .createQueryBuilder('set')
+        .where('set.id = :id', { id: setId })
+        .leftJoin('set.clientId', 'client')
+        .addSelect(['client.id', 'client.firma', 'client.email'])
+        .leftJoin('set.createdBy', 'createdBy')
+        .addSelect(['createdBy.id', 'createdBy.name'])
+        .leftJoin('set.updatedBy', 'updatedBy')
+        .addSelect(['updatedBy.id', 'updatedBy.name'])
+        .getOne(),
+    ).pipe(
+      switchMap((set) => {
+        if (!set) {
+          return throwError(() => new Error('Set not found'));
+        }
+        const files = this.filesService.getFileList(setId);
+        return of({ ...set, files });
+      }),
     );
   }
 

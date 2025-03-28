@@ -66,6 +66,6 @@ export class FilesController {
   // Endpoint do pobierania listy plików w katalogu
   @Get('list/:setId')
   getFileList(@Param('setId') setId: string) {
-    return this.filesService.getFileList(setId);
+    return this.filesService.getFileList(+setId);
   }
 }

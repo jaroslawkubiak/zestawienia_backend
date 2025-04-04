@@ -27,6 +27,7 @@ import { ISavedSet } from './types/ISavedSet';
 import { ISet } from './types/ISet';
 import { SetStatus } from './types/SetStatus';
 import { FilesService } from '../files/files.service';
+import { IFileList } from '../files/types/IFileList';
 
 @Injectable()
 export class SetsService {
@@ -68,7 +69,7 @@ export class SetsService {
       .getMany();
 
     const updatedSet = set.map((item) => {
-      const files = this.filesService.getFileList(item.id);
+      const files: IFileList = this.filesService.getFileList(item.id);
       return { ...item, files };
     });
 

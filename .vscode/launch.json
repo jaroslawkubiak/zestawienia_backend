@@ -14,7 +14,10 @@
       "restart": true,
       "outputCapture": "std",
       "name": "Zestawienia",
-      "skipFiles": ["<node_internals>/**", "${workspaceFolder}/*/node_modules/**"],
+      "skipFiles": [
+        "<node_internals>/**",
+        "${workspaceFolder}/*/node_modules/**"
+      ],
       "program": "${workspaceFolder}/index.js",
       "cwd": "${workspaceFolder}/",
       "env": {
@@ -24,6 +27,5 @@
         "KEEP_ALIVE_ACTIVE_SOCKET_TIMEOUT": "600000"
       }
     },
-
   ]
 }

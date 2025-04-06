@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -15,6 +16,7 @@ import { extname } from 'path';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { FilesService } from './files.service';
 import { IFileList } from './types/IFileList';
+import { IFileToRemove } from './types/IFileToRemove';
 
 @Controller('files')
 export class FilesController {
@@ -73,9 +75,24 @@ export class FilesController {
     };
   }
 
-  // Endpoint do pobierania listy plików w katalogu
-  @Get('list/:setId')
+  // get files list from set id dir
+  @Get(':setId')
   getFileList(@Param('setId') setId: string): IFileList {
     return this.filesService.getFileList(+setId);
+  }
+
+  // delete files from set id dir
+  @Delete(':setId/:path/:fileName')
+  remove(
+    @Param('setId') setId: string,
+    @Param('path') path: string,
+    @Param('fileName') fileName: string,
+  ) {
+    const fileToRemove: IFileToRemove = {
+      setId,
+      fileName,
+      path,
+    };
+    return this.filesService.deleteFile(fileToRemove);
   }
 }

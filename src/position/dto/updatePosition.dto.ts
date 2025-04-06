@@ -53,7 +53,11 @@ export class UpdatePositionDto {
   @IsString()
   @IsOptional()
   image?: string;
-  
+
+  @IsString()
+  @IsOptional()
+  status?: string;
+
   @IsOptional()
   @ValidateNested({ each: true })
   @Type(() => UpdateSupplierDto)

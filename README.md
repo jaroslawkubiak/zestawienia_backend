@@ -82,19 +82,14 @@ issue:
 [x] przerobić form klientów i dostawców na nowy styl z new set
 [x] oznaczyć pola obowiązkowe
 
-generowanie PDF! :(
+[x] generowanie PDF! :)
 wysyłka zestawień do wybranego dostawcy, do różnych dostawców, linki z hashami dostawców i id zestawienia
-klonowanie pozycji
 
 akcje: na liście pozycji
 
-- usunięcie
-- klonowanie pozycji (pytanie czy bezpośrednio pod spodem czy na końcu listy)
-
 status pozycji:
-
 - do wyboru (różowy)
-- zapłacony/zamóiony (zielony)
+- zapłacony/zamówiony (zielony)
 - w trakcie wyceny (czerwony)
   to może się przydać Conditional Style
 

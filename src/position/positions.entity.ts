@@ -51,6 +51,9 @@ export class Position {
   image: string;
 
   @Column({ type: 'varchar', length: 50, nullable: true })
+  status: string;
+
+  @Column({ type: 'varchar', length: 50, nullable: true })
   acceptedStatus: string;
 
   @Column({ type: 'varchar', length: 50, nullable: true })

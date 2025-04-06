@@ -15,6 +15,7 @@ export interface IPosition {
   pomieszczenie: string;
   link: string;
   image: string;
+  status: string;
   acceptedAt: string;
   acceptedAtTimestamp: number;
   acceptedStatus: string;

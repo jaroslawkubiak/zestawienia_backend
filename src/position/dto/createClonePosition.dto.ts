@@ -50,6 +50,10 @@ export class CreateClonePositionDto {
   @IsOptional()
   link?: string;
 
+  @IsString()
+  @IsOptional()
+  status?: string;
+
   @IsOptional()
   @ValidateNested()
   @Type(() => UpdateSupplierDto)

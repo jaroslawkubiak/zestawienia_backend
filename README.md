@@ -4,7 +4,7 @@ TODO LIST
 
 Zakładka zestawienia:
 [x] Lista zestawień klientów
-[ ] checkbox do pokaza statusu zamkniętych zestawień (domyślnie zamknięte nie będą pobierane)
+[ ] checkbox do pokazania statusu zamkniętych zestawień (domyślnie zamknięte nie będą pobierane)
 
 Nowe zestawienie
 [x] dodawanie nowego zestawienia
@@ -13,25 +13,51 @@ Nowe zestawienie
 [x] aktualizacja setCount w klientach
 
 Edycja zestawienia:
+[x] zmiana pozycji poprzed drag and drop i update property kolejność w db
+[x] domyślnie sortowanie po kolejności gdy wyświetlane są pozycje
+[x] dodanie pustej pozycji
+[x] dodanie pustej pozycji gdy na zakładce nie ma ani jednej pozycji
+[x] klonowanie wybranej pozycji
+[x] usuwanie pozycji
+[x] update cen gdy zmienimy ilosc lub cene netto
+[x] przy edycji pozycji - aktualizacja positionCount w dostawcach
+[x] statusy do zestawień: w przygotowaniu, gotowy, otwarty, w realizacji, zamknięty
+[x] status pozycji: (inne tło w zależności od statusu)
+
+- do wyboru (różowy)
+- zapłacony/zamówiony (zielony)
+- w trakcie wyceny (czerwony)
+
+Edycja nagłówka zestawienia:
 [x] zmiana statusu
 [x] zmiana ilości zakładek (bookmarks)
 [x] obiekt z szerokościami zapisywany na etapie dodawania nowego zestawienia z domyślnymi wartościami
 [x] odczyt i zapis szerokości kolumn dla każdej zakładki i dla każdego zestawienia
 [x] dołączyć listę szerokości do obiektu bookmarks w zestwieniach
-[x] zmiana pozycji poprzed drag and drop i update property kolejność w db
-[x] domyślnie sortowanie po kolejności gdy wyświetlane są pozycje
-[ ] filtrowanie pozycji po zapisie, tylko faktycznie edytowane pozycje wysyłać na backend, aby nie ustawiać wszędzie updatedAt dla niezmienionych pozycji
-[x] dodanie pustej pozycji
-[x] dodanie pustej pozycji gdy na zakładce nie ma ani jednej pozycji
-[x] klonowanie wybranej pozycji
-[x] usuwanie pozycji
-[x] obliczanie ceny brutto, wartości netto i wartości brutto
-[x] update cen gdy zmienimy ilosc lub cene netto
-[x] update footera z sumami poszczególnych kolumn
-[x] wysyłanie obrazów do katalogów /uploads/sets/SETID/POSITIONID/ FILENAME
-[x] przy edycji pozycji - aktualizacja positionCount w dostawcach
 
-[x] statusy do zestawień: w przygotowaniu, gotowy, otwarty, w realizacji, zamknięty
+Footer zestawienia:
+[x] obliczanie ceny brutto, wartości netto i wartości brutto
+[x] update footera z sumami poszczególnych kolumn
+
+Załączniki zestawienia:
+[x] wysyłanie obrazów i innych plikó do katalogów /uploads/sets/SETID/POSITIONID/ FILENAME
+[x] podgląd minatur pliku pdf
+[x] pobieranie załączników na dysk
+[x] usuwanie załączników
+
+Generowanie zestawienia w formie PDF:
+[x] generowanie PDF! :)
+[x] umieszczanie obrazów w odpowiedniej kolumnie
+[x] nagłowek i stopka na każdej stronie pdf
+[x] footer z podsumowaniem tylko na końcu tabeli - nie na każdej stronie
+[x] przy generowaniu pdf możliwe 3 scenariusze: 1 - otwiera pdf w nowej zakłądce, 2 - zapisuje pdf na dysku, 3 - wysyła pdf na serwer ftp
+[x] różne tło wiersza w zależności od statusu
+
+Emails:
+[x] wysyłka zestawienia via email w postaci HTML do klienta z linkiem do podglądu
+[x] wysyłka zestawień do wybranego dostawcy, do różnych dostawców, linki z hashami dostawców i id zestawienia
+[x] generowanie menu z listą dostawców dla danego zestawienia - po zmianie i zapisaniu zmian, menu się odświeża
+[x] data ostatniego wysłanego emaila do klienta i dostawców w menu
 
 Klienci:
 [x] dodawanie nowych klientów
@@ -52,13 +78,10 @@ Ustawienia:
 [ ] edycja wiadomości email do klientów
 [ ] edycja wiadomości email do dostawców
 
-Pozycje:
-[x] dodać createBy, updateBy, CreateDate, UpdateDate, createTimestamp, updateTimestamp
-
 Emails:
 [x] wysyłka email z linkiem do zestawienia do klientów (setId/setHash)
 [ ] działający link bez logowania hash łączony z id zestawienia do podglądu dla klientów np: /:id_zestawienia/:hash_zestawienia
-[ ] wysyłka email z linkiem do części pozycji do której przypisany jest dostawaca (/setId/setHash/SupplierHash)
+[x] wysyłka email z linkiem do części pozycji do której przypisany jest dostawaca (/setId/setHash/SupplierHash)
 [ ] lista wysłanych emaili do klientów
 [ ] przed wysyłką możliwa edycja wiadomości?
 
@@ -73,36 +96,24 @@ DB:
 [x] users: imie, login, haslo
 [x] klienci: id, imie, nazwisko, email, inne kolumny?
 [x] komentarze: id, productid, zestawienie id, comment, createBy, createDate, date timestamp
-[ ] rejestracja wysłanych emaili do klientów i dostawców
+[x] rejestracja wysłanych emaili do klientów i dostawców
 [x] imię i nazwisko klienta, email, nr zestawienia generowany autmatycznie, hash (20 znaków) do podglądu generowany automatycznie
+[x] Pozycje: dodać createBy, updateBy, CreateDate, UpdateDate, createTimestamp, updateTimestamp
 
 issue:
 [x] zmiana dostawcy w zestawieniach na ostatniej pozycji - menu się chowa pod tabele
 [x] klienci i dostawcy - form nie walidny - pokaż errors,
 [x] przerobić form klientów i dostawców na nowy styl z new set
 [x] oznaczyć pola obowiązkowe
-
-[x] generowanie PDF! :)
-wysyłka zestawień do wybranego dostawcy, do różnych dostawców, linki z hashami dostawców i id zestawienia
-
-akcje: na liście pozycji
-
-status pozycji:
-- do wyboru (różowy)
-- zapłacony/zamówiony (zielony)
-- w trakcie wyceny (czerwony)
-  to może się przydać Conditional Style
+[x] footer w pdf wkleja się na każdej stronie zamiast po całej tabeli
 
 obgadać:
+
 - statusy, kiedy jaki ma się zmienić
 - email: tytuły i treść emaili do klientów i dostawców
-- skąd wysyłać email do dostawcy? gdzie guzik?
-- upload dodatkowych plików do zestawień
+- edycja emaila przed wysyłką?
 - KOLORY! Design itp :)
 - jaki design dla klientów? jaki layout?
-
-
-
 
 npx typeorm-model-generator -h localhost -d zestawienia -u root -x -e mysql
 

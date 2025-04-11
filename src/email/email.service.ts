@@ -1,6 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as nodemailer from 'nodemailer';
+import { from, Observable } from 'rxjs';
 import { Repository } from 'typeorm';
 import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
@@ -43,22 +44,22 @@ export class EmailService {
     try {
       const info = await this.transporter.sendMail(mailOptions);
 
-      if(info.response.includes('OK')) {
+      if (info.response.includes('OK')) {
         // log email in DB
         const newEmailLog: LogEmailDto = {
           ...emailDetails,
-        sendAt: getFormatedDate(),
-        sendAtTimestamp: Number(Date.now()),
-        sendBy: { id: emailDetails.userId } as CreateIdDto,
-        setId: { id: emailDetails.setId } as CreateIdDto,
-        clientId: emailDetails?.clientId
-          ? { id: emailDetails?.clientId }
-          : (null as CreateIdDto),
+          sendAt: getFormatedDate(),
+          sendAtTimestamp: Number(Date.now()),
+          sendBy: { id: emailDetails.userId } as CreateIdDto,
+          setId: { id: emailDetails.setId } as CreateIdDto,
+          clientId: emailDetails?.clientId
+            ? { id: emailDetails?.clientId }
+            : (null as CreateIdDto),
           supplierId: emailDetails?.supplierId
-          ? { id: emailDetails?.supplierId }
-          : (null as CreateIdDto),
+            ? { id: emailDetails?.supplierId }
+            : (null as CreateIdDto),
         };
-        
+
         await this.create(newEmailLog);
       }
 
@@ -94,5 +95,43 @@ export class EmailService {
   async create(emailLog: LogEmailDto): Promise<IEmailLog> {
     const newLog = this.emailRepo.create(emailLog);
     return this.emailRepo.save(newLog);
+  }
+
+  findAll(): Promise<Email[]> {
+    return this.emailRepo.find({
+      order: {
+        id: 'DESC',
+      },
+    });
+  }
+
+  findOne(setId: number): Observable<Email[]> {
+    const query = this.emailRepo
+      .createQueryBuilder('email')
+      .leftJoinAndSelect('email.clientId', 'client')
+      .leftJoinAndSelect('email.supplierId', 'supplier')
+      .leftJoinAndSelect('email.sendBy', 'user')
+      .select([
+        'email.id',
+        'email.link',
+        'email.sendAt',
+        'email.sendAtTimestamp',
+        'email.setId',
+
+        'client.id',
+        'client.firma',
+        'client.email',
+
+        'supplier.id',
+        'supplier.firma',
+        'supplier.email',
+
+        'user.id',
+        'user.name',
+      ])
+      .where('email.setId.id = :setId', { setId: setId })
+      .orderBy('email.id', 'DESC');
+
+    return from(query.getMany());
   }
 }

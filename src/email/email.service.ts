@@ -97,12 +97,30 @@ export class EmailService {
     return this.emailRepo.save(newLog);
   }
 
-  findAll(): Promise<Email[]> {
-    return this.emailRepo.find({
-      order: {
-        id: 'DESC',
-      },
-    });
+  findAll(): Observable<Email[]> {
+    const query = this.emailRepo
+      .createQueryBuilder('email')
+      .leftJoinAndSelect('email.clientId', 'client')
+      .leftJoinAndSelect('email.supplierId', 'supplier')
+      .leftJoinAndSelect('email.sendBy', 'user')
+      .leftJoinAndSelect('email.setId', 'set')
+      .select([
+        'email.id',
+        'email.link',
+        'email.to',
+        'email.subject',
+        'email.sendAt',
+        'email.sendAtTimestamp',
+        'email.setId',
+        'client.firma',
+        'supplier.firma',
+        'user.name',
+        'set.id',
+        'set.name',
+      ])
+      .orderBy('email.id', 'DESC');
+
+    return from(query.getMany());
   }
 
   findOne(setId: number): Observable<Email[]> {

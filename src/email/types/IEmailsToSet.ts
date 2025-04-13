@@ -1,19 +1,20 @@
-export interface IEmailsList {
+export interface IEmailsToSet {
   id: number;
-  to: string;
   link: string;
   sendAt: string;
-  sendAtTimestamp: string;
+  sendAtTimestamp: number;
   clientId?: {
+    id: number;
     firma: string;
+    email: string;
   };
   supplierId?: {
+    id: number;
     firma: string;
+    email: string;
   };
   sendBy: {
-    name: string;
-  };
-  setId: {
+    id: number;
     name: string;
   };
 }

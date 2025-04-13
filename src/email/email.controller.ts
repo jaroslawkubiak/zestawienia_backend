@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { SendEmailDto } from './dto/email.dto';
 import { Email } from './email.entity';
 import { EmailService } from './email.service';
-import { IEmailsList } from './types/IEmailsList';
+import { IEmailsToSet } from './types/IEmailsToSet';
 
 @Controller('email')
 export class EmailController {
@@ -15,12 +15,12 @@ export class EmailController {
   }
 
   @Get()
-  findAll() {
+  findAll(): Observable<IEmailsToSet[]> {
     return this.emailService.findAll();
   }
 
   @Get(':setId')
-  findOne(@Param('setId') setId: string): Observable<IEmailsList[]> {
+  findOne(@Param('setId') setId: string): Observable<IEmailsToSet[]> {
     return this.emailService.findOne(+setId);
   }
 }

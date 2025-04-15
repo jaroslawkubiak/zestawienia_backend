@@ -31,7 +31,18 @@ export class CommentsService {
   findBySetId(setId: number): Promise<IComment[]> {
     return this.commentRepo
       .createQueryBuilder('comment')
-      .where('comment.setId = :setId', { setId: setId })
+      .leftJoin('comment.positionId', 'position')
+      .where('comment.setId = :setId', { setId })
+      .select([
+        'comment.id',
+        'comment.comment',
+        'comment.authorId',
+        'comment.authorType',
+        'comment.readByReceiver',
+        'comment.createdAt',
+        'comment.createdAtTimestamp',
+        'position.id',
+      ])
       .getMany();
   }
 
@@ -46,7 +57,7 @@ export class CommentsService {
           id: createCommentDto.positionId,
         } as DeepPartial<Position>,
         setId: {
-          id: createCommentDto.positionId,
+          id: createCommentDto.setId,
         } as DeepPartial<Set>,
         readByReceiver: false,
         createdAt: getFormatedDate(),

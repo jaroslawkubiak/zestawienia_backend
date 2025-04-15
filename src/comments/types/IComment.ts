@@ -1,5 +1,5 @@
-import { Set } from '../../sets/sets.entity';
-import { Position } from '../../position/positions.entity';
+import { IPosition } from '../../position/types/IPosition';
+import { ISet } from '../../sets/types/ISet';
 
 export interface IComment {
   id: number;
@@ -9,6 +9,6 @@ export interface IComment {
   readByReceiver: boolean;
   createdAt: string;
   createdAtTimestamp: number;
-  positionId: Position;
-  setId: Set;
+  positionId: IPosition;
+  setId: ISet;
 }

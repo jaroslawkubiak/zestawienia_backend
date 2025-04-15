@@ -8,7 +8,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
 import * as path from 'path';
-import { from, Observable, of, switchMap, throwError } from 'rxjs';
+import { from, mergeMap, Observable, of, switchMap, throwError } from 'rxjs';
 import { DeepPartial, Repository } from 'typeorm';
 import { Client } from '../clients/clients.entity';
 import { ClientsService } from '../clients/clients.service';
@@ -73,14 +73,16 @@ export class SetsService {
       .addSelect(['updatedBy.name'])
       .getMany();
 
-    const updatedSet = await Promise.all(set.map(async (item) => {
-      const files: IFileList = this.filesService.getFileList(item.id);
-      const comments: IComment[] = await this.commentsService.findBySetId(
-        item.id,
-      );
+    const updatedSet = await Promise.all(
+      set.map(async (item) => {
+        const files: IFileList = this.filesService.getFileList(item.id);
+        const comments: IComment[] = await this.commentsService.findBySetId(
+          item.id,
+        );
 
-      return { ...item, files, comments };
-    }));
+        return { ...item, files, comments };
+      }),
+    );
 
     return updatedSet;
   }
@@ -98,12 +100,14 @@ export class SetsService {
         .addSelect(['updatedBy.id', 'updatedBy.name'])
         .getOne(),
     ).pipe(
-      switchMap((set) => {
+      mergeMap((set) => {
         if (!set) {
           return throwError(() => new Error('Set not found'));
         }
         const files = this.filesService.getFileList(setId);
-        return of({ ...set, files });
+        return from(this.commentsService.findBySetId(setId)).pipe(
+          switchMap((comments: IComment[]) => of({ ...set, files, comments })),
+        );
       }),
     );
   }

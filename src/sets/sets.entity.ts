@@ -10,6 +10,7 @@ import { Client } from '../clients/clients.entity';
 import { Email } from '../email/email.entity';
 import { Position } from '../position/positions.entity';
 import { User } from '../user/user.entity';
+import { Comment } from '../comments/comments.entity';
 
 @Entity()
 export class Set {
@@ -67,4 +68,7 @@ export class Set {
     onDelete: 'CASCADE',
   })
   email: Email[];
+
+  @OneToMany(() => Comment, (comment) => comment.setId)
+  comments: Comment[];
 }

@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Position } from '../position/positions.entity';
+import { Set } from '../sets/sets.entity';
 
 @Entity()
 export class Comment {
@@ -35,4 +36,10 @@ export class Comment {
   })
   @JoinColumn({ name: 'positionId', referencedColumnName: 'id' })
   positionId: Position;
+
+  @ManyToOne(() => Set, (set) => set.comments, {
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'setId', referencedColumnName: 'id' })
+  setId: Set;
 }

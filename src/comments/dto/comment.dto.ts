@@ -14,4 +14,8 @@ export class CreateCommentDto {
   @IsNumber()
   @IsNotEmpty()
   positionId: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  setId: number;
 }

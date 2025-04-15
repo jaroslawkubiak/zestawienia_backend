@@ -28,6 +28,8 @@ import { ISet } from './types/ISet';
 import { SetStatus } from './types/SetStatus';
 import { FilesService } from '../files/files.service';
 import { IFileList } from '../files/types/IFileList';
+import { IComment } from 'src/comments/types/IComment';
+import { CommentsService } from 'src/comments/comments.service';
 
 @Injectable()
 export class SetsService {
@@ -45,6 +47,9 @@ export class SetsService {
 
     @Inject(forwardRef(() => PositionsService))
     private readonly positionsService: PositionsService,
+
+    @Inject(forwardRef(() => CommentsService))
+    private readonly commentsService: CommentsService,
     private filesService: FilesService,
   ) {}
 
@@ -68,14 +73,17 @@ export class SetsService {
       .addSelect(['updatedBy.name'])
       .getMany();
 
-    const updatedSet = set.map((item) => {
+    const updatedSet = await Promise.all(set.map(async (item) => {
       const files: IFileList = this.filesService.getFileList(item.id);
-      return { ...item, files };
-    });
+      const comments: IComment[] = await this.commentsService.findBySetId(
+        item.id,
+      );
+
+      return { ...item, files, comments };
+    }));
 
     return updatedSet;
   }
-  //.orderBy('set.id', 'DESC')
 
   getSet(setId: number): Observable<ISet> {
     return from(

@@ -28,8 +28,8 @@ export class CommentsService {
     return this.commentRepo.findOneBy({ id });
   }
 
-  async findBySetId(setId: number): Promise<IComment[]> {
-    return await this.commentRepo
+  findBySetId(setId: number): Promise<IComment[]> {
+    return this.commentRepo
       .createQueryBuilder('comment')
       .where('comment.setId = :setId', { setId: setId })
       .getMany();

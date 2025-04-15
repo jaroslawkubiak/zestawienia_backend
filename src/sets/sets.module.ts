@@ -11,6 +11,7 @@ import { SetsService } from './sets.service';
 import { ClientsModule } from '../clients/clients.module';
 import { ImagesModule } from '../images/images.module';
 import { FilesModule } from '../files/files.module';
+import { CommentsModule } from '../comments/comments.module';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { FilesModule } from '../files/files.module';
     ErrorsModule,
     FilesModule,
     forwardRef(() => ImagesModule),
-    forwardRef(() => PositionsModule), // Używamy forwardRef, aby rozwiązać cykliczną zależność
+    forwardRef(() => CommentsModule),
+    forwardRef(() => PositionsModule),
     forwardRef(() => ClientsModule),
   ],
   controllers: [SetsController],

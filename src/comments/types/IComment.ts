@@ -1,3 +1,4 @@
+import { Set } from '../../sets/sets.entity';
 import { Position } from '../../position/positions.entity';
 
 export interface IComment {
@@ -9,4 +10,5 @@ export interface IComment {
   createdAt: string;
   createdAtTimestamp: number;
   positionId: Position;
+  setId: Set;
 }

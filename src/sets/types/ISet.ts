@@ -1,5 +1,6 @@
 import { IFileList } from '../../files/types/IFileList';
 import { IBookmark } from '../../bookmarks/types/IBookmark';
+import { IComment } from '../../comments/types/IComment';
 
 export interface ISet {
   id: number;
@@ -12,6 +13,7 @@ export interface ISet {
   hash: string;
   bookmarks: IBookmark[];
   files?: IFileList;
+  comments?: IComment[];
   clientId: {
     id: number;
     firma: string;

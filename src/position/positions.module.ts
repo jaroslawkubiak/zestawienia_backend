@@ -18,7 +18,7 @@ import { SuppliersModule } from '../suppliers/suppliers.module';
     ErrorsModule,
     forwardRef(() => SetsModule),
     forwardRef(() => SuppliersModule),
-    forwardRef(() => ImagesModule), // Używamy forwardRef, aby rozwiązać cykliczną zależność
+    forwardRef(() => ImagesModule),
   ],
   controllers: [PositionsController],
   providers: [PositionsService],

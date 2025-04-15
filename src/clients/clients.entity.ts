@@ -1,5 +1,4 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Comment } from '../comments/comments.entity';
 import { Email } from '../email/email.entity';
 import { Set } from '../sets/sets.entity';
 
@@ -31,7 +30,4 @@ export class Client {
 
   @OneToMany(() => Email, (email) => email.clientId)
   logEmail: Email;
-
-  @OneToMany(() => Comment, (comment) => comment.createdByClient)
-  comments: Comment[];
 }

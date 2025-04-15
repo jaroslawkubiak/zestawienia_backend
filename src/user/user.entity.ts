@@ -1,8 +1,7 @@
-import { Position } from '../position/positions.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Comment } from '../comments/comments.entity';
-import { Set } from '../sets/sets.entity';
 import { Email } from '../email/email.entity';
+import { Position } from '../position/positions.entity';
+import { Set } from '../sets/sets.entity';
 
 @Entity()
 export class User {
@@ -32,7 +31,4 @@ export class User {
 
   @OneToMany(() => Email, (email) => email.sendBy)
   sendBy: Email[];
-
-  @OneToMany(() => Comment, (comment) => comment.createdByUser)
-  comments: Comment[];
 }

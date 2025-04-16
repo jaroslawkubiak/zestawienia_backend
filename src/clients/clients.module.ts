@@ -6,12 +6,14 @@ import { Client } from './clients.entity';
 import { ClientsService } from './clients.service';
 import { ErrorsModule } from '../errors/errors.module';
 import { SetsModule } from '../sets/sets.module';
+import { CommentsModule } from '../comments/comments.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Client, Position]),
     ErrorsModule,
     forwardRef(() => SetsModule),
+    forwardRef(() => CommentsModule),
   ],
   controllers: [ClientsController],
   providers: [ClientsService],

@@ -15,6 +15,8 @@ import { Set } from '../sets/sets.entity';
 import { Comment } from './comments.entity';
 import { CreateCommentDto } from './dto/comment.dto';
 import { IComment } from './types/IComment';
+import { ClientsService } from 'src/clients/clients.service';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class CommentsService {
@@ -22,14 +24,16 @@ export class CommentsService {
     @InjectRepository(Comment)
     private readonly commentRepo: Repository<Comment>,
     private errorsService: ErrorsService,
+    private clientsService: ClientsService,
+    private userService: UserService,
   ) {}
 
   findOne(id: number): Promise<IComment> {
     return this.commentRepo.findOneBy({ id });
   }
 
-  findBySetId(setId: number): Promise<IComment[]> {
-    return this.commentRepo
+  async findBySetId(setId: number): Promise<IComment[]> {
+    const comments = await this.commentRepo
       .createQueryBuilder('comment')
       .leftJoin('comment.positionId', 'position')
       .where('comment.setId = :setId', { setId })
@@ -44,6 +48,24 @@ export class CommentsService {
         'position.id',
       ])
       .getMany();
+
+    const updatedComments = await Promise.all(
+      comments.map(async (item) => {
+      let authorName: string | undefined;
+
+      if (item.authorType === 'client') {
+        const client = await this.clientsService.findOne(item.authorId);
+        authorName = client?.imie;
+      } else if (item.authorType === 'user') {
+        const user = await this.userService.findOne(item.authorId);
+        authorName = user?.name;
+      }
+
+      return { ...item, authorName };
+      }),
+    );
+
+    return updatedComments;
   }
 
   async create(

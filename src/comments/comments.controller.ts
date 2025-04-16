@@ -1,7 +1,16 @@
-import { Body, Controller, Get, Param, Patch, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+} from '@nestjs/common';
 import { Request } from 'express';
 import { CommentsService } from './comments.service';
-import { CreateCommentDto } from './dto/comment.dto';
+import { CreateCommentDto, UpdateCommentDto } from './dto/comment.dto';
 import { IComment } from './types/IComment';
 
 @Controller('comments')
@@ -13,7 +22,7 @@ export class CommentsController {
     return this.commentsService.findBySetId(+id);
   }
 
-  @Post()
+  @Post('/add')
   create(
     @Body() createCommentDto: CreateCommentDto,
     @Req() req: Request,
@@ -21,8 +30,20 @@ export class CommentsController {
     return this.commentsService.create(createCommentDto, req);
   }
 
-  @Patch(':id')
-  markAsRead(@Param('id') id: string, @Req() req: Request) {
-    return this.commentsService.markAsRead(+id, req);
+  @Patch('/edit')
+  update(@Body() updateCommentDto: UpdateCommentDto, @Req() req: Request) {
+    return this.commentsService.update(updateCommentDto, req);
+  }
+
+  @Patch('')
+  markAsRead(@Body() body: { ids: number[] }, @Req() req: Request) {
+    body.ids.forEach((id) => {
+      return this.commentsService.markAsRead(id, req);
+    });
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.commentsService.remove(+id);
   }
 }

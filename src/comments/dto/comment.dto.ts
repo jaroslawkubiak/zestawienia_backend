@@ -5,6 +5,10 @@ export class CreateCommentDto {
   @IsNotEmpty()
   comment: string;
 
+  @IsString()
+  @IsNotEmpty()
+  authorName: string;
+
   @IsEnum(['client', 'user'])
   authorType: 'client' | 'user';
 
@@ -18,4 +22,22 @@ export class CreateCommentDto {
   @IsNumber()
   @IsNotEmpty()
   setId: number;
+}
+
+export class UpdateCommentDto {
+  @IsString()
+  @IsNotEmpty()
+  comment: string;
+
+  @IsString()
+  @IsNotEmpty()
+  authorName: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  authorId: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  commentId: number;
 }

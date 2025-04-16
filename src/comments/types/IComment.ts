@@ -11,4 +11,5 @@ export interface IComment {
   createdAtTimestamp: number;
   positionId: IPosition;
   setId: ISet;
+  authorName?: string;
 }

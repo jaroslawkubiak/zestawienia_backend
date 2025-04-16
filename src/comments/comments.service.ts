@@ -6,17 +6,17 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
 import { DeepPartial, Repository } from 'typeorm';
+import { ClientsService } from '../clients/clients.service';
 import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
 import { ErrorsType } from '../errors/types/Errors';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { Position } from '../position/positions.entity';
 import { Set } from '../sets/sets.entity';
+import { UserService } from '../user/user.service';
 import { Comment } from './comments.entity';
-import { CreateCommentDto } from './dto/comment.dto';
+import { CreateCommentDto, UpdateCommentDto } from './dto/comment.dto';
 import { IComment } from './types/IComment';
-import { ClientsService } from 'src/clients/clients.service';
-import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class CommentsService {
@@ -47,21 +47,22 @@ export class CommentsService {
         'comment.createdAtTimestamp',
         'position.id',
       ])
+      .orderBy('comment.id', 'ASC')
       .getMany();
 
     const updatedComments = await Promise.all(
       comments.map(async (item) => {
-      let authorName: string | undefined;
+        let authorName: string | undefined;
 
-      if (item.authorType === 'client') {
-        const client = await this.clientsService.findOne(item.authorId);
-        authorName = client?.imie;
-      } else if (item.authorType === 'user') {
-        const user = await this.userService.findOne(item.authorId);
-        authorName = user?.name;
-      }
+        if (item.authorType === 'client') {
+          const client = await this.clientsService.findOne(item.authorId);
+          authorName = client?.imie;
+        } else if (item.authorType === 'user') {
+          const user = await this.userService.findOne(item.authorId);
+          authorName = user?.name;
+        }
 
-      return { ...item, authorName };
+        return { ...item, authorName };
       }),
     );
 
@@ -94,12 +95,10 @@ export class CommentsService {
         type: ErrorsType.sql,
         message: 'Comment: create()',
         url: req.originalUrl,
-        error: JSON.stringify(error.message) || 'null',
-        query: JSON.stringify(error.query) || 'null',
-        parameters: error.parameters
-          ? JSON.stringify(error.parameters[0])
-          : 'null',
-        sql: error.driverError ? JSON.stringify(error.driverError.sql) : 'null',
+        error: JSON.stringify(error?.message) || 'null',
+        query: JSON.stringify(error?.query) || 'null',
+        parameters: JSON.stringify(error?.parameters?.[0]) || 'null',
+        sql: JSON.stringify(error?.driverError?.sql) || 'null',
         createdAt: getFormatedDate() || new Date().toISOString(),
         createdAtTimestamp: Number(Date.now()),
       };
@@ -110,6 +109,47 @@ export class CommentsService {
         message: 'Błąd bazy danych',
         error: error.message,
         details: error,
+      });
+    }
+  }
+
+  async update(
+    updateCommentDto: UpdateCommentDto,
+    req: Request,
+  ): Promise<IComment> {
+    try {
+      const { commentId, authorName, ...editedComment } = updateCommentDto;
+
+      const updateResult = await this.commentRepo.update(
+        commentId,
+        editedComment,
+      );
+
+      if (updateResult?.affected === 0) {
+        throw new NotFoundException(`Comment with ID ${commentId} not found`);
+      } else {
+        const newComment = await this.findOne(commentId);
+        return { ...newComment, authorName };
+      }
+    } catch (err) {
+      const newError: ErrorDto = {
+        type: ErrorsType.sql,
+        message: 'Comment: update()',
+        url: req.originalUrl,
+        error: JSON.stringify(err?.message) || 'null',
+        query: JSON.stringify(err?.query) || 'null',
+        parameters: JSON.stringify(err?.parameters?.[0]) || 'null',
+        sql: JSON.stringify(err?.driverError?.sql) || 'null',
+        createdAt: getFormatedDate() || new Date().toISOString(),
+        createdAtTimestamp: Number(Date.now()),
+      };
+
+      await this.errorsService.prepareError(newError);
+
+      throw new InternalServerErrorException({
+        message: 'Błąd bazy danych',
+        error: err.message,
+        details: err,
       });
     }
   }
@@ -131,10 +171,10 @@ export class CommentsService {
         type: ErrorsType.sql,
         message: 'Comment: update()',
         url: req.originalUrl,
-        error: JSON.stringify(error.message) || 'null',
-        query: JSON.stringify(error.query) || 'null',
-        parameters: error.parameters ? error.parameters[0] : 'null',
-        sql: error.driverError ? error.driverError.sql : 'null',
+        error: JSON.stringify(error?.message) || 'null',
+        query: JSON.stringify(error?.query) || 'null',
+        parameters: JSON.stringify(error?.parameters?.[0]) || 'null',
+        sql: JSON.stringify(error?.driverError?.sql) || 'null',
         createdAt: getFormatedDate() || new Date().toISOString(),
         createdAtTimestamp: Number(Date.now()),
       };
@@ -147,5 +187,8 @@ export class CommentsService {
         details: error,
       });
     }
+  }
+  async remove(id: number): Promise<void> {
+    await this.commentRepo.delete(id);
   }
 }

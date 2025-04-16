@@ -50,10 +50,10 @@ export class ImagesService {
       );
 
       return { message: res, filename };
-    } catch (error) {
-      const message = error.response.error;
-      if (error instanceof InternalServerErrorException) {
-        console.error('❌ Błąd bazy danych:', error.message);
+    } catch (err) {
+      const message = err.response.error;
+      if (err instanceof InternalServerErrorException) {
+        console.error('❌ Błąd bazy danych:', err.message);
 
         // remove saved file
         this.removeFolderContent(uploadPath);
@@ -61,10 +61,10 @@ export class ImagesService {
         throw new InternalServerErrorException({
           message: 'Wystąpił problem podczas aktualizacji pozycji.',
           error: message,
-          details: error,
+          details: err,
         });
       } else {
-        console.error('❌ Inny błąd:', error);
+        console.error('❌ Inny błąd:', err);
         throw new InternalServerErrorException('Wystąpił nieoczekiwany błąd.');
       }
     }

@@ -64,7 +64,7 @@ export class EmailService {
       }
 
       return info;
-    } catch (error) {
+    } catch (err) {
       const message = emailDetails?.clientId ? 'client' : 'supplier';
       const recipientId = emailDetails?.clientId
         ? emailDetails.clientId
@@ -73,7 +73,7 @@ export class EmailService {
       const newError: ErrorDto = {
         type: ErrorsType.email,
         message: `Failed to send email to ${message}`,
-        error: JSON.stringify(error.message) || 'null',
+        error: JSON.stringify(err?.message) || 'null',
         setId: emailDetails.setId,
         recipientId,
         recipientEmail: to,
@@ -86,8 +86,8 @@ export class EmailService {
 
       throw new InternalServerErrorException({
         message: `Nie udało się wysłać email na: ${to}`,
-        error: error.message,
-        details: error,
+        error: err.message,
+        details: err,
       });
     }
   }

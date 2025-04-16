@@ -156,17 +156,15 @@ export class SetsService {
       this.clientsService.update(clientId, updateClient);
 
       return savedSet;
-    } catch (error) {
+    } catch (err) {
       const newError: ErrorDto = {
         type: ErrorsType.sql,
         message: 'Set: create()',
         url: req.originalUrl,
-        error: JSON.stringify(error.message) || 'null',
-        query: JSON.stringify(error.query) || 'null',
-        parameters: error.parameters
-          ? JSON.stringify(error.parameters[0])
-          : 'null',
-        sql: error.driverError ? JSON.stringify(error.driverError.sql) : 'null',
+        error: JSON.stringify(err?.message) || 'null',
+        query: JSON.stringify(err?.query) || 'null',
+        parameters: JSON.stringify(err?.parameters?.[0]) || 'null',
+        sql: JSON.stringify(err?.driverError?.sql) || 'null',
         createdAt: getFormatedDate() || new Date().toISOString(),
         createdAtTimestamp: Number(Date.now()),
       };
@@ -175,8 +173,8 @@ export class SetsService {
 
       throw new InternalServerErrorException({
         message: 'Błąd bazy danych',
-        error: error.message,
-        details: error,
+        error: err.message,
+        details: err,
       });
     }
   }
@@ -212,17 +210,15 @@ export class SetsService {
       }
 
       return this.findOne(id);
-    } catch (error) {
+    } catch (err) {
       const newError: ErrorDto = {
         type: ErrorsType.sql,
         message: 'Sets: update()',
         url: req?.originalUrl,
-        error: JSON.stringify(error.message) || 'null',
-        query: JSON.stringify(error.query) || 'null',
-        parameters: error.parameters
-          ? JSON.stringify(error.parameters[0])
-          : 'null',
-        sql: error.driverError ? JSON.stringify(error.driverError.sql) : 'null',
+        error: JSON.stringify(err?.message) || 'null',
+        query: JSON.stringify(err?.query) || 'null',
+        parameters: JSON.stringify(err?.parameters?.[0]) || 'null',
+        sql: JSON.stringify(err?.driverError?.sql) || 'null',
         createdAt: getFormatedDate() || new Date().toISOString(),
         createdAtTimestamp: Number(Date.now()),
       };
@@ -231,8 +227,8 @@ export class SetsService {
 
       throw new InternalServerErrorException({
         message: 'Błąd bazy danych',
-        error: error.message,
-        details: error,
+        error: err.message,
+        details: err,
       });
     }
   }

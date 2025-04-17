@@ -18,21 +18,23 @@ import { SetsService } from './sets.service';
 import { ISavedSet } from './types/ISavedSet';
 import { ISet } from './types/ISet';
 
-// @UseGuards(JwtAuthGuard)
 @Controller('sets')
 export class SetsController {
   constructor(private setsService: SetsService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.setsService.findAll();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('new')
   create(@Body() newSet: NewSetDto, @Req() req: Request): Promise<ISavedSet> {
     return this.setsService.create(newSet, req);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   updateSet(
     @Param('id') id: string,
@@ -47,6 +49,15 @@ export class SetsController {
     return this.setsService.getSet(+setId);
   }
 
+  @Get(':setId/:hash')
+  validateSetAndHash(
+    @Param('setId') setId: string,
+    @Param('hash') hash: string,
+  ): Observable<boolean> {
+    return this.setsService.validateSetAndHash(+setId, hash);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: number) {
     return this.setsService.remove(+id);

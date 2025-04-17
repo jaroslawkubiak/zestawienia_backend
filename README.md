@@ -4,7 +4,7 @@ TODO LIST
 
 Zakładka zestawienia:
 [x] Lista zestawień klientów
-[ ] checkbox do pokazania statusu zamkniętych zestawień (domyślnie zamknięte nie będą pobierane)
+[x] checkbox do pokazania statusu zamkniętych zestawień (domyślnie zamknięte nie będą pobierane)
 
 Nowe zestawienie
 [x] dodawanie nowego zestawienia
@@ -73,8 +73,9 @@ Dostawcy:
 
 Ustawienia:
 [ ] dodawanie/usuwanie produktow
-[ ] lista kolumn widocznych w danej kategorii zestawienia (lub na stałe w kodzie)
 [ ] domyślna szerokość kolumn pozycji ładoawna z DB, a nie z const
+[x] podgląd wiadomości email do klientów
+[x] podgląd wiadomości email do dostawców
 [ ] edycja wiadomości email do klientów
 [ ] edycja wiadomości email do dostawców
 
@@ -86,9 +87,16 @@ Emails:
 [ ] przed wysyłką możliwa edycja wiadomości?
 
 comments:
+[ ] powiadomienie przy guziku komentarzy o ilości:
+czerwone - liczba nieprzeczytanych/nowych
+czarne - liczba ogólnych komentarzy - wszystkie są przeczytane
+szary - jeżeli jest brak komentarzy
 [ ] dodawanie komentarzy przez klientów
 [ ] notyfikacja o nowych komentarzach
-[ ] odpowiedź na komentarze w formie iMessage :)
+[x] odpowiedź na komentarze w formie iMessage :)
+[x] edycja komentarzy usera
+[x] usuwanie komentarzy usera
+[x] oznaczanie które komentarze klienta są nieprzeczytane
 
 DB:
 [x] zestawienia nagłówek: id, nr zestawienia, id klienta, id usera, data dodania (w czytelnym formacie), created by, create date (timestamp), update by, updated date (timestamp)

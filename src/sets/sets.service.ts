@@ -8,7 +8,16 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
 import * as path from 'path';
-import { from, mergeMap, Observable, of, switchMap, throwError } from 'rxjs';
+import {
+  from,
+  map,
+  mergeMap,
+  Observable,
+  of,
+  pipe,
+  switchMap,
+  throwError,
+} from 'rxjs';
 import { DeepPartial, Repository } from 'typeorm';
 import { Client } from '../clients/clients.entity';
 import { ClientsService } from '../clients/clients.service';
@@ -255,5 +264,15 @@ export class SetsService {
 
     this.imagesService.removeFolderContent(uploadPath);
     this.imagesService.removeFolder(uploadPath);
+  }
+
+  validateSetAndHash(setId: number, hash: string): Observable<boolean> {
+    return from(
+      this.setsRepo
+        .createQueryBuilder('set')
+        .where('set.id = :id', { id: setId })
+        .andWhere('set.hash = :hash', { hash })
+        .getCount(),
+    ).pipe(map((count) => count > 0));
   }
 }

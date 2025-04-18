@@ -17,6 +17,7 @@ import { UserService } from '../user/user.service';
 import { Comment } from './comments.entity';
 import { CreateCommentDto, UpdateCommentDto } from './dto/comment.dto';
 import { IComment } from './types/IComment';
+import { IMarkAllComments } from './dto/markAllComments.dto';
 
 @Injectable()
 export class CommentsService {
@@ -46,6 +47,42 @@ export class CommentsService {
         'comment.createdAt',
         'comment.createdAtTimestamp',
         'position.id',
+      ])
+      .orderBy('comment.id', 'ASC')
+      .getMany();
+
+    const updatedComments = await Promise.all(
+      comments.map(async (item) => {
+        let authorName: string | undefined;
+
+        if (item.authorType === 'client') {
+          const client = await this.clientsService.findOne(item.authorId);
+          authorName = client?.imie;
+        } else if (item.authorType === 'user') {
+          const user = await this.userService.findOne(item.authorId);
+          authorName = user?.name;
+        }
+
+        return { ...item, authorName };
+      }),
+    );
+
+    return updatedComments;
+  }
+
+  async findByPositionId(positionId: number): Promise<IComment[]> {
+    const comments = await this.commentRepo
+      .createQueryBuilder('comment')
+      .leftJoin('comment.positionId', 'position')
+      .where('comment.positionId = :positionId', { positionId })
+      .select([
+        'comment.id',
+        'comment.comment',
+        'comment.authorId',
+        'comment.authorType',
+        'comment.readByReceiver',
+        'comment.createdAt',
+        'comment.createdAtTimestamp',
       ])
       .orderBy('comment.id', 'ASC')
       .getMany();
@@ -154,22 +191,25 @@ export class CommentsService {
     }
   }
 
-  async markAsRead(id: number, req?: Request): Promise<IComment> {
+  async toggleCommentRead(id: number, req?: Request): Promise<IComment> {
     try {
       const originComment = await this.findOne(id);
 
-      const updateComment = { ...originComment, readByReceiver: true };
+      const updateComment = {
+        ...originComment,
+        readByReceiver: !originComment.readByReceiver,
+      };
       const updateResult = await this.commentRepo.update(id, updateComment);
 
       if (updateResult?.affected === 0) {
         throw new NotFoundException(`Comment with ID ${id} not found`);
       } else {
-        return this.findOne(id);
+        return updateComment;
       }
     } catch (err) {
       const newError: ErrorDto = {
         type: ErrorsType.sql,
-        message: 'Comment: update()',
+        message: 'Comment: toggleCommentRead()',
         url: req.originalUrl,
         error: JSON.stringify(err?.message) || 'null',
         query: JSON.stringify(err?.query) || 'null',
@@ -188,6 +228,46 @@ export class CommentsService {
       });
     }
   }
+
+  async markAllComments(
+    body: IMarkAllComments,
+    req?: Request,
+  ): Promise<IComment[]> {
+    try {
+      const { positionId, readState } = body;
+
+      await this.commentRepo
+        .createQueryBuilder()
+        .update()
+        .set({ readByReceiver: readState })
+        .where('positionId = :positionId', { positionId })
+        .andWhere('authorType = "client"')
+        .execute();
+
+      return this.findByPositionId(positionId);
+    } catch (err) {
+      const newError: ErrorDto = {
+        type: ErrorsType.sql,
+        message: 'Comment: markAllComments()',
+        url: req.originalUrl,
+        error: JSON.stringify(err?.message) || 'null',
+        query: JSON.stringify(err?.query) || 'null',
+        parameters: JSON.stringify(err?.parameters?.[0]) || 'null',
+        sql: JSON.stringify(err?.driverError?.sql) || 'null',
+        createdAt: getFormatedDate() || new Date().toISOString(),
+        createdAtTimestamp: Number(Date.now()),
+      };
+
+      await this.errorsService.prepareError(newError);
+
+      throw new InternalServerErrorException({
+        message: 'Błąd bazy danych',
+        error: err.message,
+        details: err,
+      });
+    }
+  }
+
   async remove(id: number): Promise<void> {
     await this.commentRepo.delete(id);
   }

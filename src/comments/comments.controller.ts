@@ -12,6 +12,7 @@ import { Request } from 'express';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto, UpdateCommentDto } from './dto/comment.dto';
 import { IComment } from './types/IComment';
+import { IMarkAllComments } from './dto/markAllComments.dto';
 
 @Controller('comments')
 export class CommentsController {
@@ -31,15 +32,31 @@ export class CommentsController {
   }
 
   @Patch('/edit')
-  update(@Body() updateCommentDto: UpdateCommentDto, @Req() req: Request) {
+  update(
+    @Body() updateCommentDto: UpdateCommentDto,
+    @Req() req: Request,
+  ): Promise<IComment> {
     return this.commentsService.update(updateCommentDto, req);
   }
 
   @Patch('')
-  markAsRead(@Body() body: { ids: number[] }, @Req() req: Request) {
-    body.ids.forEach((id) => {
-      return this.commentsService.markAsRead(id, req);
-    });
+  async toggleCommentRead(
+    @Body() body: { ids: number[] },
+    @Req() req: Request,
+  ): Promise<IComment[]> {
+    const updatedComments = await Promise.all(
+      body.ids.map((id) => this.commentsService.toggleCommentRead(id, req)),
+    );
+
+    return updatedComments;
+  }
+
+  @Patch('positions')
+  async markAllComments(
+    @Body() body: IMarkAllComments,
+    @Req() req: Request,
+  ): Promise<IComment[]> {
+    return this.commentsService.markAllComments(body, req);
   }
 
   @Delete(':id')

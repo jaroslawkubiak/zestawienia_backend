@@ -23,12 +23,24 @@ export class FilesService {
       'pdf',
     );
 
-    if (!fss.existsSync(uploadPathFiles) && !fss.existsSync(uploadPathPdf)) {
+    const uploadPathInspirations = path.resolve(
+      baseUploadPath,
+      'sets',
+      String(setId),
+      'inspirations',
+    );
+
+    if (
+      !fss.existsSync(uploadPathFiles) &&
+      !fss.existsSync(uploadPathPdf) &&
+      !fss.existsSync(uploadPathInspirations)
+    ) {
       return null;
     }
 
     const filesList: string[] = [];
     const pdfList: string[] = [];
+    const inspirationsList: string[] = [];
 
     if (fss.existsSync(uploadPathFiles)) {
       filesList.push(...fss.readdirSync(uploadPathFiles));
@@ -38,7 +50,11 @@ export class FilesService {
       pdfList.push(...fss.readdirSync(uploadPathPdf));
     }
 
-    return { files: filesList, pdf: pdfList };
+    if (fss.existsSync(uploadPathInspirations)) {
+      inspirationsList.push(...fss.readdirSync(uploadPathInspirations));
+    }
+
+    return { files: filesList, pdf: pdfList, inspirations: inspirationsList };
   }
 
   // delete file from set

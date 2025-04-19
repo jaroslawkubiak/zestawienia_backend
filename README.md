@@ -23,6 +23,8 @@ Edycja zestawienia:
 [x] przy edycji pozycji - aktualizacja positionCount w dostawcach
 [x] statusy do zestawień: w przygotowaniu, gotowy, otwarty, w realizacji, zamknięty
 [x] status pozycji: (inne tło w zależności od statusu)
+[x] wklejanie obrazów do pozycji ze schowka
+[ ] usuwanie obrazu z pozycji
 
 - do wyboru (różowy)
 - zapłacony/zamówiony (zielony)

@@ -7,6 +7,8 @@ import {
 import * as fs from 'fs';
 import * as path from 'path';
 import { PositionsService } from '../position/positions.service';
+import * as sharp from 'sharp';
+import { ISavedFiles } from './types/ISavedFiles';
 
 @Injectable()
 export class ImagesService {
@@ -14,16 +16,19 @@ export class ImagesService {
     @Inject(forwardRef(() => PositionsService))
     private readonly positionsService: PositionsService,
   ) {}
+
   async saveImage(
     userId: number,
     setId: number,
     positionId: number,
     file: Express.Multer.File,
-  ): Promise<any> {
+  ): Promise<ISavedFiles> {
     if (!file) {
       throw new Error('Plik nie został przesłany');
     }
 
+    const MAX_DIMENSION = 1000;
+    const MINI_DIMENSION = 500;
     const innerPath = `/sets/${setId}/positions/${positionId}`;
 
     const uploadPath = path.join(
@@ -37,11 +42,37 @@ export class ImagesService {
 
       fs.mkdirSync(uploadPath, { recursive: true });
 
-      const filename = `${positionId}--${Date.now()}--${file.originalname}`;
+      let filename = `${positionId}--${Date.now()}--${file.originalname}`;
       const filePath = path.join(uploadPath, filename);
 
+      // save original file
       fs.writeFileSync(filePath, file.buffer);
 
+      // if image is above MAX_DIMENSION (widht or height) scale it to mini version
+      const image = sharp(file.buffer);
+      const metadata = await image.metadata();
+
+      if (metadata.width > MAX_DIMENSION || metadata.height > MAX_DIMENSION) {
+        const miniBuffer = await image
+          .resize({
+            width: MINI_DIMENSION,
+            height: MINI_DIMENSION,
+            fit: 'inside',
+            withoutEnlargement: true,
+          })
+          .toBuffer();
+
+        // add _mini to file name
+        const ext = path.extname(filename);
+        const nameWithoutExt = path.basename(filename, ext);
+        filename = `${nameWithoutExt}_mini${ext}`;
+        const miniPath = path.join(uploadPath, filename);
+
+        // save mini version in the same dir
+        fs.writeFileSync(miniPath, miniBuffer);
+      }
+
+      //save filename (org or mini) in db
       const res = await this.positionsService.updateImage(
         userId,
         setId,

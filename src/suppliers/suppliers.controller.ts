@@ -13,7 +13,7 @@ import { CreateSupplierDto, UpdateSupplierDto } from './dto/supplier.dto';
 import { SuppliersService } from './suppliers.service';
 import { ISupplier } from './types/ISupplier';
 
-// @UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
 @Controller('suppliers')
 export class SuppliersController {
   constructor(private suppliersService: SuppliersService) {}

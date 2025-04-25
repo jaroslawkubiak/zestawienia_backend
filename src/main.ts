@@ -37,7 +37,7 @@ async function bootstrap() {
 
   app.useGlobalFilters(new ValidationExceptionFilter(app.get(ErrorsService)));
 
-  app.useGlobalFilters(new QueryFailedExceptionFilter());
+  app.useGlobalFilters(new QueryFailedExceptionFilter(app.get(ErrorsService)));
 
   await app.listen(3005, '127.0.0.1');
 }

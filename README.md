@@ -76,17 +76,13 @@ Dostawcy:
 Ustawienia:
 [ ] dodawanie/usuwanie produktow
 [ ] domyślna szerokość kolumn pozycji ładoawna z DB, a nie z const
-[x] podgląd wiadomości email do klientów
-[x] podgląd wiadomości email do dostawców
-[ ] edycja wiadomości email do klientów
-[ ] edycja wiadomości email do dostawców
 
 Emails:
 [x] wysyłka email z linkiem do zestawienia do klientów (setId/setHash)
 [ ] działający link bez logowania hash łączony z id zestawienia do podglądu dla klientów np: /:id_zestawienia/:hash_zestawienia
 [x] wysyłka email z linkiem do części pozycji do której przypisany jest dostawaca (/setId/setHash/SupplierHash)
-[ ] lista wysłanych emaili do klientów
-[ ] przed wysyłką możliwa edycja wiadomości?
+[x] lista wysłanych emaili do klientów z podglądem wysłanej wiadomości
+[x] przed wysyłką możliwa edycja wiadomości
 
 comments:
 [ ] powiadomienie przy guziku komentarzy o ilości:

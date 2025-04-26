@@ -18,6 +18,7 @@ export interface ISet {
     id: number;
     firma: string;
     email: string;
+    imie: string;
   };
   createdBy: {
     id: number;

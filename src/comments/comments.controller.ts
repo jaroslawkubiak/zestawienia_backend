@@ -41,11 +41,12 @@ export class CommentsController {
 
   @Patch('')
   async toggleCommentRead(
-    @Body() body: { ids: number[] },
+    @Body() body: { id: number },
     @Req() req: Request,
-  ): Promise<IComment[]> {
-    const updatedComments = await Promise.all(
-      body.ids.map((id) => this.commentsService.toggleCommentRead(id, req)),
+  ): Promise<IComment> {
+    const updatedComments = await this.commentsService.toggleCommentRead(
+      body.id,
+      req,
     );
 
     return updatedComments;

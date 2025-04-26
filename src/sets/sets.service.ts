@@ -102,7 +102,7 @@ export class SetsService {
         .createQueryBuilder('set')
         .where('set.id = :id', { id: setId })
         .leftJoin('set.clientId', 'client')
-        .addSelect(['client.id', 'client.firma', 'client.email'])
+        .addSelect(['client.id', 'client.firma', 'client.email', 'client.imie'])
         .leftJoin('set.createdBy', 'createdBy')
         .addSelect(['createdBy.id', 'createdBy.name'])
         .leftJoin('set.updatedBy', 'updatedBy')

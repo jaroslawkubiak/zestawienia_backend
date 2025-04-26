@@ -192,6 +192,7 @@ export class CommentsService {
   }
 
   async toggleCommentRead(id: number, req?: Request): Promise<IComment> {
+    console.log(id);
     try {
       const originComment = await this.findOne(id);
 

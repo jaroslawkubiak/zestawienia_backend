@@ -1,4 +1,4 @@
-import { IsBoolean, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class IMarkAllComments {
   @IsNumber()
@@ -8,4 +8,8 @@ export class IMarkAllComments {
   @IsBoolean()
   @IsNotEmpty()
   readState: boolean;
+
+  @IsString()
+  @IsNotEmpty()
+  authorType: string;
 }

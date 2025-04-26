@@ -192,7 +192,6 @@ export class CommentsService {
   }
 
   async toggleCommentRead(id: number, req?: Request): Promise<IComment> {
-    console.log(id);
     try {
       const originComment = await this.findOne(id);
 
@@ -235,14 +234,14 @@ export class CommentsService {
     req?: Request,
   ): Promise<IComment[]> {
     try {
-      const { positionId, readState } = body;
+      const { positionId, readState, authorType } = body;
 
       await this.commentRepo
         .createQueryBuilder()
         .update()
         .set({ readByReceiver: readState })
         .where('positionId = :positionId', { positionId })
-        .andWhere('authorType = "client"')
+        .andWhere('authorType = :authorType', { authorType })
         .execute();
 
       return this.findByPositionId(positionId);

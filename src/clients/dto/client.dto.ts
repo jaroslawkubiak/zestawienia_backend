@@ -3,19 +3,19 @@ import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 export class CreateClientDto {
   @IsString()
   @IsNotEmpty()
-  firma: string;
+  company: string;
 
   @IsString()
   @IsNotEmpty()
-  imie: string;
+  firstName: string;
 
   @IsString()
   @IsNotEmpty()
-  nazwisko: string;
+  lastName: string;
 
   @IsString()
   @IsOptional()
-  telefon?: string;
+  telephone?: string;
 
   @IsString()
   @IsNotEmpty()
@@ -29,19 +29,19 @@ export class CreateClientDto {
 export class UpdateClientDto {
   @IsString()
   @IsOptional()
-  firma?: string;
+  company?: string;
 
   @IsString()
   @IsOptional()
-  imie?: string;
+  firstName?: string;
 
   @IsString()
   @IsOptional()
-  nazwisko?: string;
+  lastName?: string;
 
   @IsString()
   @IsOptional()
-  telefon?: string;
+  telephone?: string;
 
   @IsString()
   @IsOptional()

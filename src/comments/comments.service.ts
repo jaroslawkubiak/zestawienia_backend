@@ -21,6 +21,8 @@ import { IMarkAllComments } from './dto/markAllComments.dto';
 
 @Injectable()
 export class CommentsService {
+  private timers: Map<number, NodeJS.Timeout> = new Map();
+  private readonly TIMEOUT_DELAY = 60 * 1000; // minuta
   constructor(
     @InjectRepository(Comment)
     private readonly commentRepo: Repository<Comment>,
@@ -57,7 +59,7 @@ export class CommentsService {
 
         if (item.authorType === 'client') {
           const client = await this.clientsService.findOne(item.authorId);
-          authorName = client?.imie;
+          authorName = client?.firstName;
         } else if (item.authorType === 'user') {
           const user = await this.userService.findOne(item.authorId);
           authorName = user?.name;
@@ -93,7 +95,7 @@ export class CommentsService {
 
         if (item.authorType === 'client') {
           const client = await this.clientsService.findOne(item.authorId);
-          authorName = client?.imie;
+          authorName = client?.firstName;
         } else if (item.authorType === 'user') {
           const user = await this.userService.findOne(item.authorId);
           authorName = user?.name;
@@ -271,4 +273,54 @@ export class CommentsService {
   async remove(id: number): Promise<void> {
     await this.commentRepo.delete(id);
   }
+
+  /*
+
+// comment.service.ts
+import { Injectable } from '@nestjs/common';
+import { MailService } from './mail.service'; // Twój serwis do wysyłki maili
+
+@Injectable()
+export class CommentService {
+  private timers: Map<number, NodeJS.Timeout> = new Map();
+  private readonly TIMEOUT_DELAY = 10 * 60 * 1000; // 10 minut
+
+  constructor(private readonly mailService: MailService) {}
+
+  async addComment(zestawienieId: number, commentDto: any) {
+    // 1. Zapisz komentarz do bazy danych
+    // await this.commentRepository.save({ ...commentDto, zestawienieId });
+
+    console.log(`Dodano komentarz do zestawienia ${zestawienieId}:`, commentDto);
+
+    // 2. Zeruj istniejący timer dla zestawienia
+    if (this.timers.has(zestawienieId)) {
+      clearTimeout(this.timers.get(zestawienieId));
+    }
+
+    // 3. Ustaw nowy timer
+    const timer = setTimeout(async () => {
+      await this.sendNotificationEmail(zestawienieId);
+      this.timers.delete(zestawienieId); // Usuwamy timer po wysłaniu powiadomienia
+    }, this.TIMEOUT_DELAY);
+
+    this.timers.set(zestawienieId, timer);
+  }
+
+  private async sendNotificationEmail(zestawienieId: number) {
+    console.log(`Wysyłam maila dla zestawienia ${zestawienieId}`);
+    // Wyciągnij dane zestawienia jeśli potrzebujesz (np. nazwę klienta)
+    // const zestawienie = await this.zestawienieRepository.findOne(zestawienieId);
+
+    await this.mailService.sendEmail({
+      to: 'admin@example.com', // możesz zmieniać na podstawie klienta
+      subject: `Nowe komentarze w zestawieniu ${zestawienieId}`,
+      text: `Klient zakończył dodawanie komentarzy do zestawienia ${zestawienieId}.`,
+    });
+  }
+}
+
+
+
+  */
 }

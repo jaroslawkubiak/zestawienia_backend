@@ -3,15 +3,19 @@ import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 export class CreateSupplierDto {
   @IsString()
   @IsNotEmpty()
-  firma: string;
+  company: string;
+
+  @IsString()
+  @IsOptional()
+  address?: string;
 
   @IsString()
   @IsNotEmpty()
-  imie: string;
+  firstName: string;
 
   @IsString()
   @IsNotEmpty()
-  nazwisko: string;
+  lastName: string;
 
   @IsString()
   @IsNotEmpty()
@@ -19,7 +23,7 @@ export class CreateSupplierDto {
 
   @IsString()
   @IsOptional()
-  telefon?: string;
+  telephone?: string;
 
   @IsString()
   @IsOptional()
@@ -37,19 +41,23 @@ export class UpdateSupplierDto {
 
   @IsString()
   @IsOptional()
-  firma?: string;
+  company?: string;
 
   @IsString()
   @IsOptional()
-  imie?: string;
+  address?: string;
 
   @IsString()
   @IsOptional()
-  nazwisko?: string;
+  firstName?: string;
 
   @IsString()
   @IsOptional()
-  telefon?: string;
+  lastName?: string;
+
+  @IsString()
+  @IsOptional()
+  telephone?: string;
 
   @IsString()
   @IsOptional()

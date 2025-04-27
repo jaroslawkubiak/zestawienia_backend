@@ -5,6 +5,7 @@ import { IComment } from '../../comments/types/IComment';
 export interface ISet {
   id: number;
   name: string;
+  address: string;
   status: string;
   createdAt: string;
   createdAtTimestamp: number;
@@ -16,9 +17,9 @@ export interface ISet {
   comments?: IComment[];
   clientId: {
     id: number;
-    firma: string;
+    company: string;
     email: string;
-    imie: string;
+    firstName: string;
   };
   createdBy: {
     id: number;

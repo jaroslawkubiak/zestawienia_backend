@@ -20,6 +20,9 @@ export class Set {
   @Column({ type: 'varchar', length: 150, nullable: false })
   name: string;
 
+  @Column({ type: 'text', nullable: false })
+  address: string;
+
   @Column({ type: 'varchar', length: 40, nullable: false, unique: true })
   hash: string;
 

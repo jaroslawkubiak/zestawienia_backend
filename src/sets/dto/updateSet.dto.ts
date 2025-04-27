@@ -11,6 +11,9 @@ export class UpdateSetDto {
   @IsString()
   name: string;
 
+  @IsString()
+  address: string;
+
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => BookmarkDto)

@@ -112,8 +112,8 @@ export class EmailService {
         'email.sendAt',
         'email.sendAtTimestamp',
         'email.setId',
-        'client.firma',
-        'supplier.firma',
+        'client.company',
+        'supplier.company',
         'user.name',
         'set.id',
         'set.name',
@@ -137,11 +137,11 @@ export class EmailService {
         'email.setId',
 
         'client.id',
-        'client.firma',
+        'client.company',
         'client.email',
 
         'supplier.id',
-        'supplier.firma',
+        'supplier.company',
         'supplier.email',
 
         'user.id',

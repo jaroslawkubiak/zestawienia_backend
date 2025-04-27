@@ -4,6 +4,7 @@ import { IBookmark } from '../../bookmarks/types/IBookmark';
 export interface INewSet {
   id: number;
   name: string;
+  address: string;
   status: string;
   createdBy: User;
   createdAt: string;

@@ -12,6 +12,9 @@ export class NewSetDto {
   @IsString()
   name: string;
 
+  @IsString()
+  address: string;
+
   @IsNumber()
   clientId: number;
 

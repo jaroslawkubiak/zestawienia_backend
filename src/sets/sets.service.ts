@@ -75,7 +75,7 @@ export class SetsService {
     const set = await this.setsRepo
       .createQueryBuilder('set')
       .leftJoin('set.clientId', 'client')
-      .addSelect(['client.firma', 'client.email'])
+      .addSelect(['client.company', 'client.email'])
       .leftJoin('set.createdBy', 'createdBy')
       .addSelect(['createdBy.name'])
       .leftJoin('set.updatedBy', 'updatedBy')
@@ -102,7 +102,7 @@ export class SetsService {
         .createQueryBuilder('set')
         .where('set.id = :id', { id: setId })
         .leftJoin('set.clientId', 'client')
-        .addSelect(['client.id', 'client.firma', 'client.email', 'client.imie'])
+        .addSelect(['client.id', 'client.company', 'client.email', 'client.firstName'])
         .leftJoin('set.createdBy', 'createdBy')
         .addSelect(['createdBy.id', 'createdBy.name'])
         .leftJoin('set.updatedBy', 'updatedBy')

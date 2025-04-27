@@ -2,8 +2,8 @@ import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateClientDto {
   @IsString()
-  @IsNotEmpty()
-  company: string;
+  @IsOptional()
+  company?: string;
 
   @IsString()
   @IsNotEmpty()

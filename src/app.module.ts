@@ -33,6 +33,7 @@ import { User } from './user/user.entity';
 import { UserModule } from './user/user.module';
 import { FilesController } from './files/files.controller';
 import { FilesModule } from './files/files.module';
+import { Files } from './files/files.entity';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { FilesModule } from './files/files.module';
           Setting,
           Errors,
           Email,
+          Files,
         ],
         synchronize:
           configService.get<string>('TYPEORM_SYNCHRONIZE') === 'true',
@@ -80,7 +82,12 @@ import { FilesModule } from './files/files.module';
     EmailModule,
     FilesModule,
   ],
-  controllers: [AppController, LoginController, ImagesController, FilesController],
+  controllers: [
+    AppController,
+    LoginController,
+    ImagesController,
+    FilesController,
+  ],
   providers: [AppService, ImagesService],
 })
 export class AppModule {}

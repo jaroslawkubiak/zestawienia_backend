@@ -11,6 +11,7 @@ import { Email } from '../email/email.entity';
 import { Position } from '../position/positions.entity';
 import { User } from '../user/user.entity';
 import { Comment } from '../comments/comments.entity';
+import { Files } from 'src/files/files.entity';
 
 @Entity()
 export class Set {
@@ -74,4 +75,7 @@ export class Set {
 
   @OneToMany(() => Comment, (comment) => comment.setId)
   comments: Comment[];
+
+  @OneToMany(() => Files, (file) => file.setId)
+  files: Files[];
 }

@@ -14,16 +14,18 @@ import {
   mergeMap,
   Observable,
   of,
-  pipe,
   switchMap,
   throwError,
 } from 'rxjs';
+import { CommentsService } from 'src/comments/comments.service';
+import { IComment } from 'src/comments/types/IComment';
 import { DeepPartial, Repository } from 'typeorm';
 import { Client } from '../clients/clients.entity';
 import { ClientsService } from '../clients/clients.service';
 import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
 import { ErrorsType } from '../errors/types/Errors';
+import { FilesService } from '../files/files.service';
 import { generateHash } from '../helpers/generateHash';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { ImagesService } from '../images/images.service';
@@ -35,10 +37,7 @@ import { Set } from './sets.entity';
 import { ISavedSet } from './types/ISavedSet';
 import { ISet } from './types/ISet';
 import { SetStatus } from './types/SetStatus';
-import { FilesService } from '../files/files.service';
-import { IFileList } from '../files/types/IFileList';
-import { IComment } from 'src/comments/types/IComment';
-import { CommentsService } from 'src/comments/comments.service';
+import { IFileFullDetails } from 'src/files/types/IFileFullDetails';
 
 @Injectable()
 export class SetsService {
@@ -59,7 +58,8 @@ export class SetsService {
 
     @Inject(forwardRef(() => CommentsService))
     private readonly commentsService: CommentsService,
-    private filesService: FilesService,
+    @Inject(forwardRef(() => FilesService))
+    private readonly filesService: FilesService,
   ) {}
 
   findOne(id: number): Promise<ISet> {
@@ -75,25 +75,34 @@ export class SetsService {
     const set = await this.setsRepo
       .createQueryBuilder('set')
       .leftJoin('set.clientId', 'client')
-      .addSelect(['client.company', 'client.email'])
+      .addSelect([
+        'client.email',
+        'client.lastName',
+        'client.firstName',
+        'client.company',
+      ])
       .leftJoin('set.createdBy', 'createdBy')
       .addSelect(['createdBy.name'])
       .leftJoin('set.updatedBy', 'updatedBy')
       .addSelect(['updatedBy.name'])
+      .leftJoinAndSelect('set.comments', 'comments')
+      .leftJoinAndSelect('set.files', 'files')
       .getMany();
 
-    const updatedSet = await Promise.all(
-      set.map(async (item) => {
-        const files: IFileList = this.filesService.getFileList(item.id);
-        const comments: IComment[] = await this.commentsService.findBySetId(
-          item.id,
-        );
+    // const updatedSet = await Promise.all(
+    //   set.map(async (item) => {
+    //     // const files: IFileFullDetails[] = await this.filesService.getFileList(
+    //     //   item.id,
+    //     // );
+    //     // const comments: IComment[] = await this.commentsService.findBySetId(
+    //     //   item.id,
+    //     // );
 
-        return { ...item, files, comments };
-      }),
-    );
-
-    return updatedSet;
+    //     return { ...item };
+    //   }),
+    // );
+    console.log(set);
+    return set;
   }
 
   getSet(setId: number): Observable<ISet> {
@@ -102,20 +111,28 @@ export class SetsService {
         .createQueryBuilder('set')
         .where('set.id = :id', { id: setId })
         .leftJoin('set.clientId', 'client')
-        .addSelect(['client.id', 'client.company', 'client.email', 'client.firstName'])
+        .addSelect([
+          'client.id',
+          'client.company',
+          'client.email',
+          'client.firstName',
+          'client.lastName',
+        ])
         .leftJoin('set.createdBy', 'createdBy')
         .addSelect(['createdBy.id', 'createdBy.name'])
         .leftJoin('set.updatedBy', 'updatedBy')
         .addSelect(['updatedBy.id', 'updatedBy.name'])
+        .leftJoin('set.files', 'files')
+        .addSelect(['files.id', 'files.fileName'])
         .getOne(),
     ).pipe(
       mergeMap((set) => {
         if (!set) {
           return throwError(() => new Error('Set not found'));
         }
-        const files = this.filesService.getFileList(setId);
+
         return from(this.commentsService.findBySetId(setId)).pipe(
-          switchMap((comments: IComment[]) => of({ ...set, files, comments })),
+          switchMap((comments: IComment[]) => of({ ...set, comments })),
         );
       }),
     );

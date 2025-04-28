@@ -269,7 +269,7 @@ export class SetsService {
     this.imagesService.removeFolder(uploadPath);
 
     // remove files list from files table
-    this.filesService.removeFiles(id);
+    this.filesService.removeFilesFromSet(id);
   }
 
   validateSetAndHash(setId: number, hash: string): Observable<boolean> {

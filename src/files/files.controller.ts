@@ -44,7 +44,8 @@ export class FilesController {
             fs.mkdirSync(uploadPath, { recursive: true });
           }
 
-          file['uploadPath'] = uploadPath;
+          const filePathToDB = path.resolve('sets', setId, directory);
+          file['uploadPath'] = filePathToDB;
           file['setId'] = setId;
           file['dir'] = directory;
 
@@ -108,15 +109,9 @@ export class FilesController {
     };
   }
 
-  // get files list from set id dir
-  @Get(':setId')
-  getFileList(@Param('setId') setId: string): Promise<IFileFullDetails[]> {
-    return this.filesService.getFileList(+setId);
-  }
-
   // delete files from set id dir
   @Delete(':id')
-  remove(@Param('seidtId') id: string) {
+  remove(@Param('id') id: string) {
     return this.filesService.deleteFile(+id);
   }
 }

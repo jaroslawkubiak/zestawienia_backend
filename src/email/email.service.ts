@@ -113,6 +113,8 @@ export class EmailService {
         'email.sendAtTimestamp',
         'email.setId',
         'client.company',
+        'client.firstName',
+        'client.lastName',
         'supplier.company',
         'user.name',
         'set.id',

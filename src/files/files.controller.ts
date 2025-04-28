@@ -77,13 +77,14 @@ export class FilesController {
     }
 
     const fileDetailsList: IFileDetails[] = files.map((file) => {
-      const fullPath = file['uploadPath'];
-      const index = fullPath.indexOf('uploads');
-      const relativePath = fullPath.slice(index);
+      const uploadPath = file['uploadPath'];
+      const relativePath = path.relative(process.cwd(), uploadPath);
+      const normalizedPath = relativePath.replace(/\\/g, '/');
+
       return {
         fileName: file['sanitizedOriginalName'],
         type: file['type'],
-        fullPath: relativePath,
+        path: normalizedPath,
         dir: file['dir'],
         description: file['originalname'],
         setId: file['setId'],
@@ -91,12 +92,18 @@ export class FilesController {
       };
     });
 
-    for (const file of fileDetailsList) {
-      await this.filesService.create(file);
-    }
+    const addedFiles: IFileFullDetails[] = await Promise.all(
+      fileDetailsList.map((file) => this.filesService.create(file)),
+    );
+
+    const fileCount = addedFiles.length;
+    const fileWord =
+      fileCount === 1 ? 'plik' : fileCount < 5 ? 'pliki' : 'plików';
+    const message = `Pomyślnie przesłano ${fileCount} ${fileWord} do katalogu "${files[0]['dir']}"`;
 
     return {
-      message: 'Pliki zostały przesłane pomyślnie',
+      message,
+      files: addedFiles,
       fileNames: files?.map((file) => file.filename),
     };
   }

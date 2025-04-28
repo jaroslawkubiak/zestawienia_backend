@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { FilesController } from './files.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ErrorsModule } from 'src/errors/errors.module';
+import { ErrorsModule } from '../errors/errors.module';
 import { Files } from './files.entity';
 
 @Module({

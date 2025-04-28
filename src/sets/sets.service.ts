@@ -17,8 +17,8 @@ import {
   switchMap,
   throwError,
 } from 'rxjs';
-import { CommentsService } from 'src/comments/comments.service';
-import { IComment } from 'src/comments/types/IComment';
+import { CommentsService } from '../comments/comments.service';
+import { IComment } from '../comments/types/IComment';
 import { DeepPartial, Repository } from 'typeorm';
 import { Client } from '../clients/clients.entity';
 import { ClientsService } from '../clients/clients.service';
@@ -37,7 +37,6 @@ import { Set } from './sets.entity';
 import { ISavedSet } from './types/ISavedSet';
 import { ISet } from './types/ISet';
 import { SetStatus } from './types/SetStatus';
-import { IFileFullDetails } from 'src/files/types/IFileFullDetails';
 
 @Injectable()
 export class SetsService {
@@ -89,19 +88,6 @@ export class SetsService {
       .leftJoinAndSelect('set.files', 'files')
       .getMany();
 
-    // const updatedSet = await Promise.all(
-    //   set.map(async (item) => {
-    //     // const files: IFileFullDetails[] = await this.filesService.getFileList(
-    //     //   item.id,
-    //     // );
-    //     // const comments: IComment[] = await this.commentsService.findBySetId(
-    //     //   item.id,
-    //     // );
-
-    //     return { ...item };
-    //   }),
-    // );
-    console.log(set);
     return set;
   }
 
@@ -272,7 +258,7 @@ export class SetsService {
     };
     this.clientsService.update(clientId, updateClient);
 
-    // usunac wszystkie katalogi z obrazami
+    // delete all dir with files
     const innerPath = `/sets/${id}`;
     const uploadPath = path.join(
       process.cwd(),
@@ -281,6 +267,9 @@ export class SetsService {
 
     this.imagesService.removeFolderContent(uploadPath);
     this.imagesService.removeFolder(uploadPath);
+
+    // remove files list from files table
+    this.filesService.removeFiles(id);
   }
 
   validateSetAndHash(setId: number, hash: string): Observable<boolean> {

@@ -19,7 +19,7 @@ export class Files {
   type: string;
 
   @Column({ type: 'varchar', length: 100, nullable: false })
-  fullPath: string;
+  path: string;
 
   @Column({ type: 'varchar', length: 100, nullable: false })
   dir: string;
@@ -37,7 +37,7 @@ export class Files {
   createdAtTimestamp: number;
 
   @ManyToOne(() => Set, (set) => set.files, {
-    onDelete: 'SET NULL',
+    onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'setId', referencedColumnName: 'id' })
   setId: Set;

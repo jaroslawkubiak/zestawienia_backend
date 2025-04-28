@@ -11,7 +11,7 @@ import { Email } from '../email/email.entity';
 import { Position } from '../position/positions.entity';
 import { User } from '../user/user.entity';
 import { Comment } from '../comments/comments.entity';
-import { Files } from 'src/files/files.entity';
+import { Files } from '../files/files.entity';
 
 @Entity()
 export class Set {

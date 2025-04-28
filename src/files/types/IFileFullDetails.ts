@@ -4,7 +4,7 @@ export interface IFileFullDetails {
   id: number;
   fileName: string;
   type: string;
-  fullPath: string;
+  path: string;
   dir: string;
   description: string;
   size: number;

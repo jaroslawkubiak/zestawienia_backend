@@ -40,6 +40,10 @@ export class UpdatePositionDto {
   netto?: number;
 
   @IsNumber()
+  @IsOptional()
+  brutto?: number;
+
+  @IsNumber()
   kolejnosc: number;
 
   @IsString()

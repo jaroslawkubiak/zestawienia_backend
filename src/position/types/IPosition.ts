@@ -11,6 +11,7 @@ export interface IPosition {
   kolor: string;
   ilosc: number;
   netto: number;
+  brutto: number;
   kolejnosc: number;
   pomieszczenie: string;
   link: string;

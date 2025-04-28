@@ -38,6 +38,9 @@ export class Position {
   @Column({ type: 'double', nullable: true })
   netto: number;
 
+  @Column({ type: 'double', nullable: true })
+  brutto: number;
+
   @Column({ nullable: true })
   kolejnosc: number;
 

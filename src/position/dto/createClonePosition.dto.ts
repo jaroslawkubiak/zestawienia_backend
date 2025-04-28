@@ -40,6 +40,10 @@ export class CreateClonePositionDto {
   netto?: number;
 
   @IsNumber()
+  @IsOptional()
+  brutto?: number;
+
+  @IsNumber()
   kolejnosc: number;
 
   @IsString()

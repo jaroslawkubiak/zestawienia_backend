@@ -11,6 +11,7 @@ Nowe zestawienie
 [x] przekierowanie do edit-set
 [x] zapis pozycji do db
 [x] aktualizacja setCount w klientach
+[x] adres inwestycji: textarea
 
 Edycja zestawienia:
 [x] zmiana pozycji poprzed drag and drop i update property kolejność w db
@@ -24,11 +25,21 @@ Edycja zestawienia:
 [x] statusy do zestawień: w przygotowaniu, gotowy, otwarty, w realizacji, zamknięty
 [x] status pozycji: (inne tło w zależności od statusu)
 [x] wklejanie obrazów do pozycji ze schowka
-[ ] usuwanie obrazu z pozycji
+[x] możliwość wpisywania ceny netto lub brutto.
+[x] usunąć z footer ilość, netto i brutto
 
 - do wyboru (różowy)
 - zapłacony/zamówiony (zielony)
 - w trakcie wyceny (czerwony)
+
+[x] nowe Bookmarks:
+1 PODSUMOWANIE
+2 OŚWIETLENIE, OSPRZĘT ELEKTRYCZNY
+3 ŁAZIENKA
+4 KUCHNIA
+5 PŁYTKI CERAMICZNE
+6 MEBLE NA WYMIAR, MEBLE GOTOWE
+7 ŚCIANY, SUFITY, PODŁOGI
 
 Edycja nagłówka zestawienia:
 [x] zmiana statusu
@@ -65,6 +76,9 @@ Klienci:
 [x] dodawanie nowych klientów
 [x] edycja klienta
 [x] usuwanie klienta
+[x] jedno pole rozszerzone textarea z: firma z nip, adres, ulica, miasto, kod, email, telefon
+[x] guzik kopiowania adresu do schowka
+[ ] widok dla klienta z zakładkami do przełączania, podsumowanie wart netto i brutto
 
 Dostawcy:
 [x] dodawanie nowych dostawców
@@ -73,28 +87,39 @@ Dostawcy:
 [x] email wymagany
 [x] hash generowany do linków
 
-Ustawienia:
-[ ] dodawanie/usuwanie produktow
-[ ] domyślna szerokość kolumn pozycji ładoawna z DB, a nie z const
+[x] nowa kolumna dane firmy: adres, nip - textarea
+[x] guzik kopiowania adresu do schowka
 
 Emails:
 [x] wysyłka email z linkiem do zestawienia do klientów (setId/setHash)
-[ ] działający link bez logowania hash łączony z id zestawienia do podglądu dla klientów np: /:id_zestawienia/:hash_zestawienia
+[x] działający link bez logowania hash łączony z id zestawienia do podglądu dla klientów np: /:id_zestawienia/:hash_zestawienia
 [x] wysyłka email z linkiem do części pozycji do której przypisany jest dostawaca (/setId/setHash/SupplierHash)
 [x] lista wysłanych emaili do klientów z podglądem wysłanej wiadomości
 [x] przed wysyłką możliwa edycja wiadomości
+[ ] działający link bez logowania do podglądu dla dostawców np: /:id_zestawienia/:hash_zestawienia/:hash_dostawcy
 
 comments:
-[ ] powiadomienie przy guziku komentarzy o ilości:
-czerwone - liczba nieprzeczytanych/nowych
-czarne - liczba ogólnych komentarzy - wszystkie są przeczytane
-szary - jeżeli jest brak komentarzy
-[ ] dodawanie komentarzy przez klientów
+[x] powiadomienie przy guziku komentarzy o ilości:
+[x] w komentarzach po kliknięciu na nazwę pozycji przenosi do eydcji
+[x] dodawanie komentarzy przez klientów
+[x] edycja komentarzy przez klientów
+[x] modyfikacja statusu odczynia komentarzy przez klientów
 [ ] notyfikacja o nowych komentarzach
 [x] odpowiedź na komentarze w formie iMessage :)
 [x] edycja komentarzy usera
 [x] usuwanie komentarzy usera
 [x] oznaczanie które komentarze klienta są nieprzeczytane
+
+status:
+[x] nowe zestawienie ze statusem nowe, przy dodaniu pierwszej pozycji zmiana statusu na w przygotowaniu i blokada usuwania
+
+załączniki:
+[x] zapis plików w DB: nazwa pliku, data doodania, kto dodał, rozszerzenie, folder (będzie kilka)
+[x] wybór folderu przy uploadzie plików
+[x] foldery: moodboard, model3d, rysunki wykonawcze, wizualizacje.
+[ ] widok listy z sortowaniem
+[ ] osobny folder: robocze - niewidoczny dla klienta
+[ ] załączniki: pobierz wszystkie, najlepiej w zip
 
 DB:
 [x] zestawienia nagłówek: id, nr zestawienia, id klienta, id usera, data dodania (w czytelnym formacie), created by, create date (timestamp), update by, updated date (timestamp)
@@ -117,7 +142,6 @@ obgadać:
 
 - statusy, kiedy jaki ma się zmienić
 - email: tytuły i treść emaili do klientów i dostawców
-- edycja emaila przed wysyłką?
 - KOLORY! Design itp :)
 - jaki design dla klientów? jaki layout?
 

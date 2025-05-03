@@ -217,15 +217,20 @@ export class PositionsService {
   // delete position
   async removePosition(id: number): Promise<void> {
     const removedPosition = await this.findOne(id);
+    if (!removedPosition) {
+      throw new NotFoundException(`Position with ID ${id} not found`);
+    }
+
     const result = await this.positionsRepo.delete(id);
+
     if (result.affected === 0) {
       throw new NotFoundException(`Position with ID ${id} not found`);
-    } else {
-      //update positionCount to supplier
-      const findSupplierId = removedPosition?.supplierId?.id;
-      if (findSupplierId) {
-        this.updatePositionCountBySupplierId(findSupplierId);
-      }
+    }
+
+    const supplierId = removedPosition?.supplierId?.id;
+
+    if (supplierId) {
+      await this.updatePositionCountBySupplierId(supplierId);
     }
   }
 

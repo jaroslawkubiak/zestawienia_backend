@@ -109,6 +109,8 @@ export class SetsService {
         .leftJoin('set.updatedBy', 'updatedBy')
         .addSelect(['updatedBy.id', 'updatedBy.name'])
         .leftJoinAndSelect('set.files', 'files')
+        .leftJoin('files.setId', 'fileSet')
+        .addSelect(['fileSet.id'])
         .getOne(),
     ).pipe(
       mergeMap((set) => {

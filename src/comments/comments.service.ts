@@ -31,14 +31,31 @@ export class CommentsService {
     private userService: UserService,
   ) {}
 
-  findOne(id: number): Promise<IComment> {
-    return this.commentRepo.findOneBy({ id });
+  async findOne(id: number): Promise<IComment> {
+    const comment = await this.commentRepo
+      .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.positionId', 'position')
+      .where('comment.id = :id', { id })
+      .select([
+        'comment.id',
+        'comment.comment',
+        'comment.authorId',
+        'comment.authorType',
+        'comment.readByReceiver',
+        'comment.createdAt',
+        'comment.createdAtTimestamp',
+        'position.id',
+      ])
+      .orderBy('comment.id', 'ASC')
+      .getOne();
+
+    return comment;
   }
 
   async findBySetId(setId: number): Promise<IComment[]> {
     const comments = await this.commentRepo
       .createQueryBuilder('comment')
-      .leftJoin('comment.positionId', 'position')
+      .leftJoinAndSelect('comment.positionId', 'position')
       .where('comment.setId = :setId', { setId })
       .select([
         'comment.id',
@@ -75,7 +92,7 @@ export class CommentsService {
   async findByPositionId(positionId: number): Promise<IComment[]> {
     const comments = await this.commentRepo
       .createQueryBuilder('comment')
-      .leftJoin('comment.positionId', 'position')
+      .leftJoinAndSelect('comment.positionId', 'position')
       .where('comment.positionId = :positionId', { positionId })
       .select([
         'comment.id',
@@ -85,6 +102,7 @@ export class CommentsService {
         'comment.readByReceiver',
         'comment.createdAt',
         'comment.createdAtTimestamp',
+        'position.id',
       ])
       .orderBy('comment.id', 'ASC')
       .getMany();

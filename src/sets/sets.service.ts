@@ -17,11 +17,11 @@ import {
   switchMap,
   throwError,
 } from 'rxjs';
-import { CommentsService } from '../comments/comments.service';
-import { IComment } from '../comments/types/IComment';
 import { DeepPartial, Repository } from 'typeorm';
 import { Client } from '../clients/clients.entity';
 import { ClientsService } from '../clients/clients.service';
+import { CommentsService } from '../comments/comments.service';
+import { IComment } from '../comments/types/IComment';
 import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
 import { ErrorsType } from '../errors/types/Errors';
@@ -66,7 +66,7 @@ export class SetsService {
       .createQueryBuilder('set')
       .where('set.id = :id', { id: id })
       .leftJoin('set.clientId', 'client')
-      .addSelect(['client.id'])
+      .addSelect(['client.id', 'client.firstName', 'client.lastName', 'client.company'])
       .getOne();
   }
 

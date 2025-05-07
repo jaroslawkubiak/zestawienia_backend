@@ -63,6 +63,8 @@ import { Files } from './files/files.entity';
           Email,
           Files,
         ],
+        // logging: ['query', 'error'],
+        // logger: 'advanced-console',
         synchronize:
           configService.get<string>('TYPEORM_SYNCHRONIZE') === 'true',
       }),

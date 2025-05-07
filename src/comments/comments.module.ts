@@ -1,14 +1,15 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClientsModule } from '../clients/clients.module';
+import { EmailModule } from '../email/email.module';
 import { ErrorsModule } from '../errors/errors.module';
 import { Position } from '../position/positions.entity';
 import { SetsModule } from '../sets/sets.module';
 import { User } from '../user/user.entity';
+import { UserModule } from '../user/user.module';
 import { CommentsController } from './comments.controller';
 import { Comment } from './comments.entity';
 import { CommentsService } from './comments.service';
-import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { UserModule } from '../user/user.module';
     forwardRef(() => UserModule),
     forwardRef(() => ClientsModule),
     forwardRef(() => SetsModule),
+    forwardRef(() => EmailModule)
   ],
   controllers: [CommentsController],
   providers: [CommentsService],

@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
 import { DeepPartial, Repository } from 'typeorm';
 import { ClientsService } from '../clients/clients.service';
+import { EmailService } from '../email/email.service';
 import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
 import { ErrorsType } from '../errors/types/Errors';
@@ -16,19 +17,20 @@ import { Set } from '../sets/sets.entity';
 import { UserService } from '../user/user.service';
 import { Comment } from './comments.entity';
 import { CreateCommentDto, UpdateCommentDto } from './dto/comment.dto';
-import { IComment } from './types/IComment';
 import { IMarkAllComments } from './dto/markAllComments.dto';
+import { IComment } from './types/IComment';
 
 @Injectable()
 export class CommentsService {
   private timers: Map<number, NodeJS.Timeout> = new Map();
-  private readonly TIMEOUT_DELAY = 60 * 1000; // minuta
+  private readonly TIMEOUT_DELAY = 10 * 60 * 1000; // 10 min = 10 * 60 * 1000
   constructor(
     @InjectRepository(Comment)
     private readonly commentRepo: Repository<Comment>,
     private errorsService: ErrorsService,
     private clientsService: ClientsService,
     private userService: UserService,
+    private emailService: EmailService,
   ) {}
 
   async findOne(id: number): Promise<IComment> {
@@ -131,13 +133,14 @@ export class CommentsService {
     req: Request,
   ): Promise<IComment> {
     try {
+      const { setId, authorType } = createCommentDto;
       const newComment: DeepPartial<Comment> = {
         ...createCommentDto,
         positionId: {
           id: createCommentDto.positionId,
         } as DeepPartial<Position>,
         setId: {
-          id: createCommentDto.setId,
+          id: setId,
         } as DeepPartial<Set>,
         readByReceiver: false,
         createdAt: getFormatedDate(),
@@ -146,6 +149,18 @@ export class CommentsService {
 
       const savedComment = await this.commentRepo.save(newComment);
 
+      if (authorType === 'client') {
+        if (this.timers.has(setId)) {
+          clearTimeout(this.timers.get(setId));
+        }
+
+        const timer = setTimeout(async () => {
+          await this.sendNotificationEmail(setId);
+          this.timers.delete(setId); // delete timer after sending email
+        }, this.TIMEOUT_DELAY);
+
+        this.timers.set(setId, timer);
+      }
       return savedComment;
     } catch (err) {
       const newError: ErrorDto = {
@@ -168,6 +183,14 @@ export class CommentsService {
         details: err,
       });
     }
+  }
+
+  private async sendNotificationEmail(setId: number) {
+    const newComments = (await this.findBySetId(setId)).filter(
+      (item) => item.authorType === 'client' && !item.readByReceiver,
+    );
+
+    await this.emailService.sendEmailAboutNewComments(setId, newComments);
   }
 
   async update(
@@ -291,54 +314,4 @@ export class CommentsService {
   async remove(id: number): Promise<void> {
     await this.commentRepo.delete(id);
   }
-
-  /*
-
-// comment.service.ts
-import { Injectable } from '@nestjs/common';
-import { MailService } from './mail.service'; // Twój serwis do wysyłki maili
-
-@Injectable()
-export class CommentService {
-  private timers: Map<number, NodeJS.Timeout> = new Map();
-  private readonly TIMEOUT_DELAY = 10 * 60 * 1000; // 10 minut
-
-  constructor(private readonly mailService: MailService) {}
-
-  async addComment(zestawienieId: number, commentDto: any) {
-    // 1. Zapisz komentarz do bazy danych
-    // await this.commentRepository.save({ ...commentDto, zestawienieId });
-
-    console.log(`Dodano komentarz do zestawienia ${zestawienieId}:`, commentDto);
-
-    // 2. Zeruj istniejący timer dla zestawienia
-    if (this.timers.has(zestawienieId)) {
-      clearTimeout(this.timers.get(zestawienieId));
-    }
-
-    // 3. Ustaw nowy timer
-    const timer = setTimeout(async () => {
-      await this.sendNotificationEmail(zestawienieId);
-      this.timers.delete(zestawienieId); // Usuwamy timer po wysłaniu powiadomienia
-    }, this.TIMEOUT_DELAY);
-
-    this.timers.set(zestawienieId, timer);
-  }
-
-  private async sendNotificationEmail(zestawienieId: number) {
-    console.log(`Wysyłam maila dla zestawienia ${zestawienieId}`);
-    // Wyciągnij dane zestawienia jeśli potrzebujesz (np. nazwę klienta)
-    // const zestawienie = await this.zestawienieRepository.findOne(zestawienieId);
-
-    await this.mailService.sendEmail({
-      to: 'admin@example.com', // możesz zmieniać na podstawie klienta
-      subject: `Nowe komentarze w zestawieniu ${zestawienieId}`,
-      text: `Klient zakończył dodawanie komentarzy do zestawienia ${zestawienieId}.`,
-    });
-  }
-}
-
-
-
-  */
 }

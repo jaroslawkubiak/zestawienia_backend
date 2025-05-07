@@ -1,4 +1,9 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as nodemailer from 'nodemailer';
 import { from, Observable } from 'rxjs';
@@ -31,7 +36,9 @@ export class EmailService {
     @InjectRepository(Email)
     private readonly emailRepo: Repository<Email>,
     private readonly errorsService: ErrorsService,
+    @Inject(forwardRef(() => SetsService))
     private readonly setsService: SetsService,
+    @Inject(forwardRef(() => PositionsService))
     private readonly positionService: PositionsService,
   ) {
     this.transporter = nodemailer.createTransport({

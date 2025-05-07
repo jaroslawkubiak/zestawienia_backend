@@ -13,9 +13,11 @@ import { Comment } from './comments/comments.entity';
 import { CommentsModule } from './comments/comments.module';
 import { Email } from './email/email.entity';
 import { EmailModule } from './email/email.module';
-import { EmailService } from './email/email.service';
 import { Errors } from './errors/errors.entity';
 import { ErrorsModule } from './errors/errors.module';
+import { FilesController } from './files/files.controller';
+import { Files } from './files/files.entity';
+import { FilesModule } from './files/files.module';
 import { ImagesController } from './images/images.controller';
 import { ImagesModule } from './images/images.module';
 import { ImagesService } from './images/images.service';
@@ -31,9 +33,6 @@ import { Supplier } from './suppliers/suppliers.entity';
 import { SuppliersModule } from './suppliers/suppliers.module';
 import { User } from './user/user.entity';
 import { UserModule } from './user/user.module';
-import { FilesController } from './files/files.controller';
-import { FilesModule } from './files/files.module';
-import { Files } from './files/files.entity';
 
 @Module({
   imports: [

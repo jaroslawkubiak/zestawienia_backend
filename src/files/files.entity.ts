@@ -30,6 +30,12 @@ export class Files {
   @Column({ type: 'int', nullable: false })
   size: number;
 
+  @Column({ type: 'int', nullable: true })
+  width: number;
+
+  @Column({ type: 'int', nullable: true })
+  height: number;
+
   @Column({ type: 'varchar', length: 50, nullable: false })
   createdAt: string;
 

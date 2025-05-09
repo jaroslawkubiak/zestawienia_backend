@@ -66,12 +66,17 @@ export class SetsService {
       .createQueryBuilder('set')
       .where('set.id = :id', { id: id })
       .leftJoin('set.clientId', 'client')
-      .addSelect(['client.id', 'client.firstName', 'client.lastName', 'client.company'])
+      .addSelect([
+        'client.id',
+        'client.firstName',
+        'client.lastName',
+        'client.company',
+      ])
       .getOne();
   }
 
   async findAll(): Promise<ISet[]> {
-    const set = await this.setsRepo
+    const sets = await this.setsRepo
       .createQueryBuilder('set')
       .leftJoin('set.clientId', 'client')
       .addSelect([
@@ -88,7 +93,12 @@ export class SetsService {
       .leftJoinAndSelect('set.files', 'files')
       .getMany();
 
-    return set;
+    // sort set files from newest to oldest
+    sets.forEach((set) => {
+      set.files.sort((a, b) => b.createdAtTimestamp - a.createdAtTimestamp);
+    });
+
+    return sets;
   }
 
   getSet(setId: number): Observable<ISet> {
@@ -116,6 +126,11 @@ export class SetsService {
       mergeMap((set) => {
         if (!set) {
           return throwError(() => new Error('Set not found'));
+        }
+
+        // sort set files from newest to oldest
+        if (Array.isArray(set.files) && set.files.length > 0) {
+          set.files.sort((a, b) => b.createdAtTimestamp - a.createdAtTimestamp);
         }
 
         return from(this.commentsService.findBySetId(setId)).pipe(

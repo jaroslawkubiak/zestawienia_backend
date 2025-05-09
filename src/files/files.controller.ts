@@ -17,6 +17,8 @@ import { getFormatedDate } from '../helpers/getFormatedDate';
 import { FilesService } from './files.service';
 import { IFileDetails } from './types/IFileDetails';
 import { IFileFullDetails } from './types/IFileFullDetails';
+import { imageSize } from 'image-size';
+import { PDFDocument } from 'pdf-lib';
 
 @Controller('files')
 export class FilesController {
@@ -39,13 +41,14 @@ export class FilesController {
             setId,
             directory,
           );
+
           // create dir if not exists
           if (!fs.existsSync(uploadPath)) {
             fs.mkdirSync(uploadPath, { recursive: true });
           }
 
-          const filePathToDB = path.resolve('sets', setId, directory);
-          file['uploadPath'] = filePathToDB;
+          file['absoluteUploadPath'] = uploadPath;
+          file['uploadPath'] = path.join('sets', setId, directory);
           file['setId'] = setId;
           file['dir'] = directory;
 
@@ -66,6 +69,10 @@ export class FilesController {
             .replace(/[()]/g, '');
           file['type'] = fileOriginalName[1];
           file['sanitizedOriginalName'] = sanitazeName;
+          file['fullFilePath'] = path.join(
+            file['absoluteUploadPath'],
+            sanitazeName,
+          );
 
           cb(null, sanitazeName);
         },
@@ -76,22 +83,57 @@ export class FilesController {
     if (!files || files.length === 0) {
       throw new BadRequestException('Nie przesłano żadnych plików');
     }
+    const PT_TO_MM = 25.4 / 72; // convert point to mm in PDF
 
-    const fileDetailsList: IFileDetails[] = files.map((file) => {
-      const uploadPath = file['uploadPath'];
-      const relativePath = path.relative(process.cwd(), uploadPath);
-      const normalizedPath = relativePath.replace(/\\/g, '/');
+    const fileDetailsList: IFileDetails[] = await Promise.all(
+      files.map(async (file) => {
+        const uploadPath = file['uploadPath'];
+        const relativePath = path.relative(process.cwd(), uploadPath);
+        const normalizedPath = relativePath.replace(/\\/g, '/');
 
-      return {
-        fileName: file['sanitizedOriginalName'],
-        type: file['type'],
-        path: normalizedPath,
-        dir: file['dir'],
-        description: file['originalname'],
-        setId: file['setId'],
-        size: file['size'],
-      };
-    });
+        const fullFilePath = file['fullFilePath'];
+        let dimensions = { width: 0, height: 0 };
+
+        try {
+          const fileType = file['type'].toUpperCase();
+          const fileBuffer = await fs.promises.readFile(fullFilePath);
+
+          if (fileType === 'PDF') {
+            const pdfDoc = await PDFDocument.load(fileBuffer);
+            const size = pdfDoc.getPage(0).getSize();
+            dimensions = {
+              width: Math.floor(size.width * PT_TO_MM),
+              height: Math.floor(size.height * PT_TO_MM),
+            };
+          } else if (['JPG', 'JPEG', 'PNG'].includes(fileType)) {
+            const size = imageSize(fileBuffer);
+            if (size.width && size.height) {
+              dimensions = {
+                width: size.width,
+                height: size.height,
+              };
+            }
+          }
+        } catch (error) {
+          console.warn(
+            `Failed to retrieve dimensions for file ${file.filename}:`,
+            error,
+          );
+        }
+
+        return {
+          fileName: file['sanitizedOriginalName'],
+          type: file['type'],
+          path: normalizedPath,
+          dir: file['dir'],
+          description: file['originalname'],
+          setId: file['setId'],
+          size: file['size'],
+          width: dimensions.width,
+          height: dimensions.height,
+        };
+      }),
+    );
 
     const addedFiles: IFileFullDetails[] = await Promise.all(
       fileDetailsList.map((file) => this.filesService.create(file)),

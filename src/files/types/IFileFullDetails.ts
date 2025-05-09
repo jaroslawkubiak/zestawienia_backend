@@ -7,8 +7,10 @@ export interface IFileFullDetails {
   path: string;
   dir: string;
   description: string;
-  size: number;
   setId: ISet;
+  size: number;
+  width: number;
+  height: number;
   createdAt: string;
   createdAtTimestamp: number;
 }

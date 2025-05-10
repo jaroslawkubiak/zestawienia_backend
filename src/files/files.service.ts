@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, StreamableFile } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { promises as fs } from 'fs';
 import * as path from 'path';
@@ -7,9 +7,15 @@ import { getFormatedDate } from '../helpers/getFormatedDate';
 import { Files } from './files.entity';
 import { IFileDetails } from './types/IFileDetails';
 import { IFileFullDetails } from './types/IFileFullDetails';
+import { PassThrough } from 'stream';
+import * as archiver from 'archiver';
+import { async } from 'rxjs';
+import * as fss from 'fs';
 
 @Injectable()
 export class FilesService {
+  baseUploadPath = process.env.UPLOAD_PATH;
+
   constructor(
     @InjectRepository(Files)
     private readonly filesRepo: Repository<Files>,
@@ -42,15 +48,14 @@ export class FilesService {
   // delete file from set
   async deleteFile(id: number) {
     const fileToDelete = await this.findOne(id);
-    const baseUploadPath = process.env.UPLOAD_PATH;
     const filePath = path.join(
-      baseUploadPath,
+      this.baseUploadPath,
       fileToDelete.path,
       fileToDelete.fileName,
     );
 
     // security check to prevent path travelsal attacks
-    if (!filePath.startsWith(baseUploadPath)) {
+    if (!filePath.startsWith(this.baseUploadPath)) {
       throw new Error('Access denied');
     }
 
@@ -70,7 +75,7 @@ export class FilesService {
     try {
       await fs.unlink(filePath);
       console.log(`✅ File deleted: ${filePath}`);
-      await this.remove(id);
+      await this.removeFromDB(id);
 
       return {
         severity: 'success',
@@ -87,7 +92,7 @@ export class FilesService {
     }
   }
 
-  async remove(id: number): Promise<void> {
+  async removeFromDB(id: number): Promise<void> {
     await this.filesRepo.delete(id);
   }
 
@@ -97,5 +102,34 @@ export class FilesService {
       .delete()
       .where('file.setId = :setId', { setId })
       .execute();
+  }
+
+  async downloadByIds(ids: number[]): Promise<archiver.Archiver> {
+    const archive = archiver('zip', { zlib: { level: 9 } });
+
+    for (const id of ids) {
+      const file: IFileFullDetails = await this.findOne(id);
+      if (!file) {
+        return; 
+      }
+
+      const filePath = path.join(this.baseUploadPath, file.path, file.fileName);
+      const absolutePath = path.join(
+        __dirname,
+        '..',
+        '..',
+        'uploads',
+        filePath,
+      );
+      const fileName = file.fileName;
+
+      if (fss.existsSync(absolutePath)) {
+        archive.file(absolutePath, { name: fileName });
+      }
+    }
+
+    archive.finalize();
+
+    return archive;
   }
 }

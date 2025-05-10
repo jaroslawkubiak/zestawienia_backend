@@ -1,24 +1,26 @@
 import {
   BadRequestException,
+  Body,
   Controller,
   Delete,
-  Get,
   Param,
   Post,
+  Res,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { Response } from 'express';
 import * as fs from 'fs';
+import { imageSize } from 'image-size';
 import { diskStorage } from 'multer';
 import * as path from 'path';
 import { extname } from 'path';
+import { PDFDocument } from 'pdf-lib';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { FilesService } from './files.service';
 import { IFileDetails } from './types/IFileDetails';
 import { IFileFullDetails } from './types/IFileFullDetails';
-import { imageSize } from 'image-size';
-import { PDFDocument } from 'pdf-lib';
 
 @Controller('files')
 export class FilesController {
@@ -67,7 +69,7 @@ export class FilesController {
             .replace(/\s+/g, '-')
             .replace(/:/g, '-')
             .replace(/[()]/g, '');
-          file['type'] = fileOriginalName[1];
+          file['type'] = fileOriginalName[fileOriginalName.length - 1];
           file['sanitizedOriginalName'] = sanitazeName;
           file['fullFilePath'] = path.join(
             file['absoluteUploadPath'],
@@ -155,5 +157,25 @@ export class FilesController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.filesService.deleteFile(+id);
+  }
+
+  // batch delete files from set id dir
+  @Delete('')
+  batchRemove(@Body() body: { ids: number[] }) {
+    body.ids.forEach((id) => {
+      return this.filesService.deleteFile(+id);
+    });
+  }
+
+  @Post('download-zip')
+  async downloadZip(@Body('ids') ids: number[], @Res() res: Response) {
+    const archive = await this.filesService.downloadByIds(ids);
+
+    res.set({
+      'Content-Type': 'application/zip',
+      'Content-Disposition': 'attachment; filename="plik.zip"',
+    });
+
+    archive.pipe(res);
   }
 }

@@ -91,6 +91,8 @@ export class SetsService {
       .addSelect(['updatedBy.name'])
       .leftJoinAndSelect('set.comments', 'comments')
       .leftJoinAndSelect('set.files', 'files')
+      .leftJoin('files.setId', 'fileSet')
+      .addSelect(['fileSet.id'])
       .getMany();
 
     // sort set files from newest to oldest

@@ -110,17 +110,11 @@ export class FilesService {
     for (const id of ids) {
       const file: IFileFullDetails = await this.findOne(id);
       if (!file) {
-        return; 
+        return;
       }
 
       const filePath = path.join(this.baseUploadPath, file.path, file.fileName);
-      const absolutePath = path.join(
-        __dirname,
-        '..',
-        '..',
-        'uploads',
-        filePath,
-      );
+      const absolutePath = path.join(__dirname, '..', '..', filePath);
       const fileName = file.fileName;
 
       if (fss.existsSync(absolutePath)) {

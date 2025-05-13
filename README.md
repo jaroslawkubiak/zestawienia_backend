@@ -27,6 +27,7 @@ Edycja zestawienia:
 [x] wklejanie obrazów do pozycji ze schowka
 [x] możliwość wpisywania ceny netto lub brutto.
 [x] usunąć z footer ilość, netto i brutto
+[x] pola w pozycji jako textarea
 
 - do wyboru (różowy)
 - zapłacony/zamówiony (zielony)
@@ -104,7 +105,7 @@ comments:
 [x] dodawanie komentarzy przez klientów
 [x] edycja komentarzy przez klientów
 [x] modyfikacja statusu odczynia komentarzy przez klientów
-[ ] notyfikacja o nowych komentarzach
+[x] notyfikacja o nowych komentarzach
 [x] odpowiedź na komentarze w formie iMessage :)
 [x] edycja komentarzy usera
 [x] usuwanie komentarzy usera
@@ -117,9 +118,9 @@ załączniki:
 [x] zapis plików w DB: nazwa pliku, data doodania, kto dodał, rozszerzenie, folder (będzie kilka)
 [x] wybór folderu przy uploadzie plików
 [x] foldery: moodboard, model3d, rysunki wykonawcze, wizualizacje.
-[ ] widok listy z sortowaniem
-[ ] osobny folder: robocze - niewidoczny dla klienta
-[ ] załączniki: pobierz wszystkie, najlepiej w zip
+[x] widok listy z sortowaniem
+[x] osobny folder: robocze - niewidoczny dla klienta
+[x] załączniki: pobierz wszystkie, najlepiej w zip
 
 DB:
 [x] zestawienia nagłówek: id, nr zestawienia, id klienta, id usera, data dodania (w czytelnym formacie), created by, create date (timestamp), update by, updated date (timestamp)

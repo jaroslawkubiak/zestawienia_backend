@@ -118,7 +118,7 @@ export class FilesService {
       const fileName = file.fileName;
 
       if (fss.existsSync(absolutePath)) {
-        archive.file(absolutePath, { name: fileName });
+        archive.file(absolutePath, { name: path.join(file.dir, fileName) });
       }
     }
 

@@ -23,8 +23,6 @@ import { ImagesModule } from './images/images.module';
 import { ImagesService } from './images/images.service';
 import { Position } from './position/positions.entity';
 import { PositionsModule } from './position/positions.module';
-import { Product } from './products/products.entity';
-import { ProductsModule } from './products/products.module';
 import { Set } from './sets/sets.entity';
 import { SetsModule } from './sets/sets.module';
 import { Setting } from './settings/settings.entity';
@@ -55,7 +53,6 @@ import { UserModule } from './user/user.module';
           Client,
           Comment,
           Position,
-          Product,
           Bookmark,
           Setting,
           Errors,
@@ -70,7 +67,6 @@ import { UserModule } from './user/user.module';
     }),
     AuthModule,
     SetsModule,
-    ProductsModule,
     SuppliersModule,
     ClientsModule,
     CommentsModule,

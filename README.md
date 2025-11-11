@@ -141,10 +141,18 @@ issue:
 
 obgadać:
 
-- statusy, kiedy jaki ma się zmienić
 - email: tytuły i treść emaili do klientów i dostawców
 - KOLORY! Design itp :)
 - jaki design dla klientów? jaki layout?
+
+legenda statusy/kolory:
+
+- biały - domyślny (sumować)
+- różowy - W trakcie wyceny (nie sumować)
+- żółty - zamiennik (nie sumować)
+- jasnozielony - produk zaakceptowany (sumować)
+- czerwony - produkt niezakupiony (sumować)
+- zielone - produkt zakupiony (sumować)
 
 npx typeorm-model-generator -h localhost -d zestawienia -u root -x -e mysql
 

@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
 import * as path from 'path';
 import {
+  forkJoin,
   from,
   map,
   mergeMap,
@@ -17,6 +18,7 @@ import {
   switchMap,
   throwError,
 } from 'rxjs';
+import { Supplier } from '../suppliers/suppliers.entity';
 import { DeepPartial, Repository } from 'typeorm';
 import { Client } from '../clients/clients.entity';
 import { ClientsService } from '../clients/clients.service';
@@ -45,6 +47,8 @@ export class SetsService {
 
     @InjectRepository(Set)
     private readonly setsRepo: Repository<Set>,
+    @InjectRepository(Supplier)
+    private readonly SupplierRepo: Repository<Supplier>,
 
     @Inject(forwardRef(() => ClientsService))
     private readonly clientsService: ClientsService,
@@ -298,5 +302,29 @@ export class SetsService {
         .andWhere('set.hash = :hash', { hash })
         .getCount(),
     ).pipe(map((count) => count > 0));
+  }
+
+  validateSetAndHashForSupplier(
+    setId: number,
+    hash: string,
+    supplierHash: string,
+  ): Observable<boolean> {
+    const setExists$ = from(
+      this.setsRepo
+        .createQueryBuilder('set')
+        .where('set.id = :id', { id: setId })
+        .andWhere('set.hash = :hash', { hash })
+        .getCount(),
+    ).pipe(map((count) => count > 0));
+
+    const supplierExists$ = from(
+      this.SupplierRepo.createQueryBuilder('supplier')
+        .where('supplier.hash = :supplierHash', { supplierHash })
+        .getCount(),
+    ).pipe(map((count) => count > 0));
+
+    return forkJoin([setExists$, supplierExists$]).pipe(
+      map(([setExists, supplierExists]) => setExists && supplierExists),
+    );
   }
 }

@@ -57,6 +57,19 @@ export class SetsController {
     return this.setsService.validateSetAndHash(+setId, hash);
   }
 
+  @Get(':setId/:hash/:supplierHash')
+  validateSetAndHashForSupplier(
+    @Param('setId') setId: string,
+    @Param('hash') hash: string,
+    @Param('supplierHash') supplierHash: string,
+  ): Observable<boolean> {
+    return this.setsService.validateSetAndHashForSupplier(
+      +setId,
+      hash,
+      supplierHash,
+    );
+  }
+
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: number) {

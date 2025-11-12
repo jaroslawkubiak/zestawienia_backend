@@ -29,10 +29,6 @@ Edycja zestawienia:
 [x] usunąć z footer ilość, netto i brutto
 [x] pola w pozycji jako textarea
 
-- do wyboru (różowy)
-- zapłacony/zamówiony (zielony)
-- w trakcie wyceny (czerwony)
-
 [x] nowe Bookmarks:
 1 PODSUMOWANIE
 2 OŚWIETLENIE, OSPRZĘT ELEKTRYCZNY
@@ -139,20 +135,21 @@ issue:
 [x] oznaczyć pola obowiązkowe
 [x] footer w pdf wkleja się na każdej stronie zamiast po całej tabeli
 
-obgadać:
-
-- email: tytuły i treść emaili do klientów i dostawców
-- KOLORY! Design itp :)
-- jaki design dla klientów? jaki layout?
-
-legenda statusy/kolory:
-
+[x] legenda statusy/kolory:
 - biały - domyślny (sumować)
 - różowy - W trakcie wyceny (nie sumować)
 - żółty - zamiennik (nie sumować)
 - jasnozielony - produk zaakceptowany (sumować)
 - czerwony - produkt niezakupiony (sumować)
 - zielone - produkt zakupiony (sumować)
+
+
+obgadać:
+
+- email: tytuły i treść emaili do klientów i dostawców
+- KOLORY! Design itp :)
+- jaki design dla klientów? jaki layout?
+
 
 npx typeorm-model-generator -h localhost -d zestawienia -u root -x -e mysql
 

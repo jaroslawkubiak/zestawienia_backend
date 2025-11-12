@@ -9,6 +9,7 @@ import { FilesModule } from '../files/files.module';
 import { ImagesModule } from '../images/images.module';
 import { Position } from '../position/positions.entity';
 import { PositionsModule } from '../position/positions.module';
+import { Supplier } from '../suppliers/suppliers.entity';
 import { User } from '../user/user.entity';
 import { SetsController } from './sets.controller';
 import { Set } from './sets.entity';
@@ -16,7 +17,7 @@ import { SetsService } from './sets.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Set, User, Position, Comment]),
+    TypeOrmModule.forFeature([Set, User, Position, Comment, Supplier]),
     ErrorsModule,
     FilesModule,
     forwardRef(() => ImagesModule),

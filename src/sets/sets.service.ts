@@ -48,7 +48,7 @@ export class SetsService {
     @InjectRepository(Set)
     private readonly setsRepo: Repository<Set>,
     @InjectRepository(Supplier)
-    private readonly SupplierRepo: Repository<Supplier>,
+    private readonly supplierRepo: Repository<Supplier>,
 
     @Inject(forwardRef(() => ClientsService))
     private readonly clientsService: ClientsService,
@@ -308,7 +308,7 @@ export class SetsService {
     setId: number,
     hash: string,
     supplierHash: string,
-  ): Observable<boolean> {
+  ): Observable<{ isValid: boolean; supplierId?: number }> {
     const setExists$ = from(
       this.setsRepo
         .createQueryBuilder('set')
@@ -317,14 +317,19 @@ export class SetsService {
         .getCount(),
     ).pipe(map((count) => count > 0));
 
-    const supplierExists$ = from(
-      this.SupplierRepo.createQueryBuilder('supplier')
+    const supplierId$ = from(
+      this.supplierRepo
+        .createQueryBuilder('supplier')
+        .select('supplier.id', 'id')
         .where('supplier.hash = :supplierHash', { supplierHash })
-        .getCount(),
-    ).pipe(map((count) => count > 0));
+        .getRawOne<{ id: number }>(),
+    ).pipe(map((row) => row?.id ?? null));
 
-    return forkJoin([setExists$, supplierExists$]).pipe(
-      map(([setExists, supplierExists]) => setExists && supplierExists),
+    return forkJoin([setExists$, supplierId$]).pipe(
+      map(([setExists, supplierId]) => ({
+        isValid: setExists && !!supplierId,
+        supplierId: supplierId ?? undefined,
+      })),
     );
   }
 }

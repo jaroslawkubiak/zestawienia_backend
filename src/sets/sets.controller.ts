@@ -62,7 +62,7 @@ export class SetsController {
     @Param('setId') setId: string,
     @Param('hash') hash: string,
     @Param('supplierHash') supplierHash: string,
-  ): Observable<boolean> {
+  ): Observable<{ isValid: boolean; supplierId?: number }> {
     return this.setsService.validateSetAndHashForSupplier(
       +setId,
       hash,

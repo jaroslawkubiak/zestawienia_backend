@@ -39,6 +39,7 @@ import { Set } from './sets.entity';
 import { ISavedSet } from './types/ISavedSet';
 import { ISet } from './types/ISet';
 import { SetStatus } from './types/SetStatus';
+import { ISetForSupplier } from './types/ISetForSupplier';
 
 @Injectable()
 export class SetsService {
@@ -142,6 +143,32 @@ export class SetsService {
         return from(this.commentsService.findBySetId(setId)).pipe(
           switchMap((comments: IComment[]) => of({ ...set, comments })),
         );
+      }),
+    );
+  }
+
+  getSetForSupplier(setId: number): Observable<ISetForSupplier> {
+    return from(
+      this.setsRepo
+        .createQueryBuilder('set')
+        .select(['set.id', 'set.name', 'set.address'])
+        .where('set.id = :id', { id: setId })
+        .leftJoin('set.clientId', 'client')
+        .addSelect([
+          'client.id',
+          'client.company',
+          'client.email',
+          'client.firstName',
+          'client.lastName',
+        ])
+        .getOne(),
+    ).pipe(
+      mergeMap((set) => {
+        if (!set) {
+          return throwError(() => new Error('Set not found'));
+        }
+
+        return of(set);
       }),
     );
   }

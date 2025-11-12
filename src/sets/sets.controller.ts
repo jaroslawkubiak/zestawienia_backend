@@ -17,6 +17,7 @@ import { UpdateSetAndPositionDto } from './dto/updateSetAndPosition.dto';
 import { SetsService } from './sets.service';
 import { ISavedSet } from './types/ISavedSet';
 import { ISet } from './types/ISet';
+import { ISetForSupplier } from './types/ISetForSupplier';
 
 @Controller('sets')
 export class SetsController {
@@ -47,6 +48,13 @@ export class SetsController {
   @Get(':setId')
   findSet(@Param('setId') setId: string): Observable<ISet> {
     return this.setsService.getSet(+setId);
+  }
+
+  @Get(':setId/:supplierId')
+  findSetForSupplier(
+    @Param('setId') setId: string,
+  ): Observable<ISetForSupplier> {
+    return this.setsService.getSetForSupplier(+setId);
   }
 
   @Get(':setId/:hash')

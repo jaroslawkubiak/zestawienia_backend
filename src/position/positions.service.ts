@@ -62,6 +62,18 @@ export class PositionsService {
     return from(query.getMany());
   }
 
+  getPositionsForSuppliers(
+    setId: number,
+    supplierId: number,
+  ): Observable<IPosition[]> {
+    const query = this.positionsRepo
+      .createQueryBuilder('position')
+      .where('position.setId = :id', { id: setId })
+      .andWhere('supplier.id = :supplierId', { supplierId })
+      .leftJoin('position.supplierId', 'supplier');
+    return from(query.getMany());
+  }
+
   async update(
     userId: number,
     positions: UpdatePositionDto[],

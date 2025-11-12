@@ -16,6 +16,14 @@ export class PositionsController {
     return this.positionsService.getPositions(+setId);
   }
 
+  @Get('/:setId/:supplierId')
+  getPositionsForSupplier(
+    @Param('setId') setId: string,
+    @Param('supplierId') supplierId: string,
+  ): Observable<IPosition[]> {
+    return this.positionsService.getPositionsForSuppliers(+setId, +supplierId);
+  }
+
   @Post('/new')
   addPosition(@Body() newPosition: CreateEmptyPositionDto): Promise<IPosition> {
     return this.positionsService.addPosition(newPosition);

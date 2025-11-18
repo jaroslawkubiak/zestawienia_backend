@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import * as crypto from 'crypto';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -32,38 +33,42 @@ import { SuppliersModule } from './suppliers/suppliers.module';
 import { User } from './user/user.entity';
 import { UserModule } from './user/user.module';
 
+if (!(global as any).crypto) {
+  (global as any).crypto = crypto;
+}
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forFeature([User]),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'mysql',
-        host: configService.get<string>('DB_HOST'),
-        port: configService.get<number>('DB_PORT'),
-        username: configService.get<string>('DB_USER'),
-        password: configService.get<string>('DB_PASSWORD'),
-        database: configService.get<string>('DB_NAME'),
-        entities: [
-          User,
-          Set,
-          Supplier,
-          Client,
-          Comment,
-          Position,
-          Bookmark,
-          Setting,
-          Errors,
-          Email,
-          Files,
-        ],
-        // logging: ['query', 'error'],
-        // logger: 'advanced-console',
-        synchronize:
-          configService.get<string>('TYPEORM_SYNCHRONIZE') === 'true',
-      }),
+      useFactory: (config: ConfigService) => {
+        return {
+          type: 'mysql',
+          host: config.get<string>('APP_DB_HOST'),
+          port: Number(config.get('APP_DB_PORT')),
+          username: config.get<string>('APP_DB_USER'),
+          password: config.get<string>('APP_DB_PASSWORD'),
+          database: config.get<string>('APP_DB_NAME'),
+          entities: [
+            User,
+            Set,
+            Supplier,
+            Client,
+            Comment,
+            Position,
+            Bookmark,
+            Setting,
+            Errors,
+            Email,
+            Files,
+          ],
+          synchronize: config.get<string>('TYPEORM_SYNCHRONIZE') === 'true',
+        };
+      },
     }),
     AuthModule,
     SetsModule,

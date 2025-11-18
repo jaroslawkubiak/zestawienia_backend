@@ -2,6 +2,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Email } from '../email/email.entity';
 import { Position } from '../position/positions.entity';
 import { Set } from '../sets/sets.entity';
+import { Role } from './types/role';
 
 @Entity()
 export class User {
@@ -13,6 +14,12 @@ export class User {
 
   @Column({ nullable: false })
   password: string;
+
+  @Column({
+    type: 'enum',
+    enum: ['admin', 'user'],
+  })
+  role: Role;
 
   @Column({ type: 'varchar', length: 30, nullable: false })
   name: string;

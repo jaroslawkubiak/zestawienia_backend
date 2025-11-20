@@ -3,8 +3,9 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
-import { LoginDto } from './dto/login.dto';
 import { User } from '../user/user.entity';
+import { LoginDto } from './dto/login.dto';
+import { PasswordChange } from './dto/passwordChange.dto ';
 import { ILoggedUser } from './types/ILoggedUser';
 
 @Injectable()
@@ -43,11 +44,34 @@ export class AuthService {
     return loggedUser;
   }
 
-  // dev use only
-  // const hashPassword = await this.hashPassword(password);
-  // console.log(hashPassword);
-  // async hashPassword(password: string): Promise<string> {
-  //   const saltRounds = 10; // Ilość rund saltowania
-  //   return bcrypt.hash(password, saltRounds);
-  // }
+  async changeUserPassword(newPasswords: PasswordChange) {
+    const { userId, currentPassword, newPassword } = newPasswords;
+
+    const user = await this.userRepository.findOneBy({ id: userId });
+
+    if (!user) {
+      throw new UnauthorizedException("User don't exists");
+    }
+
+    const passwordMatched = await this.comparePassword(
+      currentPassword,
+      user.password,
+    );
+
+    if (!passwordMatched) {
+      throw new UnauthorizedException('Old password is wrong');
+    }
+
+    const newHashPassword = await this.hashPassword(newPassword);
+    const newUser = { ...user, password: newHashPassword };
+
+    await this.userRepository.update(userId, newUser);
+
+    return 'Password changed succesfully';
+  }
+
+  async hashPassword(password: string): Promise<string> {
+    const saltRounds = 10; // Ilość rund saltowania
+    return bcrypt.hash(password, saltRounds);
+  }
 }

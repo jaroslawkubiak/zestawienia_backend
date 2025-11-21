@@ -25,13 +25,13 @@ export class AuthService {
     const user = await this.userRepository.findOne({ where: { username } });
 
     if (!user) {
-      throw new UnauthorizedException("User don't exists");
+      throw new UnauthorizedException('Użytkownik nie istnieje');
     }
 
     const passwordMatched = await this.comparePassword(password, user.password);
 
     if (!user || !passwordMatched) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('Nieprawidłowe daneedw');
     }
 
     const loggedUser: ILoggedUser = {
@@ -50,7 +50,7 @@ export class AuthService {
     const user = await this.userRepository.findOneBy({ id: userId });
 
     if (!user) {
-      throw new UnauthorizedException("User don't exists");
+      throw new UnauthorizedException('Użytkownik nie istnieje');
     }
 
     const passwordMatched = await this.comparePassword(
@@ -59,7 +59,7 @@ export class AuthService {
     );
 
     if (!passwordMatched) {
-      throw new UnauthorizedException('Old password is wrong');
+      throw new UnauthorizedException('Aktualne hasło nie jest poprawne');
     }
 
     const newHashPassword = await this.hashPassword(newPassword);
@@ -67,7 +67,7 @@ export class AuthService {
 
     await this.userRepository.update(userId, newUser);
 
-    return 'Password changed succesfully';
+    return { message: 'Hasło zmieniono poprawnie' };
   }
 
   async hashPassword(password: string): Promise<string> {

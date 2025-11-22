@@ -31,7 +31,7 @@ export class AuthService {
     const passwordMatched = await this.comparePassword(password, user.password);
 
     if (!user || !passwordMatched) {
-      throw new UnauthorizedException('Nieprawidłowe daneedw');
+      throw new UnauthorizedException('Nieprawidłowe dane');
     }
 
     const loggedUser: ILoggedUser = {
@@ -73,5 +73,18 @@ export class AuthService {
   async hashPassword(password: string): Promise<string> {
     const saltRounds = 10; // Ilość rund saltowania
     return bcrypt.hash(password, saltRounds);
+  }
+
+  async getUserFromToken(token: string) {
+    try {
+      const payload = this.jwtService.verify(token);
+      const user = await this.userRepository.findOne({
+        where: { username: payload.username },
+      });
+      if (!user) throw new UnauthorizedException();
+      return { id: user.id, name: user.name, role: user.role };
+    } catch (e) {
+      throw new UnauthorizedException();
+    }
   }
 }

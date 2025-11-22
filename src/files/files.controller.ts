@@ -34,8 +34,7 @@ export class FilesController {
         destination: (req, file, cb) => {
           const setId = req.params.setId;
           const directory = req.params.dir;
-          const baseUploadPath =
-            process.env.UPLOAD_PATH || './src/uploads/sets';
+          const baseUploadPath = process.env.UPLOAD_PATH || './uploads/sets';
 
           const uploadPath = path.resolve(
             baseUploadPath,

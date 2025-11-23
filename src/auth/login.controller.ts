@@ -6,15 +6,21 @@ import {
   Req,
   Res,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { PasswordChange } from './dto/passwordChange.dto ';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')
 export class LoginController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @Post('login')
   async login(
@@ -23,9 +29,12 @@ export class LoginController {
   ) {
     const loggedUser = await this.authService.validateUser(loginDto);
 
+    const isProduction =
+      this.configService.get<string>('NODE_ENV') === 'production';
+
     res.cookie('jwt', loggedUser.accessToken, {
       httpOnly: true,
-      secure: true,
+      secure: isProduction,
       sameSite: 'lax',
       maxAge: 24 * 60 * 60 * 1000,
     });
@@ -38,10 +47,21 @@ export class LoginController {
     return this.authService.changeUserPassword(newPasswords);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('me')
   async me(@Req() req) {
-    const token = req.cookies['jwt'];
-    if (!token) throw new UnauthorizedException();
+    console.log(`\n######## GET /auth/me #########`);
+    console.log(`Raw headers: ${JSON.stringify(req.headers)}`);
+    console.log(`req.cookies: ${JSON.stringify(req.cookies)}`);
+    console.log(`req.user (from JwtAuthGuard): ${JSON.stringify(req.user)}`);
+
+    const token = req.cookies?.jwt;
+    console.log(`Token from cookies: ${token ? 'FOUND' : 'NOT FOUND'}`);
+
+    if (!token) {
+      console.log(`THROWING UNAUTHORIZED - no token found`);
+      throw new UnauthorizedException();
+    }
 
     return this.authService.getUserFromToken(token);
   }

@@ -52,23 +52,21 @@ async function bootstrap() {
 
   app.useGlobalFilters(new QueryFailedExceptionFilter(app.get(ErrorsService)));
 
-  // const isProduction = process.env.NODE_ENV === 'production';
-  // if (isProduction) {
-  //   const clientPath = path.join(__dirname, '../frontend-dist/browser');
+  const isProduction = process.env.NODE_ENV === 'production';
+  if (isProduction) {
+    const clientPath = path.join(__dirname, '../frontend-dist/browser');
+    app.use(express.static(clientPath));
 
-  //   app.use(express.static(clientPath));
+    const httpAdapter = app.getHttpAdapter();
+    const server = httpAdapter.getInstance();
 
-  //   const httpAdapter = app.getHttpAdapter();
-  //   const server = httpAdapter.getInstance();
-
-  //   // wildcard dla frontu, ale omija wszystkie endpointy API
-  //   server.get(
-  //     /^\/(?!auth|user|sets|suppliers|clients|comments|positions|bookmarks|settings|errors|email|files|images).*/,
-  //     (req: Request, res: Response) => {
-  //       res.sendFile(path.join(clientPath, 'index.html'));
-  //     },
-  //   );
-  // }
+    server.get(
+      /^\/(?!auth|user|sets|suppliers|clients|comments|positions|bookmarks|settings|errors|email|files|images).*/,
+      (req: Request, res: Response) => {
+        res.sendFile(path.join(clientPath, 'index.html'));
+      },
+    );
+  }
 
   await app.listen(3005);
 }

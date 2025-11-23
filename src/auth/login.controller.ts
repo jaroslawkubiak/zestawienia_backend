@@ -1,5 +1,6 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Get,
   Post,
@@ -47,19 +48,23 @@ export class LoginController {
     return this.authService.changeUserPassword(newPasswords);
   }
 
+  @Post('logout')
+  async logout(@Res({ passthrough: true }) res: Response) {
+    res.cookie('jwt', '', {
+      httpOnly: true,
+      secure: this.configService.get<string>('NODE_ENV') === 'production',
+      sameSite: 'lax',
+      maxAge: 0,
+    });
+    return { message: 'Logged out successfully' };
+  }
+
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async me(@Req() req) {
-    console.log(`\n######## GET /auth/me #########`);
-    console.log(`Raw headers: ${JSON.stringify(req.headers)}`);
-    console.log(`req.cookies: ${JSON.stringify(req.cookies)}`);
-    console.log(`req.user (from JwtAuthGuard): ${JSON.stringify(req.user)}`);
-
     const token = req.cookies?.jwt;
-    console.log(`Token from cookies: ${token ? 'FOUND' : 'NOT FOUND'}`);
 
     if (!token) {
-      console.log(`THROWING UNAUTHORIZED - no token found`);
       throw new UnauthorizedException();
     }
 

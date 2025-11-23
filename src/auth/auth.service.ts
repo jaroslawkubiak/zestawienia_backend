@@ -82,7 +82,12 @@ export class AuthService {
         where: { username: payload.username },
       });
       if (!user) throw new UnauthorizedException();
-      return { id: user.id, name: user.name, role: user.role };
+      return {
+        id: user.id,
+        name: user.name,
+        role: user.role,
+        accessToken: this.jwtService.sign({ username: user.username }),
+      };
     } catch (e) {
       throw new UnauthorizedException();
     }

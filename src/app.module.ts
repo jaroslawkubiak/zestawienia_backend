@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as crypto from 'crypto';
+import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -38,6 +40,18 @@ if (!(global as any).crypto) {
 }
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '..', 'uploads'),
+      serveRoot: '/uploads',
+      serveStaticOptions: {
+        setHeaders: (res, filePath) => {
+          // Automatyczne ustawienie Content-Type
+          const mime = require('mime-types');
+          const type = mime.lookup(filePath);
+          if (type) res.setHeader('Content-Type', type);
+        },
+      },
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
     }),

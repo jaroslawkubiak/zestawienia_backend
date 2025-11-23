@@ -6,7 +6,6 @@ import { CreateClonePositionDto } from './dto/createClonePosition.dto';
 import { CreateEmptyPositionDto } from './dto/createEmptyPosition.dto';
 import { PositionsService } from './positions.service';
 
-// @UseGuards(JwtAuthGuard)
 @Controller('positions')
 export class PositionsController {
   constructor(private positionsService: PositionsService) {}
@@ -24,11 +23,13 @@ export class PositionsController {
     return this.positionsService.getPositionsForSuppliers(+setId, +supplierId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('/new')
   addPosition(@Body() newPosition: CreateEmptyPositionDto): Promise<IPosition> {
     return this.positionsService.addPosition(newPosition);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('/clone')
   clonePosition(
     @Body() clonePosition: CreateClonePositionDto,

@@ -7,18 +7,19 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import * as nodemailer from 'nodemailer';
 import { from, Observable } from 'rxjs';
-import { IComment } from '../comments/types/IComment';
-import { SetsService } from '../sets/sets.service';
 import { Repository } from 'typeorm';
+import { IComment } from '../comments/types/IComment';
 import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
 import { ErrorsType } from '../errors/types/Errors';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { PositionsService } from '../position/positions.service';
+import { SetsService } from '../sets/sets.service';
 import { CreateIdDto } from '../shared/dto/createId.dto';
 import { LogEmailDto } from './dto/logEmail.dto';
 import { Email } from './email.entity';
 import { createHTMLHeader } from './email.template';
+import { saveToSentFolder } from './emailSendCopy';
 import { IEmailDetails } from './types/IEmailDetails';
 import { IEmailLog } from './types/IEmailLog';
 
@@ -32,6 +33,16 @@ interface ICommentList {
 export class EmailService {
   private transporter;
 
+  private getImapConfig() {
+    return {
+      user: process.env.EMAIL_USER,
+      password: process.env.EMAIL_PASS,
+      host: process.env.EMAIL_HOST.replace('smtp', 'mail'),
+      port: 993,
+      tls: true,
+    };
+  }
+
   constructor(
     @InjectRepository(Email)
     private readonly emailRepo: Repository<Email>,
@@ -41,18 +52,35 @@ export class EmailService {
     @Inject(forwardRef(() => PositionsService))
     private readonly positionService: PositionsService,
   ) {
-    this.transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+    if (process.env.GMAIL_USE === 'true') {
+      // for development - gmail
+      this.transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: process.env.GMAIL_USER,
+          pass: process.env.GMAIL_PASS,
+        },
+      });
+    } else {
+      // for production
+      this.transporter = nodemailer.createTransport({
+        host: process.env.EMAIL_HOST,
+        port: Number(process.env.EMAIL_PORT),
+        secure: false,
+        requireTLS: true,
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+        tls: {
+          rejectUnauthorized: false,
+        },
+      });
+    }
   }
 
   async sendEmail(emailDetails: IEmailDetails) {
     const { to, subject, content } = emailDetails;
-
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to,
@@ -80,6 +108,11 @@ export class EmailService {
         };
 
         await this.create(newEmailLog);
+
+        if (!process.env.GMAIL_USE || process.env.GMAIL_USE === 'false') {
+          // send copy email do Sent folder
+          await saveToSentFolder(this.getImapConfig(), mailOptions);
+        }
       }
 
       return info;
@@ -104,7 +137,7 @@ export class EmailService {
       await this.errorsService.prepareError(newError);
 
       throw new InternalServerErrorException({
-        message: `Nie udało się wysłać email na: ${to}`,
+        message: `Nie udało się wysłać email na adres: ${to}`,
         error: err.message,
         details: err,
       });

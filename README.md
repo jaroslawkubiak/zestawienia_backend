@@ -1,6 +1,13 @@
 TODO LIST
 
 [x] Logowanie do aplikacji,
+[x] Zmiana hasła przez usera
+
+Admin:
+[ ] Logowania użytkowników - lista w ukrytym menu
+
+Po zalogowaniu:
+[ ] Podsumowanie nowych - nieprzeczytanych komentarzy
 
 Zakładka zestawienia:
 [x] Lista zestawień klientów
@@ -62,6 +69,7 @@ Generowanie zestawienia w formie PDF:
 [x] footer z podsumowaniem tylko na końcu tabeli - nie na każdej stronie
 [x] przy generowaniu pdf możliwe 3 scenariusze: 1 - otwiera pdf w nowej zakłądce, 2 - zapisuje pdf na dysku, 3 - wysyła pdf na serwer ftp
 [x] różne tło wiersza w zależności od statusu
+[ ] zakładka podsumowanie w PDF
 
 Emails:
 [x] wysyłka zestawienia via email w postaci HTML do klienta z linkiem do podglądu
@@ -136,6 +144,7 @@ issue:
 [x] footer w pdf wkleja się na każdej stronie zamiast po całej tabeli
 
 [x] legenda statusy/kolory:
+
 - biały - domyślny (sumować)
 - różowy - W trakcie wyceny (nie sumować)
 - żółty - zamiennik (nie sumować)
@@ -143,13 +152,11 @@ issue:
 - czerwony - produkt niezakupiony (sumować)
 - zielone - produkt zakupiony (sumować)
 
-
 obgadać:
 
 - email: tytuły i treść emaili do klientów i dostawców
 - KOLORY! Design itp :)
 - jaki design dla klientów? jaki layout?
-
 
 npx typeorm-model-generator -h localhost -d zestawienia -u root -x -e mysql
 
@@ -160,3 +167,17 @@ pm2 startup
 curl -i http://localhost:3005/
 
 netstat -tulnp | grep 3005
+
+PRODUCTION ISSUE:
+[ ] Przy przejściu na pustą stronę, gdy jestem zalogowany, pokazuje login page
+[ ] nie ładuje podglądu obrazów
+[ ] pliki ładuje do katalogu src/uploads, a nie od razu do uploads
+[ ] widoczne menu bez logowania
+[ ] req na me idze od razu bez zatwierdzania danych logowania
+
+SPRAWDZIĆ NA PROD:
+[x] wysyłka plików załączników do zestawienia
+[x] tworzenie PDF
+[ ] wysyłka email z poczty firmowej - nie z gmail
+[x] działanie linków dla klienta
+[x] działanie linków dla dostawcy

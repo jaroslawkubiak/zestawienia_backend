@@ -23,7 +23,9 @@ import { IComment } from './types/IComment';
 @Injectable()
 export class CommentsService {
   private timers: Map<number, NodeJS.Timeout> = new Map();
-  private readonly TIMEOUT_DELAY = 10 * 60 * 1000; // 10 min = 10 * 60 * 1000
+  private readonly TIMEOUT_DELAY =
+    Number(process.env.COMMENTS_NOTIFICATION_DELAY) || 10000;
+
   constructor(
     @InjectRepository(Comment)
     private readonly commentRepo: Repository<Comment>,

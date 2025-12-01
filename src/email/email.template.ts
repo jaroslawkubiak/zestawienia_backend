@@ -10,7 +10,7 @@ export function createHTMLHeader(title: string, commentsList: string): string {
 
   <body style="margin:0; padding:20px; background:#fafafa; font-family:Arial, sans-serif; font-size:16px; color:#0a0a0a;">
 
-    <table align="center" width="700" cellspacing="0" cellpadding="0" border="0" style="margin:20px auto; max-width:700px;">
+    <table align="center" width="800px" cellspacing="0" cellpadding="0" border="0" style="margin:20px auto; max-width:700px;">
 
       <!-- LOGO -->
       <tr style="margin: 30px 0; width: 700px; text-align: right">
@@ -26,7 +26,7 @@ export function createHTMLHeader(title: string, commentsList: string): string {
       <!-- TITLE -->
       <tr>
         <td style="padding:10px 0; text-align:center;">
-          <h2 style="margin:0; font-size:24px; font-weight:bold;">Nowe komentarze</h2>
+          <h2 style="margin:0; font-size:24px; font-weight:bold; color: #3bbfa1;">Nowe komentarze</h2>
         </td>
       </tr>
 
@@ -34,7 +34,7 @@ export function createHTMLHeader(title: string, commentsList: string): string {
       <tr>
         <td style="padding: 20px" colspan="2">
           <p>${title}</p>
-          <p>Nowe komentarze: </p>
+          <p>Nieprzeczytane komentarze: </p>
           ${commentsList}
         </td>
       </tr>

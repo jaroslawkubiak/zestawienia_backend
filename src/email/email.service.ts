@@ -172,9 +172,9 @@ export class EmailService {
         const htmlHeader = `Klient ${clientFullName} zakończył dodawanie ${newComments.length} ${verbComments} do inwestycji: ${set.name}<br /><br />`;
         let htmlcontent = `
           <table align="center" border="1" cellpadding="8" style="width: 100%; border-collapse: collapse; border: 1px solid black;">
-          <tr><td>Produkt</td>
-          <td>Komentarz</td>
-          <td>Data</td></tr>`;
+          <tr style="background: #3bbfa1; color: #fff"><td style="width: 30%">Produkt</td>
+          <td style="width: 55%">Komentarz</td>
+          <td style="width: 15%">Data</td></tr>`;
 
         commentsList.forEach((comment) => {
           let row = `<tr><td>${comment.product}</td>`;
@@ -187,9 +187,16 @@ export class EmailService {
         htmlcontent += '</table>';
 
         const html = createHTMLHeader(htmlHeader, htmlcontent);
+
+        let email = process.env.EMAIL_USER;
+        // development
+        if (process.env.GMAIL_USE === 'true') {
+          email = process.env.GMAIL_USER;
+        }
+
         const mailOptions = {
-          from: process.env.EMAIL_USER,
-          to: process.env.EMAIL_USER,
+          from: email,
+          to: email,
           subject: `Nowe komentarze w inwestycji: ${set.name}`,
           html,
         };

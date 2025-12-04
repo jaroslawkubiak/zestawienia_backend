@@ -76,6 +76,7 @@ export class SetsService {
         'client.firstName',
         'client.lastName',
         'client.company',
+        'client.email',
       ])
       .getOne();
   }

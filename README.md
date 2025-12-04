@@ -8,6 +8,7 @@ Admin:
 
 Po zalogowaniu:
 [ ] Podsumowanie nowych - nieprzeczytanych komentarzy
+[x] Gdy klient skończy dodawać komentarze - wysłać email z powiadomieniem do biura
 
 Zakładka zestawienia:
 [x] Lista zestawień klientów
@@ -69,13 +70,15 @@ Generowanie zestawienia w formie PDF:
 [x] footer z podsumowaniem tylko na końcu tabeli - nie na każdej stronie
 [x] przy generowaniu pdf możliwe 3 scenariusze: 1 - otwiera pdf w nowej zakłądce, 2 - zapisuje pdf na dysku, 3 - wysyła pdf na serwer ftp
 [x] różne tło wiersza w zależności od statusu
-[ ] zakładka podsumowanie w PDF
+[x] zakładka podsumowanie w PDF
 
 Emails:
 [x] wysyłka zestawienia via email w postaci HTML do klienta z linkiem do podglądu
 [x] wysyłka zestawień do wybranego dostawcy, do różnych dostawców, linki z hashami dostawców i id zestawienia
 [x] generowanie menu z listą dostawców dla danego zestawienia - po zmianie i zapisaniu zmian, menu się odświeża
 [x] data ostatniego wysłanego emaila do klienta i dostawców w menu
+[x] Email do biura z informacją o dodaniu komentarzy przez klienta
+[x] linki do aplikazji w emailach z komentarzami
 
 Klienci:
 [x] dodawanie nowych klientów
@@ -83,7 +86,7 @@ Klienci:
 [x] usuwanie klienta
 [x] jedno pole rozszerzone textarea z: firma z nip, adres, ulica, miasto, kod, email, telefon
 [x] guzik kopiowania adresu do schowka
-[ ] widok dla klienta z zakładkami do przełączania, podsumowanie wart netto i brutto
+[x] widok dla klienta z zakładkami do przełączania, podsumowanie wart netto i brutto
 
 Dostawcy:
 [x] dodawanie nowych dostawców
@@ -101,7 +104,7 @@ Emails:
 [x] wysyłka email z linkiem do części pozycji do której przypisany jest dostawaca (/setId/setHash/SupplierHash)
 [x] lista wysłanych emaili do klientów z podglądem wysłanej wiadomości
 [x] przed wysyłką możliwa edycja wiadomości
-[ ] działający link bez logowania do podglądu dla dostawców np: /:id_zestawienia/:hash_zestawienia/:hash_dostawcy
+[x] działający link bez logowania do podglądu dla dostawców np: /:id_zestawienia/:hash_zestawienia/:hash_dostawcy
 
 comments:
 [x] powiadomienie przy guziku komentarzy o ilości:
@@ -160,24 +163,21 @@ obgadać:
 
 npx typeorm-model-generator -h localhost -d zestawienia -u root -x -e mysql
 
-pm2 start dist/main.js --name zestawienia
-pm2 save
-pm2 startup
-
-curl -i http://localhost:3005/
-
-netstat -tulnp | grep 3005
-
 PRODUCTION ISSUE:
-[ ] Przy przejściu na pustą stronę, gdy jestem zalogowany, pokazuje login page
-[ ] nie ładuje podglądu obrazów
-[ ] pliki ładuje do katalogu src/uploads, a nie od razu do uploads
-[ ] widoczne menu bez logowania
-[ ] req na me idze od razu bez zatwierdzania danych logowania
+[x] Przy przejściu na pustą stronę, gdy jestem zalogowany, pokazuje login page
+[x] nie ładuje podglądu obrazów
+[x] pliki ładuje do katalogu src/uploads, a nie od razu do uploads
+[x] widoczne menu bez logowania
 
 SPRAWDZIĆ NA PROD:
 [x] wysyłka plików załączników do zestawienia
 [x] tworzenie PDF
-[ ] wysyłka email z poczty firmowej - nie z gmail
+[x] wysyłka email z poczty firmowej - nie z gmail
 [x] działanie linków dla klienta
 [x] działanie linków dla dostawcy
+
+Doprecyzować:
+[ ] kolory statusów
+[ ] PDF - legenda w podsumowaniu?
+[ ] PDF - tryb: zapis, otwórz, FTP?
+[ ] Domyślne treści emaili: do klienta, do dostawcy, z podsumowaniem komentarzy

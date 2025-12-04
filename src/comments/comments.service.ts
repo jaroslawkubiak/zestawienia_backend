@@ -22,9 +22,10 @@ import { IComment } from './types/IComment';
 
 @Injectable()
 export class CommentsService {
-  private timers: Map<number, NodeJS.Timeout> = new Map();
+  private clientTimers: Map<number, NodeJS.Timeout> = new Map();
+  private userTimers: Map<number, NodeJS.Timeout> = new Map();
   private readonly TIMEOUT_DELAY =
-    Number(process.env.COMMENTS_NOTIFICATION_DELAY) || 10000;
+    Number(process.env.COMMENTS_NOTIFICATION_DELAY) || 600000; // 10 * 60 * 1000 = 600000 = 10min
 
   constructor(
     @InjectRepository(Comment)
@@ -151,17 +152,36 @@ export class CommentsService {
 
       const savedComment = await this.commentRepo.save(newComment);
 
+      /** -----------------------------
+       *  TIMER 1: client → office
+       * ------------------------------ */
       if (authorType === 'client') {
-        if (this.timers.has(setId)) {
-          clearTimeout(this.timers.get(setId));
+        if (this.clientTimers.has(setId)) {
+          clearTimeout(this.clientTimers.get(setId));
         }
 
         const timer = setTimeout(async () => {
-          await this.sendNotificationEmail(setId);
-          this.timers.delete(setId); // delete timer after sending email
+          await this.sendNotificationEmail(setId, 'office');
+          this.clientTimers.delete(setId);
         }, this.TIMEOUT_DELAY);
 
-        this.timers.set(setId, timer);
+        this.clientTimers.set(setId, timer);
+      }
+
+      /** -----------------------------
+       *  TIMER 2: office → client
+       * ------------------------------ */
+      if (authorType === 'user') {
+        if (this.userTimers.has(setId)) {
+          clearTimeout(this.userTimers.get(setId));
+        }
+
+        const timer = setTimeout(async () => {
+          await this.sendNotificationEmail(setId, 'client');
+          this.userTimers.delete(setId);
+        }, this.TIMEOUT_DELAY);
+
+        this.userTimers.set(setId, timer);
       }
       return savedComment;
     } catch (err) {
@@ -187,12 +207,36 @@ export class CommentsService {
     }
   }
 
-  private async sendNotificationEmail(setId: number) {
-    const newComments = (await this.findBySetId(setId)).filter(
-      (item) => item.authorType === 'client' && !item.readByReceiver,
-    );
+  private async sendNotificationEmail(
+    setId: number,
+    receiver: 'client' | 'office',
+  ) {
+    const allComments = await this.findBySetId(setId);
+    let newComments;
 
-    await this.emailService.sendEmailAboutNewComments(setId, newComments);
+    if (receiver === 'office') {
+      // client → office
+      newComments = allComments
+        .filter((item) => item.authorType === 'client' && !item.readByReceiver)
+        .sort((a, b) => b.createdAtTimestamp - a.createdAtTimestamp);
+
+      await this.emailService.sendEmailAboutNewCommentsFromClient(
+        setId,
+        newComments,
+      );
+    }
+
+    if (receiver === 'client') {
+      // office → client
+      newComments = allComments
+        .filter((item) => item.authorType === 'user' && !item.readByReceiver)
+        .sort((a, b) => b.createdAtTimestamp - a.createdAtTimestamp);
+
+      await this.emailService.sendEmailAboutNewCommentsFromOffice(
+        setId,
+        newComments,
+      );
+    }
   }
 
   async update(

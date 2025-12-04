@@ -18,16 +18,11 @@ import { SetsService } from '../sets/sets.service';
 import { CreateIdDto } from '../shared/dto/createId.dto';
 import { LogEmailDto } from './dto/logEmail.dto';
 import { Email } from './email.entity';
-import { createHTMLHeader } from './email.template';
+import { createCommentsTable, createHTML } from './email.template';
 import { saveToSentFolder } from './emailSendCopy';
+import { ICommentList } from './types/ICommentList';
 import { IEmailDetails } from './types/IEmailDetails';
 import { IEmailLog } from './types/IEmailLog';
-
-interface ICommentList {
-  product: string;
-  comment: string;
-  createdAt: string;
-}
 
 @Injectable()
 export class EmailService {
@@ -144,59 +139,52 @@ export class EmailService {
     }
   }
 
-  async sendEmailAboutNewComments(setId: number, newComments: IComment[]) {
+  private async sendEmailAboutNewComments(options: {
+    setId: number;
+    newComments: IComment[];
+    headerText: string;
+    link: string;
+    recipient: string;
+  }) {
+    const { setId, newComments, headerText, recipient, link } = options;
+
     const set = await this.setsService.findOne(setId);
-    const clientFullName = set.clientId.company
-      ? set.clientId.company
-      : set.clientId.firstName + ' ' + set.clientId.lastName;
 
     this.positionService.getPositions(setId).subscribe({
       next: (positions) => {
         const commentsList: ICommentList[] = newComments.map((comment) => {
-          if (comment.positionId.id) {
-            const position = positions.find(
-              (item) => item.id === comment.positionId.id,
-            );
+          if (!comment.positionId?.id) return;
 
-            return {
-              product: position.produkt || '',
-              comment: comment.comment,
-              createdAt: comment.createdAt,
-            };
-          }
+          const position = positions.find(
+            (item) => item.id === comment.positionId.id,
+          );
+
+          return {
+            product: position?.produkt || '',
+            comment: comment.comment,
+            createdAt: comment.createdAt,
+          };
         });
 
         const verbComments =
           newComments.length === 1 ? ' komentarza' : ' komentarzy';
 
-        const htmlHeader = `Klient ${clientFullName} zakończył dodawanie ${newComments.length} ${verbComments} do inwestycji: ${set.name}<br /><br />`;
-        let htmlcontent = `
-          <table align="center" border="1" cellpadding="8" style="width: 100%; border-collapse: collapse; border: 1px solid black;">
-          <tr style="background: #3bbfa1; color: #fff"><td style="width: 30%">Produkt</td>
-          <td style="width: 55%">Komentarz</td>
-          <td style="width: 15%">Data</td></tr>`;
+        const HTMLheader = `${headerText} ${newComments.length} ${verbComments} do inwestycji: ${set.name}<br /><br />`;
 
-        commentsList.forEach((comment) => {
-          let row = `<tr><td>${comment.product}</td>`;
-          row += `<td>${comment.comment}</td>`;
-          row += `<td>${comment.createdAt}</td></tr>`;
+        const html = createHTML(
+          HTMLheader,
+          createCommentsTable(commentsList),
+          link,
+        );
 
-          htmlcontent += row;
-        });
-
-        htmlcontent += '</table>';
-
-        const html = createHTMLHeader(htmlHeader, htmlcontent);
-
-        let email = process.env.EMAIL_USER;
-        // development
+        let sender = process.env.EMAIL_USER;
         if (process.env.GMAIL_USE === 'true') {
-          email = process.env.GMAIL_USER;
+          sender = process.env.GMAIL_USER;
         }
 
         const mailOptions = {
-          from: email,
-          to: email,
+          from: sender,
+          to: recipient,
           subject: `Nowe komentarze w inwestycji: ${set.name}`,
           html,
         };
@@ -204,6 +192,60 @@ export class EmailService {
         this.transporter.sendMail(mailOptions);
       },
       error: (err) => console.error(err),
+    });
+  }
+
+  async sendEmailAboutNewCommentsFromOffice(
+    setId: number,
+    newComments: IComment[],
+  ) {
+    const set = await this.setsService.findOne(setId);
+
+    const link = `
+      <tr>
+        <td style="padding: 20px" colspan="2">
+          <a href="https://zestawienia.zurawickidesign.pl/${set.id}/${set.hash}" target="_blank" 
+          style="color: #3bbfa1; font-size: 24px; font-weight: bold; text-decoration: none">Link do zestawienia</a>
+          </p>
+        </td>
+      </tr>`;
+
+    return this.sendEmailAboutNewComments({
+      setId,
+      newComments,
+      headerText: `Biuro Żurawicki Design zakończyło dodawanie`,
+      link,
+      recipient: set.clientId.email,
+    });
+  }
+
+  async sendEmailAboutNewCommentsFromClient(
+    setId: number,
+    newComments: IComment[],
+  ) {
+    const set = await this.setsService.findOne(setId);
+    const link = `
+      <tr>
+        <td style="padding: 20px" colspan="2">
+          <a href="https://zestawienia.zurawickidesign.pl" target="_blank" 
+          style="color: #3bbfa1; font-size: 24px; font-weight: bold; text-decoration: none">Panel zestawień</a>
+          </p>
+        </td>
+      </tr>`;
+
+    const clientFullName = set.clientId.company
+      ? set.clientId.company
+      : `${set.clientId.firstName} ${set.clientId.lastName}`;
+
+    return this.sendEmailAboutNewComments({
+      setId,
+      newComments,
+      headerText: `Klient ${clientFullName} zakończył dodawanie`,
+      link,
+      recipient:
+        process.env.GMAIL_USE === 'true'
+          ? process.env.GMAIL_USER
+          : process.env.EMAIL_USER,
     });
   }
 

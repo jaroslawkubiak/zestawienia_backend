@@ -1,6 +1,5 @@
 import {
   Body,
-  ClassSerializerInterceptor,
   Controller,
   Get,
   Post,
@@ -26,9 +25,10 @@ export class LoginController {
   @Post('login')
   async login(
     @Body() loginDto: LoginDto,
+    @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const loggedUser = await this.authService.validateUser(loginDto);
+    const loggedUser = await this.authService.validateUser(loginDto, req);
 
     const isProduction =
       this.configService.get<string>('NODE_ENV') === 'production';
@@ -37,7 +37,7 @@ export class LoginController {
       httpOnly: true,
       secure: isProduction,
       sameSite: 'lax',
-      maxAge: 24 * 60 * 60 * 1000,
+      maxAge: 60 * 60 * 1000, // 60 * 60 * 1000 = 1h
     });
 
     return loggedUser;

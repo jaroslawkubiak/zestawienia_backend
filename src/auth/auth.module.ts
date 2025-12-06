@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { LoginController } from './login.controller';
-import { AuthService } from './auth.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from '../user/user.entity';
 import { PassportModule } from '@nestjs/passport';
-import { JwtStrategy } from './jwt.strategy';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserLoginModule } from '../user-login/user-login.module';
+import { User } from '../user/user.entity';
+import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { JwtStrategy } from './jwt.strategy';
+import { LoginController } from './login.controller';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { JwtAuthGuard } from './jwt-auth.guard';
         signOptions: { expiresIn: '1d' },
       }),
     }),
+    UserLoginModule,
   ],
   controllers: [LoginController],
   providers: [AuthService, JwtStrategy, JwtAuthGuard],

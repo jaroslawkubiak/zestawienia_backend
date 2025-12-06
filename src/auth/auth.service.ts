@@ -1,8 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Request, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
+import { UserLoginService } from '../user-login/user-login.service';
 import { User } from '../user/user.entity';
 import { LoginDto } from './dto/login.dto';
 import { PasswordChange } from './dto/passwordChange.dto ';
@@ -12,36 +13,65 @@ import { ILoggedUser } from './types/ILoggedUser';
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    private readonly userLoginService: UserLoginService,
+
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
   async comparePassword(password: string, hash: string): Promise<boolean> {
     return bcrypt.compare(password, hash);
   }
 
-  async validateUser(loginDto: LoginDto): Promise<ILoggedUser> {
+  async validateUser(loginDto: LoginDto, @Request() req): Promise<ILoggedUser> {
     const { username, password } = loginDto;
+    const accessToken = this.jwtService.sign({ username });
 
     const user = await this.userRepository.findOne({ where: { username } });
 
+    // No user
     if (!user) {
+      await this.userLoginService.createLoginEntry(
+        username,
+        req,
+        false,
+        accessToken,
+        'user not found',
+      );
+
       throw new UnauthorizedException('Użytkownik nie istnieje');
     }
 
     const passwordMatched = await this.comparePassword(password, user.password);
 
-    if (!user || !passwordMatched) {
+    // passwords don't matched
+    if (!passwordMatched) {
+      await this.userLoginService.createLoginEntry(
+        user,
+        req,
+        false,
+        accessToken,
+        'password not matched',
+      );
+
       throw new UnauthorizedException('Nieprawidłowe dane');
     }
 
-    const loggedUser: ILoggedUser = {
-      accessToken: this.jwtService.sign({ username }),
+    // login success
+    await this.userLoginService.createLoginEntry(
+      user,
+      req,
+      true,
+      accessToken,
+      null,
+    );
+
+    return {
+      accessToken,
       name: user.name,
       id: user.id,
       role: user.role,
     };
-
-    return loggedUser;
   }
 
   async changeUserPassword(newPasswords: PasswordChange) {

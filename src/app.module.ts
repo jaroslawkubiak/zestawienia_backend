@@ -32,6 +32,7 @@ import { Setting } from './settings/settings.entity';
 import { SettingsModule } from './settings/settings.module';
 import { Supplier } from './suppliers/suppliers.entity';
 import { SuppliersModule } from './suppliers/suppliers.module';
+import { UserLogin } from './user-login/user-login.entity';
 import { User } from './user/user.entity';
 import { UserModule } from './user/user.module';
 
@@ -68,6 +69,7 @@ if (!(global as any).crypto) {
           password: config.get<string>('APP_DB_PASSWORD'),
           database: config.get<string>('APP_DB_NAME'),
           entities: [
+            UserLogin,
             User,
             Set,
             Supplier,

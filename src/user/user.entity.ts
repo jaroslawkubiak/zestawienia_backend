@@ -2,6 +2,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Email } from '../email/email.entity';
 import { Position } from '../position/positions.entity';
 import { Set } from '../sets/sets.entity';
+import { UserLogin } from '../user-login/user-login.entity';
 import { Role } from './types/role';
 
 @Entity()
@@ -38,4 +39,7 @@ export class User {
 
   @OneToMany(() => Email, (email) => email.sendBy)
   sendBy: Email[];
+
+  @OneToMany(() => UserLogin, (login) => login.user)
+  logins: UserLogin[];
 }

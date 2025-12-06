@@ -102,7 +102,6 @@ if (!(global as any).crypto) {
   ],
   controllers: [
     AppController,
-    LoginController,
     ImagesController,
     FilesController,
   ],

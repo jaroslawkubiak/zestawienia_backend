@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
+import { UserLoginService } from '../user-login/user-login.service';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { PasswordChange } from './dto/passwordChange.dto ';
@@ -20,6 +21,7 @@ export class LoginController {
   constructor(
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
+    private readonly userLoginService: UserLoginService,
   ) {}
 
   @Post('login')
@@ -49,13 +51,20 @@ export class LoginController {
   }
 
   @Post('logout')
-  async logout(@Res({ passthrough: true }) res: Response) {
+  async logout(@Req() req, @Res({ passthrough: true }) res: Response) {
+    const token = req.cookies?.jwt;
+
+    if (token) {
+      await this.userLoginService.setLogoutTimestamp(token);
+    }
+
     res.cookie('jwt', '', {
       httpOnly: true,
       secure: this.configService.get<string>('NODE_ENV') === 'production',
       sameSite: 'lax',
       maxAge: 0,
     });
+
     return { message: 'Logged out successfully' };
   }
 

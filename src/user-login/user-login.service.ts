@@ -32,4 +32,8 @@ export class UserLoginService {
       user_agent: req.headers['user-agent'] ?? null,
     });
   }
+
+  async setLogoutTimestamp(token: string): Promise<void> {
+    await this.userLoginRepo.update({ token }, { logout_at: new Date() });
+  }
 }

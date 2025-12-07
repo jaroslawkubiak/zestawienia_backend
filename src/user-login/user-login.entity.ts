@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { User } from '../user/user.entity';
 
-@Entity('user_logins')
+@Entity('logs_user')
 export class UserLogin {
   @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
   id: number;
@@ -23,7 +23,7 @@ export class UserLogin {
   success: boolean;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
-  reason: string | null;
+  reject_reason: string | null;
 
   @Column({ type: 'text', nullable: true })
   token: string | null;
@@ -34,9 +34,15 @@ export class UserLogin {
   @Column({ type: 'text', nullable: true })
   user_agent: string | null;
 
-  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'varchar', length: 50, nullable: false })
   login_at: Date;
 
-  @Column({ type: 'datetime', nullable: true })
+  @Column({ type: 'bigint', nullable: false })
+  login_at_timestamp: number;
+
+  @Column({ type: 'varchar', length: 50, nullable: false })
   logout_at: Date | null;
+
+  @Column({ type: 'bigint', nullable: false })
+  logout_at_timestamp: number;
 }

@@ -1,14 +1,15 @@
-import { User } from 'src/user/user.entity';
+import { User } from '../../user/user.entity';
 
 export interface IUserLogin {
-  id: number;
-  login: string;
-  success: number;
-  reason: string;
-  token: string;
-  ipAddess: string;
-  userAgent: string;
-  loginAt: string;
-  logoutAt: string;
   user: User;
+  login: string;
+  success: boolean;
+  reject_reason: string;
+  token: string;
+  ip_address: string;
+  user_agent: string;
+  login_at: string;
+  login_at_timestamp: number;
+  logout_at?: string;
+  logout_at_timestamp?: number;
 }

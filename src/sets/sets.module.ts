@@ -1,5 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ClientLoginModule } from '../client-login/client-login.module';
 import { ClientsModule } from '../clients/clients.module';
 import { Comment } from '../comments/comments.entity';
 import { CommentsModule } from '../comments/comments.module';
@@ -20,6 +21,7 @@ import { SetsService } from './sets.service';
     TypeOrmModule.forFeature([Set, User, Position, Comment, Supplier]),
     ErrorsModule,
     FilesModule,
+    forwardRef(() => ClientLoginModule),
     forwardRef(() => ImagesModule),
     forwardRef(() => CommentsModule),
     forwardRef(() => PositionsModule),

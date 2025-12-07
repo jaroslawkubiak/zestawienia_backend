@@ -16,10 +16,12 @@ import {
   Observable,
   of,
   switchMap,
+  tap,
   throwError,
 } from 'rxjs';
-import { Supplier } from '../suppliers/suppliers.entity';
 import { DeepPartial, Repository } from 'typeorm';
+import { ClientLoginService } from '../client-login/client-login.service';
+import { IClientLogin } from '../client-login/types/IClientLogin';
 import { Client } from '../clients/clients.entity';
 import { ClientsService } from '../clients/clients.service';
 import { CommentsService } from '../comments/comments.service';
@@ -29,25 +31,31 @@ import { ErrorsService } from '../errors/errors.service';
 import { ErrorsType } from '../errors/types/Errors';
 import { FilesService } from '../files/files.service';
 import { generateHash } from '../helpers/generateHash';
+import { getClientIp } from '../helpers/getClientIp';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { ImagesService } from '../images/images.service';
 import { PositionsService } from '../position/positions.service';
+import { Supplier } from '../suppliers/suppliers.entity';
 import { User } from '../user/user.entity';
 import { NewSetDto } from './dto/NewSet.dto';
 import { UpdateSetAndPositionDto } from './dto/updateSetAndPosition.dto';
 import { Set } from './sets.entity';
 import { ISavedSet } from './types/ISavedSet';
 import { ISet } from './types/ISet';
-import { SetStatus } from './types/SetStatus';
 import { ISetForSupplier } from './types/ISetForSupplier';
+import { SetStatus } from './types/SetStatus';
 
 @Injectable()
 export class SetsService {
   constructor(
     private readonly errorsService: ErrorsService,
 
+    @Inject(forwardRef(() => ClientLoginService))
+    private readonly clientLoginService: ClientLoginService,
+
     @InjectRepository(Set)
     private readonly setsRepo: Repository<Set>,
+
     @InjectRepository(Supplier)
     private readonly supplierRepo: Repository<Supplier>,
 
@@ -62,6 +70,7 @@ export class SetsService {
 
     @Inject(forwardRef(() => CommentsService))
     private readonly commentsService: CommentsService,
+
     @Inject(forwardRef(() => FilesService))
     private readonly filesService: FilesService,
   ) {}
@@ -322,14 +331,33 @@ export class SetsService {
     this.filesService.removeFilesFromSet(id);
   }
 
-  validateSetAndHash(setId: number, hash: string): Observable<boolean> {
+  validateSetAndHashForClient(
+    setId: number,
+    hash: string,
+    req: Request,
+  ): Observable<boolean> {
     return from(
       this.setsRepo
         .createQueryBuilder('set')
         .where('set.id = :id', { id: setId })
         .andWhere('set.hash = :hash', { hash })
         .getCount(),
-    ).pipe(map((count) => count > 0));
+    ).pipe(
+      tap((count) => {
+        const isValid = count > 0;
+
+        const clientEntry: IClientLogin = {
+          success: isValid,
+          req_setId: setId.toString(),
+          req_hash: hash,
+          ip_address: getClientIp(req),
+          user_agent: req.headers['user-agent'] ?? null,
+        };
+
+        this.clientLoginService.createClientEntry(clientEntry);
+      }),
+      map((count) => count > 0),
+    );
   }
 
   validateSetAndHashForSupplier(

@@ -17,7 +17,6 @@ import { UpdateSetAndPositionDto } from './dto/updateSetAndPosition.dto';
 import { SetsService } from './sets.service';
 import { ISavedSet } from './types/ISavedSet';
 import { ISet } from './types/ISet';
-import { ISetForSupplier } from './types/ISetForSupplier';
 
 @Controller('sets')
 export class SetsController {
@@ -50,21 +49,17 @@ export class SetsController {
     return this.setsService.getSet(+setId);
   }
 
-  @Get(':setId/:supplierId')
-  findSetForSupplier(
-    @Param('setId') setId: string,
-  ): Observable<ISetForSupplier> {
-    return this.setsService.getSetForSupplier(+setId);
-  }
-
+  // link for clients
   @Get(':setId/:hash')
-  validateSetAndHash(
+  validateSetAndHashForClient(
     @Param('setId') setId: string,
     @Param('hash') hash: string,
+    @Req() req: Request,
   ): Observable<boolean> {
-    return this.setsService.validateSetAndHash(+setId, hash);
+    return this.setsService.validateSetAndHashForClient(+setId, hash, req);
   }
 
+  // link for suppliers
   @Get(':setId/:hash/:supplierHash')
   validateSetAndHashForSupplier(
     @Param('setId') setId: string,

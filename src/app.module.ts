@@ -7,9 +7,11 @@ import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { LoginController } from './auth/login.controller';
 import { Bookmark } from './bookmarks/bookmarks.entity';
 import { BookmarksModule } from './bookmarks/bookmarks.module';
+import { ClientLogin } from './client-login/client-login.entity';
+import { ClientLoginModule } from './client-login/client-login.module';
+import { ClientLoginService } from './client-login/client-login.service';
 import { Client } from './clients/clients.entity';
 import { ClientsModule } from './clients/clients.module';
 import { Comment } from './comments/comments.entity';
@@ -70,6 +72,7 @@ if (!(global as any).crypto) {
           database: config.get<string>('APP_DB_NAME'),
           entities: [
             UserLogin,
+            ClientLogin,
             User,
             Set,
             Supplier,
@@ -99,12 +102,9 @@ if (!(global as any).crypto) {
     ImagesModule,
     EmailModule,
     FilesModule,
+    ClientLoginModule,
   ],
-  controllers: [
-    AppController,
-    ImagesController,
-    FilesController,
-  ],
+  controllers: [AppController, ImagesController, FilesController],
   providers: [AppService, ImagesService],
 })
 export class AppModule {}

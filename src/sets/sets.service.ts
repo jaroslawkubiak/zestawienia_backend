@@ -35,6 +35,8 @@ import { getClientIp } from '../helpers/getClientIp';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { ImagesService } from '../images/images.service';
 import { PositionsService } from '../position/positions.service';
+import { SupplierLogsService } from '../supplier-logs/supplier-logs.service';
+import { ISupplierLogs } from '../supplier-logs/types/ISupplierLogs';
 import { Supplier } from '../suppliers/suppliers.entity';
 import { User } from '../user/user.entity';
 import { NewSetDto } from './dto/NewSet.dto';
@@ -52,6 +54,9 @@ export class SetsService {
 
     @Inject(forwardRef(() => ClientLogsService))
     private readonly clientLogsService: ClientLogsService,
+
+    @Inject(forwardRef(() => SupplierLogsService))
+    private readonly supplierLogsService: SupplierLogsService,
 
     @InjectRepository(Set)
     private readonly setsRepo: Repository<Set>,
@@ -343,7 +348,7 @@ export class SetsService {
         .andWhere('set.hash = :hash', { hash })
         .getCount(),
     ).pipe(
-      tap((count) => {
+      map((count) => {
         const isValid = count > 0;
 
         const clientEntry: IClientLogs = {
@@ -353,10 +358,10 @@ export class SetsService {
           ip_address: getClientIp(req),
           user_agent: req.headers['user-agent'] ?? null,
         };
-
         this.clientLogsService.createClientEntry(clientEntry);
+
+        return isValid;
       }),
-      map((count) => count > 0),
     );
   }
 
@@ -364,6 +369,7 @@ export class SetsService {
     setId: number,
     hash: string,
     supplierHash: string,
+    req: Request,
   ): Observable<{ isValid: boolean; supplierId?: number }> {
     const setExists$ = from(
       this.setsRepo
@@ -386,6 +392,18 @@ export class SetsService {
         isValid: setExists && !!supplierId,
         supplierId: supplierId ?? undefined,
       })),
+      tap(({ isValid }) => {
+        const supplierEntry: ISupplierLogs = {
+          success: isValid,
+          req_setId: setId.toString(),
+          req_hash: hash,
+          req_supplier_hash: supplierHash,
+          ip_address: getClientIp(req),
+          user_agent: req.headers['user-agent'] ?? null,
+        };
+
+        this.supplierLogsService.createSupplierEntry(supplierEntry);
+      }),
     );
   }
 }

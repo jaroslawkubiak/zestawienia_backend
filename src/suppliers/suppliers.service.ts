@@ -25,6 +25,10 @@ export class SuppliersService {
     return this.suppliersRepo.findOneBy({ id });
   }
 
+  findOneByHash(hash: string): Promise<ISupplier> {
+    return this.suppliersRepo.findOneBy({ hash });
+  }
+
   create(createSupplierDto: CreateSupplierDto): Promise<ISupplier> {
     const newSupplier = { ...createSupplierDto, hash: generateHash() };
     const res = this.suppliersRepo.create(newSupplier);

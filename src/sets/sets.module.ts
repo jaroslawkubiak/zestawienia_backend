@@ -10,6 +10,7 @@ import { FilesModule } from '../files/files.module';
 import { ImagesModule } from '../images/images.module';
 import { Position } from '../position/positions.entity';
 import { PositionsModule } from '../position/positions.module';
+import { SupplierLogsModule } from '../supplier-logs/supplier-logs.module';
 import { Supplier } from '../suppliers/suppliers.entity';
 import { User } from '../user/user.entity';
 import { SetsController } from './sets.controller';
@@ -22,6 +23,7 @@ import { SetsService } from './sets.service';
     ErrorsModule,
     FilesModule,
     forwardRef(() => ClientLogsModule),
+    forwardRef(() => SupplierLogsModule),
     forwardRef(() => ImagesModule),
     forwardRef(() => CommentsModule),
     forwardRef(() => PositionsModule),

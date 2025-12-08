@@ -11,7 +11,6 @@ import { Bookmark } from './bookmarks/bookmarks.entity';
 import { BookmarksModule } from './bookmarks/bookmarks.module';
 import { ClientLogs } from './client-logs/client-logs.entity';
 import { ClientLogsModule } from './client-logs/client-logs.module';
-import { ClientLogsService } from './client-logs/client-logs.service';
 import { Client } from './clients/clients.entity';
 import { ClientsModule } from './clients/clients.module';
 import { Comment } from './comments/comments.entity';
@@ -32,12 +31,13 @@ import { Set } from './sets/sets.entity';
 import { SetsModule } from './sets/sets.module';
 import { Setting } from './settings/settings.entity';
 import { SettingsModule } from './settings/settings.module';
+import { SupplierLogs } from './supplier-logs/supplier-logs.entity';
+import { SupplierLogsModule } from './supplier-logs/supplier-logs.module';
 import { Supplier } from './suppliers/suppliers.entity';
 import { SuppliersModule } from './suppliers/suppliers.module';
 import { UserLogs } from './user-logs/user-logs.entity';
 import { User } from './user/user.entity';
 import { UserModule } from './user/user.module';
-import { SupplierLogsModule } from './supplier-logs/supplier-logs.module';
 
 if (!(global as any).crypto) {
   (global as any).crypto = crypto;
@@ -72,19 +72,20 @@ if (!(global as any).crypto) {
           password: config.get<string>('APP_DB_PASSWORD'),
           database: config.get<string>('APP_DB_NAME'),
           entities: [
-            UserLogs,
+            Bookmark,
             ClientLogs,
-            User,
-            Set,
-            Supplier,
             Client,
             Comment,
-            Position,
-            Bookmark,
-            Setting,
-            Errors,
             Email,
+            Errors,
             Files,
+            Position,
+            Set,
+            Setting,
+            SupplierLogs,
+            Supplier,
+            UserLogs,
+            User,
           ],
           synchronize: config.get<string>('TYPEORM_SYNCHRONIZE') === 'true',
         };

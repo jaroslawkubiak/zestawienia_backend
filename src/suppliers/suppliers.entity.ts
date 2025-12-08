@@ -1,6 +1,8 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Email } from '../email/email.entity';
 import { Position } from '../position/positions.entity';
+import { SupplierLogs } from '../supplier-logs/supplier-logs.entity';
+import { ClientLogs } from '../client-logs/client-logs.entity';
 
 @Entity('')
 export class Supplier {
@@ -25,7 +27,7 @@ export class Supplier {
   @Column({ type: 'varchar', length: 50, nullable: true })
   telephone: string;
 
-  @Column({ type: 'varchar', length: 40, nullable: false, unique: true })
+  @Column({ type: 'varchar', length: 30, nullable: false, unique: true })
   hash: string;
 
   @Column({ nullable: true })
@@ -36,4 +38,10 @@ export class Supplier {
 
   @OneToMany(() => Email, (email) => email.supplierId)
   logEmail: Email;
+
+  @OneToMany(() => SupplierLogs, (log) => log.supplier)
+  supplierLogs: SupplierLogs[];
+
+  @OneToMany(() => ClientLogs, (log) => log.client)
+  clientLogs: ClientLogs[];
 }

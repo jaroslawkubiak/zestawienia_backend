@@ -16,7 +16,7 @@ import {
   Observable,
   of,
   switchMap,
-  throwError
+  throwError,
 } from 'rxjs';
 import { DeepPartial, Repository } from 'typeorm';
 import { ClientLogsService } from '../client-logs/client-logs.service';

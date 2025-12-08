@@ -24,7 +24,7 @@ export class Set {
   @Column({ type: 'text', nullable: false })
   address: string;
 
-  @Column({ type: 'varchar', length: 40, nullable: false, unique: true })
+  @Column({ type: 'varchar', length: 30, nullable: false, unique: true })
   hash: string;
 
   @Column({ type: 'json', nullable: false })

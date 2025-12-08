@@ -5,7 +5,9 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Client } from '../clients/clients.entity';
 import { Set } from '../sets/sets.entity';
+import { Supplier } from '../suppliers/suppliers.entity';
 
 @Entity('supplier-logs')
 export class SupplierLogs {
@@ -14,6 +16,9 @@ export class SupplierLogs {
 
   @Column({ type: 'tinyint', width: 1 })
   success: boolean;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  client_name: string | null;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   supplier_name: string | null;
@@ -41,4 +46,16 @@ export class SupplierLogs {
   })
   @JoinColumn({ name: 'setId', referencedColumnName: 'id' })
   set: Set;
+
+  @ManyToOne(() => Supplier, (supplier) => supplier.supplierLogs, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'supplierId', referencedColumnName: 'id' })
+  supplier: Supplier;
+
+  @ManyToOne(() => Client, (client) => client.clientLogs, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'clientId', referencedColumnName: 'id' })
+  client: Client;
 }

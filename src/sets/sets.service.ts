@@ -21,7 +21,6 @@ import {
 } from 'rxjs';
 import { DeepPartial, Repository } from 'typeorm';
 import { ClientLogsService } from '../client-logs/client-logs.service';
-import { IClientLogs } from '../client-logs/types/IClientLogs';
 import { Client } from '../clients/clients.entity';
 import { ClientsService } from '../clients/clients.service';
 import { CommentsService } from '../comments/comments.service';
@@ -45,6 +44,7 @@ import { Set } from './sets.entity';
 import { ISavedSet } from './types/ISavedSet';
 import { ISet } from './types/ISet';
 import { ISetForSupplier } from './types/ISetForSupplier';
+import { IValidSet } from './types/IValidSet';
 import { SetStatus } from './types/SetStatus';
 
 @Injectable()
@@ -91,6 +91,23 @@ export class SetsService {
         'client.lastName',
         'client.company',
         'client.email',
+        'client.hash',
+      ])
+      .getOne();
+  }
+
+  findOneByHash(hash: string): Promise<ISet> {
+    return this.setsRepo
+      .createQueryBuilder('set')
+      .where('set.hash = :hash', { hash: hash })
+      .leftJoin('set.clientId', 'client')
+      .addSelect([
+        'client.id',
+        'client.firstName',
+        'client.lastName',
+        'client.company',
+        'client.email',
+        'client.hash',
       ])
       .getOne();
   }
@@ -104,6 +121,7 @@ export class SetsService {
         'client.lastName',
         'client.firstName',
         'client.company',
+        'client.hash',
       ])
       .leftJoin('set.createdBy', 'createdBy')
       .addSelect(['createdBy.name'])
@@ -135,6 +153,7 @@ export class SetsService {
           'client.email',
           'client.firstName',
           'client.lastName',
+          'client.hash',
         ])
         .leftJoin('set.createdBy', 'createdBy')
         .addSelect(['createdBy.id', 'createdBy.name'])
@@ -337,30 +356,32 @@ export class SetsService {
   }
 
   validateSetAndHashForClient(
-    setId: number,
-    hash: string,
+    setHash: string,
+    clientHash: string,
     req: Request,
-  ): Observable<boolean> {
+  ): Observable<IValidSet> {
     return from(
       this.setsRepo
         .createQueryBuilder('set')
-        .where('set.id = :id', { id: setId })
-        .andWhere('set.hash = :hash', { hash })
-        .getCount(),
+        .innerJoin('set.clientId', 'client')
+        .where('set.hash = :setHash', { setHash })
+        .andWhere('client.hash = :clientHash', { clientHash })
+        .select(['set.id'])
+        .getOne(),
     ).pipe(
-      map((count) => {
-        const isValid = count > 0;
+      map((set) => {
+        const isValid = !!set;
+        const setId = set?.id ?? null;
 
-        const clientEntry: IClientLogs = {
+        this.clientLogsService.createClientEntry({
           success: isValid,
-          req_setId: setId.toString(),
-          req_hash: hash,
+          req_setHash: setHash,
+          req_clientHash: clientHash,
           ip_address: getClientIp(req),
           user_agent: req.headers['user-agent'] ?? null,
-        };
-        this.clientLogsService.createClientEntry(clientEntry);
+        });
 
-        return isValid;
+        return { valid: isValid, setId };
       }),
     );
   }

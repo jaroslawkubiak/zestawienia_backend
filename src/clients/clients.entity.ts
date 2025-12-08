@@ -30,4 +30,7 @@ export class Client {
 
   @OneToMany(() => Email, (email) => email.clientId)
   logEmail: Email;
+
+  @Column({ type: 'varchar', length: 40, nullable: false })
+  hash: string;
 }

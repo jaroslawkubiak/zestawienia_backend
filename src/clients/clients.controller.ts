@@ -3,18 +3,17 @@ import {
   Controller,
   Delete,
   Get,
-  Header,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   Req,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { SetsService } from '../sets/sets.service';
+import { IValidSet } from '../sets/types/IValidSet';
 import { ClientsService } from './clients.service';
 import { CreateClientDto, UpdateClientDto } from './dto/client.dto';
 import { IClient } from './types/IClient';
@@ -27,14 +26,17 @@ export class ClientsController {
   ) {}
 
   // external link for clients
-  @Get(':setId/:hash')
-  @Header('Cache-Control', 'no-store')
+  @Get(':setHash/:clientHash')
   validateSetAndHashForClient(
-    @Param('setId', ParseIntPipe) setId: number,
-    @Param('hash') hash: string,
+    @Param('setHash') setHash: string,
+    @Param('clientHash') clientHash: string,
     @Req() req: Request,
-  ): Observable<boolean> {
-    return this.setsService.validateSetAndHashForClient(setId, hash, req);
+  ): Observable<IValidSet> {
+    return this.setsService.validateSetAndHashForClient(
+      setHash,
+      clientHash,
+      req,
+    );
   }
 
   @UseGuards(JwtAuthGuard)

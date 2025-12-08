@@ -1,11 +1,10 @@
-import {
-  Injectable
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Client } from './clients.entity';
 import { CreateClientDto, UpdateClientDto } from './dto/client.dto';
 import { IClient } from './types/IClient';
+import { generateHash } from '../helpers/generateHash';
 
 @Injectable()
 export class ClientsService {
@@ -27,14 +26,13 @@ export class ClientsService {
   }
 
   create(createClientDto: CreateClientDto): Promise<IClient> {
-    const newClient = this.clientsRepo.create(createClientDto);
+    const newClient = { ...createClientDto, hash: generateHash() };
+
+    this.clientsRepo.create(createClientDto);
     return this.clientsRepo.save(newClient);
   }
 
-  async update(
-    id: number,
-    updateClientDto: UpdateClientDto,
-  ): Promise<IClient> {
+  async update(id: number, updateClientDto: UpdateClientDto): Promise<IClient> {
     await this.clientsRepo.update(id, updateClientDto);
     return this.findOne(id);
   }

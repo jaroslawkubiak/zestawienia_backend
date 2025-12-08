@@ -1,6 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Email } from '../email/email.entity';
 import { Set } from '../sets/sets.entity';
+import { ClientLogs } from '../client-logs/client-logs.entity';
 
 @Entity('')
 export class Client {
@@ -33,4 +34,7 @@ export class Client {
 
   @Column({ type: 'varchar', length: 40, nullable: false })
   hash: string;
+
+  @OneToMany(() => ClientLogs, (log) => log.client)
+  clientLogs: ClientLogs[];
 }

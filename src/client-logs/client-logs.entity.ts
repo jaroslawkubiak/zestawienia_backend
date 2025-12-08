@@ -5,6 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Client } from '../clients/clients.entity';
 import { Set } from '../sets/sets.entity';
 
 @Entity('client-logs')
@@ -41,4 +42,10 @@ export class ClientLogs {
   })
   @JoinColumn({ name: 'setId', referencedColumnName: 'id' })
   set: Set;
+
+  @ManyToOne(() => Client, (client) => client.clientLogs, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'clientId', referencedColumnName: 'id' })
+  client: Client;
 }

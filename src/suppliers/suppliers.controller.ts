@@ -3,9 +3,7 @@ import {
   Controller,
   Delete,
   Get,
-  Header,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   Req,
@@ -15,6 +13,7 @@ import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { SetsService } from '../sets/sets.service';
+import { IValidSet } from '../sets/types/IValidSet';
 import { CreateSupplierDto, UpdateSupplierDto } from './dto/supplier.dto';
 import { SuppliersService } from './suppliers.service';
 import { ISupplier } from './types/ISupplier';
@@ -27,16 +26,13 @@ export class SuppliersController {
   ) {}
 
   // external link for suppliers
-  @Get(':setId/:hash/:supplierHash')
-  @Header('Cache-Control', 'no-store')
+  @Get('/:hash/:supplierHash')
   validateSetAndHashForSupplier(
-    @Param('setId', ParseIntPipe) setId: number,
     @Param('hash') hash: string,
     @Param('supplierHash') supplierHash: string,
     @Req() req: Request,
-  ): Observable<{ isValid: boolean; supplierId?: number }> {
+  ): Observable<IValidSet> {
     return this.setsService.validateSetAndHashForSupplier(
-      setId,
       hash,
       supplierHash,
       req,

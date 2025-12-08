@@ -16,8 +16,7 @@ import {
   Observable,
   of,
   switchMap,
-  tap,
-  throwError,
+  throwError
 } from 'rxjs';
 import { DeepPartial, Repository } from 'typeorm';
 import { ClientLogsService } from '../client-logs/client-logs.service';
@@ -35,7 +34,6 @@ import { getFormatedDate } from '../helpers/getFormatedDate';
 import { ImagesService } from '../images/images.service';
 import { PositionsService } from '../position/positions.service';
 import { SupplierLogsService } from '../supplier-logs/supplier-logs.service';
-import { ISupplierLogs } from '../supplier-logs/types/ISupplierLogs';
 import { Supplier } from '../suppliers/suppliers.entity';
 import { User } from '../user/user.entity';
 import { NewSetDto } from './dto/NewSet.dto';
@@ -387,43 +385,43 @@ export class SetsService {
   }
 
   validateSetAndHashForSupplier(
-    setId: number,
-    hash: string,
+    setHash: string,
     supplierHash: string,
     req: Request,
-  ): Observable<{ isValid: boolean; supplierId?: number }> {
-    const setExists$ = from(
+  ): Observable<IValidSet> {
+    const set$ = from(
       this.setsRepo
         .createQueryBuilder('set')
-        .where('set.id = :id', { id: setId })
-        .andWhere('set.hash = :hash', { hash })
-        .getCount(),
-    ).pipe(map((count) => count > 0));
+        .select(['set.id'])
+        .where('set.hash = :setHash', { setHash })
+        .getOne(),
+    ).pipe(map((set) => set?.id ?? null));
 
-    const supplierId$ = from(
+    const supplier$ = from(
       this.supplierRepo
         .createQueryBuilder('supplier')
-        .select('supplier.id', 'id')
+        .select(['supplier.id'])
         .where('supplier.hash = :supplierHash', { supplierHash })
-        .getRawOne<{ id: number }>(),
-    ).pipe(map((row) => row?.id ?? null));
+        .getOne(),
+    ).pipe(map((sup) => sup?.id ?? null));
 
-    return forkJoin([setExists$, supplierId$]).pipe(
-      map(([setExists, supplierId]) => ({
-        isValid: setExists && !!supplierId,
-        supplierId: supplierId ?? undefined,
-      })),
-      tap(({ isValid }) => {
-        const supplierEntry: ISupplierLogs = {
+    return forkJoin([set$, supplier$]).pipe(
+      map(([setId, supplierId]) => {
+        const isValid = !!setId && !!supplierId;
+
+        this.supplierLogsService.createSupplierEntry({
           success: isValid,
-          req_setId: setId.toString(),
-          req_hash: hash,
-          req_supplier_hash: supplierHash,
+          req_setHash: setHash,
+          req_supplierHash: supplierHash,
           ip_address: getClientIp(req),
           user_agent: req.headers['user-agent'] ?? null,
-        };
+        });
 
-        this.supplierLogsService.createSupplierEntry(supplierEntry);
+        return {
+          valid: isValid,
+          setId,
+          supplierId,
+        };
       }),
     );
   }

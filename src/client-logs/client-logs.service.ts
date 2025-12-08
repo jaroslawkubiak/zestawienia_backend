@@ -16,22 +16,20 @@ export class ClientLogsService {
     private readonly setsService: SetsService,
   ) {}
 
-  async createClientEntry(data: {
-    success: boolean;
-    req_setId: string;
-    req_hash: string;
-    ip_address?: string | null;
-    user_agent?: string | null;
-  }) {
-    const response = await this.setsService.findOne(Number(data.req_setId));
+  async createClientEntry(data: IClientLogs) {
+    const { req_setHash, req_clientHash } = data;
+
+    const set = await this.setsService.findOneByHash(req_setHash);
 
     const createData: IClientLogs = {
       ...data,
-      client_name: response
-        ? `${response.clientId?.firstName ?? ''} ${response.clientId?.lastName ?? ''}`.trim() ||
+      client_name: set
+        ? `${set.clientId?.firstName ?? ''} ${set.clientId?.lastName ?? ''}`.trim() ||
           null
         : null,
-      set: response || null,
+      set: set || null,
+      req_setHash,
+      req_clientHash,
       date: getFormatedDate(),
       timestamp: Number(Date.now()),
     };

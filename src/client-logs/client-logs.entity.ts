@@ -18,11 +18,11 @@ export class ClientLogs {
   @Column({ type: 'varchar', length: 255, nullable: true })
   client_name: string | null;
 
-  @Column({ type: 'varchar', length: 5, nullable: true })
-  req_setId: string;
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  req_setHash: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
-  req_hash: string;
+  req_clientHash: string;
 
   @Column({ type: 'varchar', length: 50, nullable: false })
   date: Date;

@@ -9,9 +9,9 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { Bookmark } from './bookmarks/bookmarks.entity';
 import { BookmarksModule } from './bookmarks/bookmarks.module';
-import { ClientLogin } from './client-login/client-login.entity';
-import { ClientLoginModule } from './client-login/client-login.module';
-import { ClientLoginService } from './client-login/client-login.service';
+import { ClientLogs } from './client-logs/client-logs.entity';
+import { ClientLogsModule } from './client-logs/client-logs.module';
+import { ClientLogsService } from './client-logs/client-logs.service';
 import { Client } from './clients/clients.entity';
 import { ClientsModule } from './clients/clients.module';
 import { Comment } from './comments/comments.entity';
@@ -37,6 +37,7 @@ import { SuppliersModule } from './suppliers/suppliers.module';
 import { UserLogin } from './user-login/user-login.entity';
 import { User } from './user/user.entity';
 import { UserModule } from './user/user.module';
+import { SupplierLogsModule } from './supplier-logs/supplier-logs.module';
 
 if (!(global as any).crypto) {
   (global as any).crypto = crypto;
@@ -72,7 +73,7 @@ if (!(global as any).crypto) {
           database: config.get<string>('APP_DB_NAME'),
           entities: [
             UserLogin,
-            ClientLogin,
+            ClientLogs,
             User,
             Set,
             Supplier,
@@ -102,7 +103,8 @@ if (!(global as any).crypto) {
     ImagesModule,
     EmailModule,
     FilesModule,
-    ClientLoginModule,
+    ClientLogsModule,
+    SupplierLogsModule,
   ],
   controllers: [AppController, ImagesController, FilesController],
   providers: [AppService, ImagesService],

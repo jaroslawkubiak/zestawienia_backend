@@ -20,8 +20,8 @@ import {
   throwError,
 } from 'rxjs';
 import { DeepPartial, Repository } from 'typeorm';
-import { ClientLoginService } from '../client-login/client-login.service';
-import { IClientLogin } from '../client-login/types/IClientLogin';
+import { ClientLogsService } from '../client-logs/client-logs.service';
+import { IClientLogs } from '../client-logs/types/IClientLogs';
 import { Client } from '../clients/clients.entity';
 import { ClientsService } from '../clients/clients.service';
 import { CommentsService } from '../comments/comments.service';
@@ -50,8 +50,8 @@ export class SetsService {
   constructor(
     private readonly errorsService: ErrorsService,
 
-    @Inject(forwardRef(() => ClientLoginService))
-    private readonly clientLoginService: ClientLoginService,
+    @Inject(forwardRef(() => ClientLogsService))
+    private readonly clientLogsService: ClientLogsService,
 
     @InjectRepository(Set)
     private readonly setsRepo: Repository<Set>,
@@ -346,7 +346,7 @@ export class SetsService {
       tap((count) => {
         const isValid = count > 0;
 
-        const clientEntry: IClientLogin = {
+        const clientEntry: IClientLogs = {
           success: isValid,
           req_setId: setId.toString(),
           req_hash: hash,
@@ -354,7 +354,7 @@ export class SetsService {
           user_agent: req.headers['user-agent'] ?? null,
         };
 
-        this.clientLoginService.createClientEntry(clientEntry);
+        this.clientLogsService.createClientEntry(clientEntry);
       }),
       map((count) => count > 0),
     );

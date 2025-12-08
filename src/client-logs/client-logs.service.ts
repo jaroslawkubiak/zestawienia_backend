@@ -3,14 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { SetsService } from '../sets/sets.service';
-import { ClientLogin } from './client-login.entity';
-import { IClientLogin } from './types/IClientLogin';
+import { ClientLogs } from './client-logs.entity';
+import { IClientLogs } from './types/IClientLogs';
 
 @Injectable()
-export class ClientLoginService {
+export class ClientLogsService {
   constructor(
-    @InjectRepository(ClientLogin)
-    private readonly clientLoginRepo: Repository<ClientLogin>,
+    @InjectRepository(ClientLogs)
+    private readonly clientLogsRepo: Repository<ClientLogs>,
 
     @Inject(forwardRef(() => SetsService))
     private readonly setsService: SetsService,
@@ -25,7 +25,7 @@ export class ClientLoginService {
   }) {
     const response = await this.setsService.findOne(Number(data.req_setId));
 
-    const createData: IClientLogin = {
+    const createData: IClientLogs = {
       ...data,
       client_name: response
         ? `${response.clientId?.firstName ?? ''} ${response.clientId?.lastName ?? ''}`.trim() ||
@@ -35,9 +35,9 @@ export class ClientLoginService {
       date: getFormatedDate(),
       timestamp: Number(Date.now()),
     };
-    const entry = this.clientLoginRepo.create(createData);
+    const entry = this.clientLogsRepo.create(createData);
 
-    this.clientLoginRepo.save(entry).catch((err) => {
+    this.clientLogsRepo.save(entry).catch((err) => {
       console.error('Error saving client login entry:', err);
     });
   }

@@ -1,6 +1,6 @@
 import { ISet } from '../../sets/types/ISet';
 
-export interface IClientLogin {
+export interface IClientLogs {
   success: boolean;
   req_setId: string;
   req_hash: string;

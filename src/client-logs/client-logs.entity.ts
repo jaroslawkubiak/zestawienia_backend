@@ -7,8 +7,8 @@ import {
 } from 'typeorm';
 import { Set } from '../sets/sets.entity';
 
-@Entity('logs_client')
-export class ClientLogin {
+@Entity('client-logs')
+export class ClientLogs {
   @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
   id: number;
 

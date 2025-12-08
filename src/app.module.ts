@@ -22,6 +22,7 @@ import { ErrorsModule } from './errors/errors.module';
 import { FilesController } from './files/files.controller';
 import { Files } from './files/files.entity';
 import { FilesModule } from './files/files.module';
+import { HashModule } from './hash/hash.module';
 import { ImagesController } from './images/images.controller';
 import { ImagesModule } from './images/images.module';
 import { ImagesService } from './images/images.service';
@@ -106,6 +107,7 @@ if (!(global as any).crypto) {
     FilesModule,
     ClientLogsModule,
     SupplierLogsModule,
+    HashModule,
   ],
   controllers: [AppController, ImagesController, FilesController],
   providers: [AppService, ImagesService],

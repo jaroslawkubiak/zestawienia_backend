@@ -1,14 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { HashService } from '../hash/hash.service';
 import { Client } from './clients.entity';
 import { CreateClientDto, UpdateClientDto } from './dto/client.dto';
 import { IClient } from './types/IClient';
-import { generateHash } from '../helpers/generateHash';
 
 @Injectable()
 export class ClientsService {
   constructor(
+    private readonly hashService: HashService,
+
     @InjectRepository(Client)
     private readonly clientsRepo: Repository<Client>,
   ) {}
@@ -25,8 +27,11 @@ export class ClientsService {
     return this.clientsRepo.findOneBy({ id });
   }
 
-  create(createClientDto: CreateClientDto): Promise<IClient> {
-    const newClient = { ...createClientDto, hash: generateHash() };
+  async create(createClientDto: CreateClientDto): Promise<IClient> {
+    const newClient = {
+      ...createClientDto,
+      hash: await this.hashService.generateUniqueHash(),
+    };
 
     this.clientsRepo.create(createClientDto);
     return this.clientsRepo.save(newClient);

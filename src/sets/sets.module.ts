@@ -16,12 +16,14 @@ import { User } from '../user/user.entity';
 import { SetsController } from './sets.controller';
 import { Set } from './sets.entity';
 import { SetsService } from './sets.service';
+import { HashModule } from '../hash/hash.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Set, User, Position, Comment, Supplier]),
     ErrorsModule,
     FilesModule,
+    HashModule,
     forwardRef(() => ClientLogsModule),
     forwardRef(() => SupplierLogsModule),
     forwardRef(() => ImagesModule),

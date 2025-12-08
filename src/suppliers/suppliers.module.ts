@@ -1,5 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { HashModule } from '../hash/hash.module';
 import { Position } from '../position/positions.entity';
 import { PositionsModule } from '../position/positions.module';
 import { SetsModule } from '../sets/sets.module';
@@ -11,6 +12,7 @@ import { SuppliersService } from './suppliers.service';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Supplier, Position]),
+    HashModule,
     forwardRef(() => PositionsModule),
     forwardRef(() => SupplierLogsModule),
     forwardRef(() => SetsModule),

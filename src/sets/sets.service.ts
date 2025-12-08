@@ -28,7 +28,7 @@ import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
 import { ErrorsType } from '../errors/types/Errors';
 import { FilesService } from '../files/files.service';
-import { generateHash } from '../helpers/generateHash';
+import { HashService } from '../hash/hash.service';
 import { getClientIp } from '../helpers/getClientIp';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { ImagesService } from '../images/images.service';
@@ -49,6 +49,7 @@ import { SetStatus } from './types/SetStatus';
 export class SetsService {
   constructor(
     private readonly errorsService: ErrorsService,
+    private readonly hashService: HashService,
 
     @Inject(forwardRef(() => ClientLogsService))
     private readonly clientLogsService: ClientLogsService,
@@ -224,7 +225,7 @@ export class SetsService {
         createdBy: { id: createSet.createdBy } as DeepPartial<User>,
         updatedBy: { id: createSet.createdBy } as DeepPartial<User>,
         clientId: { id: createSet.clientId } as DeepPartial<Client>,
-        hash: generateHash(),
+        hash: await this.hashService.generateUniqueHash(),
         status: SetStatus.new,
         createdAt: getFormatedDate(),
         createdAtTimestamp: Number(Date.now()),

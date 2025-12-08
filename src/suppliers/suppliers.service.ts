@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { generateHash } from '../helpers/generateHash';
+import { HashService } from '../hash/hash.service';
 import { CreateSupplierDto, UpdateSupplierDto } from './dto/supplier.dto';
 import { Supplier } from './suppliers.entity';
 import { ISupplier } from './types/ISupplier';
@@ -9,6 +9,8 @@ import { ISupplier } from './types/ISupplier';
 @Injectable()
 export class SuppliersService {
   constructor(
+    private readonly hashService: HashService,
+
     @InjectRepository(Supplier)
     private readonly suppliersRepo: Repository<Supplier>,
   ) {}
@@ -29,8 +31,11 @@ export class SuppliersService {
     return this.suppliersRepo.findOneBy({ hash });
   }
 
-  create(createSupplierDto: CreateSupplierDto): Promise<ISupplier> {
-    const newSupplier = { ...createSupplierDto, hash: generateHash() };
+  async create(createSupplierDto: CreateSupplierDto): Promise<ISupplier> {
+    const newSupplier = {
+      ...createSupplierDto,
+      hash: await this.hashService.generateUniqueHash(),
+    };
     const res = this.suppliersRepo.create(newSupplier);
     return this.suppliersRepo.save(res);
   }

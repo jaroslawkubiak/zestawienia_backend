@@ -34,7 +34,7 @@ import { Setting } from './settings/settings.entity';
 import { SettingsModule } from './settings/settings.module';
 import { Supplier } from './suppliers/suppliers.entity';
 import { SuppliersModule } from './suppliers/suppliers.module';
-import { UserLogin } from './user-login/user-login.entity';
+import { UserLogs } from './user-logs/user-logs.entity';
 import { User } from './user/user.entity';
 import { UserModule } from './user/user.module';
 import { SupplierLogsModule } from './supplier-logs/supplier-logs.module';
@@ -72,7 +72,7 @@ if (!(global as any).crypto) {
           password: config.get<string>('APP_DB_PASSWORD'),
           database: config.get<string>('APP_DB_NAME'),
           entities: [
-            UserLogin,
+            UserLogs,
             ClientLogs,
             User,
             Set,

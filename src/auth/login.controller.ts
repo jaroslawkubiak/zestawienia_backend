@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
-import { UserLoginService } from '../user-login/user-login.service';
+import { UserLogsService } from '../user-logs/user-logs.service';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { PasswordChange } from './dto/passwordChange.dto ';
@@ -21,7 +21,7 @@ export class LoginController {
   constructor(
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
-    private readonly userLoginService: UserLoginService,
+    private readonly userLogsService: UserLogsService,
   ) {}
 
   @Post('login')
@@ -55,7 +55,7 @@ export class LoginController {
     const token = req.cookies?.jwt;
 
     if (token) {
-      await this.userLoginService.setLogoutTimestamp(token);
+      await this.userLogsService.setLogoutTimestamp(token);
     }
 
     res.cookie('jwt', '', {

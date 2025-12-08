@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
-import { UserLoginService } from '../user-login/user-login.service';
+import { UserLogsService } from '../user-logs/user-logs.service';
 import { User } from '../user/user.entity';
 import { LoginDto } from './dto/login.dto';
 import { PasswordChange } from './dto/passwordChange.dto ';
@@ -13,7 +13,7 @@ import { ILoggedUser } from './types/ILoggedUser';
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly userLoginService: UserLoginService,
+    private readonly userLogsService: UserLogsService,
 
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -31,7 +31,7 @@ export class AuthService {
 
     // No user
     if (!user) {
-      await this.userLoginService.createLoginEntry(
+      await this.userLogsService.createLoginEntry(
         username,
         req,
         false,
@@ -46,7 +46,7 @@ export class AuthService {
 
     // passwords don't matched
     if (!passwordMatched) {
-      await this.userLoginService.createLoginEntry(
+      await this.userLogsService.createLoginEntry(
         user,
         req,
         false,
@@ -58,7 +58,7 @@ export class AuthService {
     }
 
     // login success
-    await this.userLoginService.createLoginEntry(
+    await this.userLogsService.createLoginEntry(
       user,
       req,
       true,

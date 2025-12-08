@@ -5,14 +5,14 @@ import { Repository } from 'typeorm';
 import { getClientIp } from '../helpers/getClientIp';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { User } from '../user/user.entity';
-import { IUserLogin } from './types/IUserLogin';
-import { UserLogin } from './user-login.entity';
+import { IUserLogs } from './types/IUserLogs';
+import { UserLogs } from './user-logs.entity';
 
 @Injectable()
-export class UserLoginService {
+export class UserLogsService {
   constructor(
-    @InjectRepository(UserLogin)
-    private readonly userLoginRepo: Repository<UserLogin>,
+    @InjectRepository(UserLogs)
+    private readonly userLogsRepo: Repository<UserLogs>,
   ) {}
 
   createLoginEntry(
@@ -24,7 +24,7 @@ export class UserLoginService {
   ) {
     const isString = typeof user === 'string';
 
-    const createEnry: IUserLogin = {
+    const createEnry: IUserLogs = {
       login: isString ? user : user.username,
       success,
       user: isString ? null : user,
@@ -36,11 +36,11 @@ export class UserLoginService {
       login_at_timestamp: Number(Date.now()),
     };
 
-    this.userLoginRepo.save(createEnry);
+    this.userLogsRepo.save(createEnry);
   }
 
   async setLogoutTimestamp(token: string): Promise<void> {
-    await this.userLoginRepo.update(
+    await this.userLogsRepo.update(
       { token },
       { logout_at: getFormatedDate(), logout_at_timestamp: Number(Date.now()) },
     );

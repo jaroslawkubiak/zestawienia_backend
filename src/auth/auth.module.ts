@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserLoginModule } from '../user-login/user-login.module';
+import { UserLogsModule } from '../user-logs/user-log.module';
 import { User } from '../user/user.entity';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
@@ -22,7 +22,7 @@ import { LoginController } from './login.controller';
         signOptions: { expiresIn: '1d' },
       }),
     }),
-    UserLoginModule,
+    UserLogsModule,
   ],
   controllers: [LoginController],
   providers: [AuthService, JwtStrategy, JwtAuthGuard],

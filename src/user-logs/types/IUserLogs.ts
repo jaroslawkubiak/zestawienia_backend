@@ -1,6 +1,6 @@
 import { User } from '../../user/user.entity';
 
-export interface IUserLogin {
+export interface IUserLogs {
   user: User;
   login: string;
   success: boolean;

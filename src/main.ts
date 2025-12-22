@@ -4,6 +4,7 @@ import * as cookieParser from 'cookie-parser';
 import * as express from 'express';
 import { Request, Response } from 'express';
 import { join } from 'path';
+import * as fs from 'fs';
 import { AppModule } from './app.module';
 import { ErrorsService } from './errors/errors.service';
 import { QueryFailedExceptionFilter } from './filters/queryFailedException.filter';
@@ -61,13 +62,23 @@ async function bootstrap() {
 
   const server = app.getHttpAdapter().getInstance();
 
-  // SPA fallback
+  // SPA fallback — only serve index.html if it exists (production mode)
+  // In development, use ng serve on localhost:4200 instead
   server.get('*', (req: Request, res: Response, next: Function) => {
     if (req.path.startsWith('/api')) {
       return next();
     }
 
-    res.sendFile(join(angularPath, 'index.html'));
+    const indexPath = join(angularPath, 'index.html');
+    if (fs.existsSync(indexPath)) {
+      res.sendFile(indexPath);
+    } else {
+      // In dev mode, public/index.html doesn't exist — return 404
+      res.status(404).json({
+        message: 'Not found. In development, use ng serve on localhost:4200',
+        path: req.path,
+      });
+    }
   });
 
   const port = process.env.PORT || 3000;

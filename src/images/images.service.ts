@@ -31,12 +31,12 @@ export class ImagesService {
     const MINI_DIMENSION = 500;
     const innerPath = `/sets/${setId}/positions/${positionId}`;
 
+    const basePath = (process.env.UPLOAD_PATH || 'uploads');
     const uploadPath = path.join(
       process.cwd(),
-      process.env.UPLOAD_PATH + innerPath || 'uploads' + innerPath,
+      basePath + innerPath,
     );
-    // const uploadPath = path.join(__dirname, '..', 'uploads'); // to zapisuje pliki w katalogu /dist
-
+    
     try {
       this.removeFolderContent(uploadPath);
 

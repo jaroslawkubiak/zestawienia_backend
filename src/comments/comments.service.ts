@@ -360,4 +360,13 @@ export class CommentsService {
   async remove(id: number): Promise<void> {
     await this.commentRepo.delete(id);
   }
+
+  async unreadComments(): Promise<number> {
+    return await this.commentRepo.count({
+      where: {
+        readByReceiver: false,
+        authorType: 'client',
+      },
+    });
+  }
 }

@@ -18,6 +18,11 @@ import { IMarkAllComments } from './dto/markAllComments.dto';
 export class CommentsController {
   constructor(private commentsService: CommentsService) {}
 
+  @Get('unread')
+  async unreadComments(): Promise<number> {
+    return this.commentsService.unreadComments();
+  }
+
   @Get(':id')
   findBySetId(@Param('id') id: string): Promise<IComment[]> {
     return this.commentsService.findBySetId(+id);

@@ -5,6 +5,7 @@ TODO LIST
 
 Admin:
 [ ] Logowania użytkowników - lista w ukrytym menu
+[ ] system logowania błędów
 
 Po zalogowaniu:
 [ ] Podsumowanie nowych - nieprzeczytanych komentarzy

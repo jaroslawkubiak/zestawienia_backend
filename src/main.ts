@@ -3,7 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import * as cookieParser from 'cookie-parser';
 import * as express from 'express';
 import { Request, Response } from 'express';
-import * as path from 'path';
+import { join } from 'path';
 import { AppModule } from './app.module';
 import { ErrorsService } from './errors/errors.service';
 import { QueryFailedExceptionFilter } from './filters/queryFailedException.filter';
@@ -11,27 +11,30 @@ import { ValidationExceptionFilter } from './filters/validationException.filter'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const allowedOrigins = [
-    'http://localhost:4200', // dev
-    'https://zestawienia.zurawickidesign.pl', // produkcja
-  ];
+
+  // If the app runs behind a proxy (nginx, etc.), trust the proxy so
+  // `req.secure` and `x-forwarded-*` headers are respected.
+  // Operate on the underlying Express instance to avoid TypeScript errors
+  const expressInstance = app.getHttpAdapter().getInstance();
+  if (expressInstance && typeof expressInstance.set === 'function') {
+    expressInstance.set('trust proxy', true);
+  }
 
   app.use(cookieParser());
 
-  // Włączenie CORS
+  // enable CORS
   app.enableCors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
+    origin: [
+      'http://localhost:4200',
+      'https://zestawienia.zurawickidesign.pl',
+      'http://zestawienia.host355495.stronawcal.pl',
+    ],
+    credentials: true,
     methods: 'GET,HEAD,POST,PUT,PATCH,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type, Authorization',
-    credentials: true,
   });
 
+  // global pipes
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -40,34 +43,35 @@ async function bootstrap() {
     }),
   );
 
-  // Serwowanie plików statycznych
-  app.use(
-    '/uploads',
-    express.static(
-      path.join(process.cwd(), process.env.UPLOAD_PATH, '..', 'uploads'),
-    ),
+  // add /api to every backend endpoint
+  app.setGlobalPrefix('api');
+
+  // Angular
+  const angularPath = join(process.cwd(), 'public');
+  app.use(express.static(angularPath));
+
+  // UPLOADS
+  app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
+
+  // FILTERS
+  app.useGlobalFilters(
+    new ValidationExceptionFilter(app.get(ErrorsService)),
+    new QueryFailedExceptionFilter(app.get(ErrorsService)),
   );
 
-  app.useGlobalFilters(new ValidationExceptionFilter(app.get(ErrorsService)));
+  const server = app.getHttpAdapter().getInstance();
 
-  app.useGlobalFilters(new QueryFailedExceptionFilter(app.get(ErrorsService)));
+  // SPA fallback
+  server.get('*', (req: Request, res: Response, next: Function) => {
+    if (req.path.startsWith('/api')) {
+      return next();
+    }
 
-  const isProduction = process.env.NODE_ENV === 'production';
-  if (isProduction) {
-    const clientPath = path.join(__dirname, '../frontend-dist/browser');
-    app.use(express.static(clientPath));
+    res.sendFile(join(angularPath, 'index.html'));
+  });
 
-    const httpAdapter = app.getHttpAdapter();
-    const server = httpAdapter.getInstance();
-
-    server.get(
-      /^\/(?!auth|user|sets|suppliers|clients|comments|positions|bookmarks|settings|errors|email|files|images).*/,
-      (req: Request, res: Response) => {
-        res.sendFile(path.join(clientPath, 'index.html'));
-      },
-    );
-  }
-
-  await app.listen(3005);
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
 }
+
 bootstrap();

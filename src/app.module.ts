@@ -50,7 +50,7 @@ if (!(global as any).crypto) {
       serveRoot: '/uploads',
       serveStaticOptions: {
         setHeaders: (res, filePath) => {
-          // Automatyczne ustawienie Content-Type
+          // auto set Content-Type
           const mime = require('mime-types');
           const type = mime.lookup(filePath);
           if (type) res.setHeader('Content-Type', type);
@@ -89,6 +89,12 @@ if (!(global as any).crypto) {
             User,
           ],
           synchronize: config.get<string>('TYPEORM_SYNCHRONIZE') === 'true',
+          extra: {
+            socketPath:
+              config.get<string>('NODE_ENV') === 'production'
+                ? `/var/lib/mysql/mysql.sock`
+                : '',
+          },
         };
       },
     }),

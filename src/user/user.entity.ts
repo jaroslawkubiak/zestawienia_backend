@@ -5,7 +5,7 @@ import { Set } from '../sets/sets.entity';
 import { UserLogs } from '../user-logs/user-logs.entity';
 import { Role } from './types/role';
 
-@Entity()
+@Entity('user')
 export class User {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;

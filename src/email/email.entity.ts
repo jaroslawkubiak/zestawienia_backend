@@ -10,7 +10,7 @@ import { Set } from '../sets/sets.entity';
 import { Supplier } from '../suppliers/suppliers.entity';
 import { User } from '../user/user.entity';
 
-@Entity()
+@Entity('email')
 export class Email {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
@@ -47,11 +47,11 @@ export class Email {
   @JoinColumn({ name: 'supplierId', referencedColumnName: 'id' })
   supplierId?: Supplier | null;
 
-  @Column({ type: 'varchar', length: 50, nullable: false })
-  sendAt: string;
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  sendAt: string | null;
 
-  @Column({ type: 'bigint', nullable: false })
-  sendAtTimestamp: number;
+  @Column({ type: 'bigint', nullable: true })
+  sendAtTimestamp: number | null;
 
   @ManyToOne(() => User, (user) => user.sendBy, {
     onDelete: 'SET NULL',

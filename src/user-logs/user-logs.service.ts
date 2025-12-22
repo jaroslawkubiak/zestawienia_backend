@@ -15,7 +15,7 @@ export class UserLogsService {
     private readonly userLogsRepo: Repository<UserLogs>,
   ) {}
 
-  createLoginEntry(
+  async createLoginEntry(
     user: User | string,
     req: Request,
     success: boolean,
@@ -36,7 +36,13 @@ export class UserLogsService {
       login_at_timestamp: Number(Date.now()),
     };
 
-    this.userLogsRepo.save(createEnry);
+    try {
+      await this.userLogsRepo.save(createEnry);
+    } catch (err) {
+      // Log DB save errors for diagnosis but don't break auth flow
+      // eslint-disable-next-line no-console
+      console.error('Failed to save login entry', err, createEnry);
+    }
   }
 
   async setLogoutTimestamp(token: string): Promise<void> {

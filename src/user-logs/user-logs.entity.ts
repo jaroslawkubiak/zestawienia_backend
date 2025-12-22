@@ -40,9 +40,9 @@ export class UserLogs {
   @Column({ type: 'bigint', nullable: false })
   login_at_timestamp: number;
 
-  @Column({ type: 'varchar', length: 50, nullable: false })
-  logout_at: Date | null;
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  logout_at: string | null;
 
-  @Column({ type: 'bigint', nullable: false })
-  logout_at_timestamp: number;
+  @Column({ type: 'bigint', nullable: true })
+  logout_at_timestamp: number | null;
 }

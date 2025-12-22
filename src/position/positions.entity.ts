@@ -12,7 +12,7 @@ import { Set } from '../sets/sets.entity';
 import { Supplier } from '../suppliers/suppliers.entity';
 import { User } from '../user/user.entity';
 
-@Entity()
+@Entity('position')
 export class Position {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
@@ -62,20 +62,20 @@ export class Position {
   @Column({ type: 'varchar', length: 50, nullable: true })
   acceptedAt: string;
 
-  @Column({ type: 'bigint', nullable: false })
-  acceptedAtTimestamp: number;
+  @Column({ type: 'bigint', nullable: true })
+  acceptedAtTimestamp: number | null;
 
-  @Column({ type: 'varchar', length: 50, nullable: false })
-  createdAt: string;
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  createdAt: string | null;
 
-  @Column({ type: 'bigint', nullable: false })
-  createdAtTimestamp: number;
+  @Column({ type: 'bigint', nullable: true })
+  createdAtTimestamp: number | null;
 
-  @Column({ type: 'varchar', length: 50, nullable: false })
-  updatedAt: string;
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  updatedAt: string | null;
 
-  @Column({ type: 'bigint', nullable: false })
-  updatedAtTimestamp: number;
+  @Column({ type: 'bigint', nullable: true })
+  updatedAtTimestamp: number | null;
 
   @OneToMany(() => Comment, (comment) => comment.positionId)
   comments: Comment[];

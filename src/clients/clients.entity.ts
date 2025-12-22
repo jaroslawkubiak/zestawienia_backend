@@ -3,7 +3,7 @@ import { Email } from '../email/email.entity';
 import { Set } from '../sets/sets.entity';
 import { ClientLogs } from '../client-logs/client-logs.entity';
 
-@Entity('')
+@Entity('client')
 export class Client {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;

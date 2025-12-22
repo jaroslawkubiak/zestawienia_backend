@@ -13,7 +13,7 @@ import { User } from '../user/user.entity';
 import { Comment } from '../comments/comments.entity';
 import { Files } from '../files/files.entity';
 
-@Entity()
+@Entity('set')
 export class Set {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
@@ -33,17 +33,17 @@ export class Set {
   @Column({ type: 'varchar', length: 50, nullable: false })
   status: string;
 
-  @Column({ type: 'varchar', length: 50, nullable: false })
-  createdAt: string;
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  createdAt: string | null;
 
-  @Column({ type: 'bigint', nullable: false })
-  createdAtTimestamp: number;
+  @Column({ type: 'bigint', nullable: true })
+  createdAtTimestamp: number | null;
 
-  @Column({ type: 'varchar', length: 50, nullable: false })
-  updatedAt: string;
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  updatedAt: string | null;
 
-  @Column({ type: 'bigint', nullable: false })
-  updatedAtTimestamp: number;
+  @Column({ type: 'bigint', nullable: true })
+  updatedAtTimestamp: number | null;
 
   @ManyToOne(() => Client, (client) => client.set, {
     onDelete: 'SET NULL',

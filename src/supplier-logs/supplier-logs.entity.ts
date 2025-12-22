@@ -29,11 +29,11 @@ export class SupplierLogs {
   @Column({ type: 'varchar', length: 255, nullable: true })
   req_supplierHash: string;
 
-  @Column({ type: 'varchar', length: 50, nullable: false })
-  date: Date;
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  date: string | null;
 
-  @Column({ type: 'bigint', nullable: false })
-  timestamp: number;
+  @Column({ type: 'bigint', nullable: true })
+  timestamp: number | null;
 
   @Column({ type: 'varchar', length: 45, nullable: true })
   ip_address: string | null;

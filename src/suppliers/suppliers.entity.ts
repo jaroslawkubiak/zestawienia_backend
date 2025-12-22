@@ -4,7 +4,7 @@ import { Position } from '../position/positions.entity';
 import { SupplierLogs } from '../supplier-logs/supplier-logs.entity';
 import { ClientLogs } from '../client-logs/client-logs.entity';
 
-@Entity('')
+@Entity('supplier')
 export class Supplier {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;

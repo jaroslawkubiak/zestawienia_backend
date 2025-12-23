@@ -401,14 +401,14 @@ export class SetsService {
     const supplier$ = from(
       this.supplierRepo
         .createQueryBuilder('supplier')
-        .select(['supplier.id'])
+        .select(['supplier.id', 'supplier.company'])
         .where('supplier.hash = :supplierHash', { supplierHash })
         .getOne(),
-    ).pipe(map((sup) => sup?.id ?? null));
+    ).pipe(map((sup) => (sup ? { id: sup.id, company: sup.company } : null)));
 
     return forkJoin([set$, supplier$]).pipe(
-      map(([setId, supplierId]) => {
-        const isValid = !!setId && !!supplierId;
+      map(([setId, supplier]) => {
+        const isValid = !!setId && !!supplier;
 
         this.supplierLogsService.createSupplierEntry({
           success: isValid,
@@ -421,7 +421,8 @@ export class SetsService {
         return {
           valid: isValid,
           setId,
-          supplierId,
+          supplierId: supplier.id,
+          supplierCompany: supplier.company,
         };
       }),
     );

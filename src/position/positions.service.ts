@@ -70,7 +70,8 @@ export class PositionsService {
       .createQueryBuilder('position')
       .where('position.setId = :id', { id: setId })
       .andWhere('supplier.id = :supplierId', { supplierId })
-      .leftJoin('position.supplierId', 'supplier');
+      .leftJoin('position.supplierId', 'supplier')
+      .orderBy('position.kolejnosc', 'ASC');
     return from(query.getMany());
   }
 

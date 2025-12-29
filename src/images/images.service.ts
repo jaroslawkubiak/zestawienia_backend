@@ -20,6 +20,7 @@ export class ImagesService {
   async saveImage(
     userId: number,
     setId: number,
+    setHash: string,
     positionId: number,
     file: Express.Multer.File,
   ): Promise<ISavedFiles> {
@@ -29,7 +30,7 @@ export class ImagesService {
 
     const MAX_DIMENSION = 1000;
     const MINI_DIMENSION = 500;
-    const innerPath = `/sets/${setId}/positions/${positionId}`;
+    const innerPath = `/sets/${setId}/${setHash}/positions/${positionId}`;
 
     const basePath = (process.env.UPLOAD_PATH || 'uploads');
     const uploadPath = path.join(
@@ -76,6 +77,7 @@ export class ImagesService {
       const res = await this.positionsService.updateImage(
         userId,
         setId,
+        setHash,
         positionId,
         filename,
       );

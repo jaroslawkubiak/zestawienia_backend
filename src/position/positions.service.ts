@@ -22,6 +22,8 @@ import { CreateEmptyPositionDto } from './dto/createEmptyPosition.dto';
 import { UpdatePositionDto } from './dto/updatePosition.dto';
 import { Position } from './positions.entity';
 import { IPosition } from './types/IPosition';
+import { promises as fs } from 'fs';
+import * as path from 'path';
 
 @Injectable()
 export class PositionsService {
@@ -167,6 +169,7 @@ export class PositionsService {
   async updateImage(
     userId: number,
     setId: number,
+    setHash: string,
     positionId: number,
     filename: string,
   ) {
@@ -204,7 +207,7 @@ export class PositionsService {
         }
       }
     } catch (err) {
-      const url = `/images/${setId}/${positionId}`;
+      const url = `/images/${setId}/${setHash}/${positionId}`;
       const newError: ErrorDto = {
         type: ErrorsType.sql,
         message: 'Images: updateImage()',
@@ -228,20 +231,36 @@ export class PositionsService {
   }
 
   // delete position
-  async removePosition(id: number): Promise<void> {
-    const removedPosition = await this.findOne(id);
-    if (!removedPosition) {
+  async removePosition(
+    id: number,
+    setId: number,
+    setHash: string,
+  ): Promise<void> {
+    const position = await this.findOne(id);
+
+    if (!position) {
       throw new NotFoundException(`Position with ID ${id} not found`);
     }
 
-    const result = await this.positionsRepo.delete(id);
+    if (position.image) {
+      const basePath = process.env.UPLOAD_PATH || 'uploads';
 
-    if (result.affected === 0) {
-      throw new NotFoundException(`Position with ID ${id} not found`);
+      const dirPath = path.join(
+        process.cwd(),
+        basePath,
+        'sets',
+        String(setId),
+        setHash,
+        'positions',
+        String(id),
+      );
+
+      await removeDirSafe(dirPath);
     }
 
-    const supplierId = removedPosition?.supplierId?.id;
+    await this.positionsRepo.delete(id);
 
+    const supplierId = position?.supplierId?.id;
     if (supplierId) {
       await this.updatePositionCountBySupplierId(supplierId);
     }
@@ -307,5 +326,20 @@ export class PositionsService {
     };
 
     await this.suppliersService.update(supplierId, updateSupplier);
+  }
+}
+
+async function pathExists(dirPath: string): Promise<boolean> {
+  try {
+    await fs.access(dirPath);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function removeDirSafe(dirPath: string): Promise<void> {
+  if (await pathExists(dirPath)) {
+    await fs.rm(dirPath, { recursive: true, force: true });
   }
 }

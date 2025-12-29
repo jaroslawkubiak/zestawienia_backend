@@ -13,10 +13,11 @@ import { ImagesService } from './images.service';
 export class ImagesController {
   constructor(private readonly imagesService: ImagesService) {}
 
-  @Post(':setId/:positionId')
+  @Post(':setId/:setHash/:positionId')
   @UseInterceptors(FileInterceptor('image'))
   async uploadImage(
     @Param('setId') setId: string,
+    @Param('setHash') setHash: string,
     @Param('positionId') positionId: string,
     @Query('userId') userId: string,
     @UploadedFile() file: Express.Multer.File,
@@ -24,6 +25,7 @@ export class ImagesController {
     const { message, filename } = await this.imagesService.saveImage(
       +userId,
       +setId,
+      setHash,
       +positionId,
       file,
     );

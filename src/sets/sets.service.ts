@@ -79,7 +79,7 @@ export class SetsService {
     private readonly filesService: FilesService,
   ) {}
 
-  findOne(id: number): Promise<ISet> {
+  async findOne(id: number): Promise<ISet> {
     return this.setsRepo
       .createQueryBuilder('set')
       .where('set.id = :id', { id: id })
@@ -95,7 +95,7 @@ export class SetsService {
       .getOne();
   }
 
-  findOneByHash(hash: string): Promise<ISet> {
+  async findOneByHash(hash: string): Promise<ISet> {
     return this.setsRepo
       .createQueryBuilder('set')
       .where('set.hash = :hash', { hash: hash })
@@ -274,7 +274,7 @@ export class SetsService {
   }
 
   async update(
-    id: number,
+    setId: number,
     updateSetDto: UpdateSetAndPositionDto,
     req: Request,
   ): Promise<any> {
@@ -286,24 +286,30 @@ export class SetsService {
         updatedAt: getFormatedDate(),
         updatedAtTimestamp: Number(Date.now()),
       };
-      const updateSetResult = await this.setsRepo.update(id, savedSet);
+      const updateSetResult = await this.setsRepo.update(setId, savedSet);
 
       if (updateSetResult?.affected === 0) {
-        throw new NotFoundException(`Set with ID ${id} not found`);
+        throw new NotFoundException(`Set with ID ${setId} not found`);
       }
 
       if (positions) {
         await this.positionsService.update(userId, positions, req);
       }
 
+      const set = await this.findOne(setId);
+
       // delete positions
       if (positionToDelete?.length > 0) {
-        positionToDelete.forEach((item) => {
-          this.positionsService.removePosition(item);
-        });
+        for (const positionId of positionToDelete) {
+          await this.positionsService.removePosition(
+            positionId,
+            setId,
+            set.hash,
+          );
+        }
       }
 
-      return this.findOne(id);
+      return this.findOne(setId);
     } catch (err) {
       const newError: ErrorDto = {
         type: ErrorsType.sql,
@@ -338,7 +344,7 @@ export class SetsService {
     const updateClient = {
       setCount,
     };
-    
+
     await this.clientsService.update(clientId, updateClient);
 
     // delete all dir with files

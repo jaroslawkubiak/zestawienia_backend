@@ -338,7 +338,8 @@ export class SetsService {
     const updateClient = {
       setCount,
     };
-    this.clientsService.update(clientId, updateClient);
+    
+    await this.clientsService.update(clientId, updateClient);
 
     // delete all dir with files
     const innerPath = `/sets/${id}`;
@@ -351,7 +352,7 @@ export class SetsService {
     this.imagesService.removeFolder(uploadPath);
 
     // remove files list from files table
-    this.filesService.removeFilesFromSet(id);
+    await this.filesService.removeFilesFromSet(id);
   }
 
   validateSetAndHashForClient(

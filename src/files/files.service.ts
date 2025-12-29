@@ -97,11 +97,7 @@ export class FilesService {
   }
 
   async removeFilesFromSet(setId: number): Promise<void> {
-    await this.filesRepo
-      .createQueryBuilder('file')
-      .delete()
-      .where('file.setId = :setId', { setId })
-      .execute();
+    await this.filesRepo.delete({ setId: { id: setId } });
   }
 
   async downloadByIds(ids: number[]): Promise<archiver.Archiver> {

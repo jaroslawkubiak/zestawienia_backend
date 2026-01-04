@@ -1,5 +1,7 @@
-import { Injectable, StreamableFile } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as archiver from 'archiver';
+import * as fss from 'fs';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import { Repository } from 'typeorm';
@@ -7,10 +9,6 @@ import { getFormatedDate } from '../helpers/getFormatedDate';
 import { Files } from './files.entity';
 import { IFileDetails } from './types/IFileDetails';
 import { IFileFullDetails } from './types/IFileFullDetails';
-import { PassThrough } from 'stream';
-import * as archiver from 'archiver';
-import { async } from 'rxjs';
-import * as fss from 'fs';
 
 @Injectable()
 export class FilesService {
@@ -63,7 +61,7 @@ export class FilesService {
     try {
       await fs.access(filePath);
     } catch (err) {
-      console.warn(`⚠️ File does not exist: ${filePath}`);
+
       return {
         severity: 'warn',
         message: 'Plik nie istnieje',
@@ -74,7 +72,7 @@ export class FilesService {
     // try to delete file
     try {
       await fs.unlink(filePath);
-      console.log(`✅ File deleted: ${filePath}`);
+
       await this.removeFromDB(id);
 
       return {
@@ -83,7 +81,7 @@ export class FilesService {
         fileName: fileToDelete.fileName,
       };
     } catch (err) {
-      console.error(`❌ Error deleting file: ${filePath}`, err);
+
       return {
         severity: 'error',
         message: 'Błąd usuwania pliku. Plik Nie został usunięty!',

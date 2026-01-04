@@ -27,19 +27,21 @@ export class FilesController {
   constructor(private readonly filesService: FilesService) {}
 
   // save sended files to set id dir
-  @Post('upload/:setId/:dir')
+  @Post('upload/:setId/:setHash/:dir')
   @UseInterceptors(
     FilesInterceptor('files', 20, {
       storage: diskStorage({
         destination: (req, file, cb) => {
           const setId = req.params.setId;
+          const setHash = req.params.setHash;
           const directory = req.params.dir;
-          const baseUploadPath = process.env.UPLOAD_PATH || './uploads/sets';
+          const baseUploadPath = process.env.UPLOAD_PATH || './uploads';
 
           const uploadPath = path.resolve(
             baseUploadPath,
             'sets',
             setId,
+            setHash,
             directory,
           );
 
@@ -49,7 +51,7 @@ export class FilesController {
           }
 
           file['absoluteUploadPath'] = uploadPath;
-          file['uploadPath'] = path.join('sets', setId, directory);
+          file['uploadPath'] = path.join('sets', setId, setHash, directory);
           file['setId'] = setId;
           file['dir'] = directory;
 

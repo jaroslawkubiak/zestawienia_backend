@@ -27,6 +27,7 @@ import { IEmailLog } from './types/IEmailLog';
 @Injectable()
 export class EmailService {
   private transporter;
+  private APP_URL = 'https://zestawienia.zurawickidesign.pl';
 
   private getImapConfig() {
     return {
@@ -204,7 +205,7 @@ export class EmailService {
     const link = `
       <tr>
         <td style="padding: 20px" colspan="2">
-          <a href="https://zestawienia.zurawickidesign.pl/${set.id}/${set.hash}" target="_blank" 
+          <a href="${this.APP_URL}/${set.id}/${set.hash}" target="_blank" 
           style="color: #3bbfa1; font-size: 24px; font-weight: bold; text-decoration: none">Link do zestawienia</a>
           </p>
         </td>
@@ -227,7 +228,7 @@ export class EmailService {
     const link = `
       <tr>
         <td style="padding: 20px" colspan="2">
-          <a href="https://zestawienia.zurawickidesign.pl" target="_blank" 
+          <a href="${this.APP_URL}" target="_blank" 
           style="color: #3bbfa1; font-size: 24px; font-weight: bold; text-decoration: none">Panel zestawień</a>
           </p>
         </td>

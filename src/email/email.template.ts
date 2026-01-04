@@ -1,10 +1,12 @@
 import { ICommentList } from './types/ICommentList';
+const ASSETS_URL = 'https://zurawickidesign.pl/assets/images';
 
 export function createHTML(
   header: string,
   content: string,
   link: string,
 ): string {
+
   return `
       ${HTMLheader}
       <!-- TITLE -->
@@ -57,7 +59,7 @@ const HTMLfooter = `
                   <img 
                   alt="Instagram" 
                   title="Instagram" 
-                  src="https://zestawienia.zurawickidesign.pl/assets/images/social-accent/ig.png"
+                  src="${ASSETS_URL}/social-accent/ig.png"
                   width="32"
                   height="32"
                   >
@@ -70,7 +72,7 @@ const HTMLfooter = `
                   <img 
                   alt="Facebook" 
                   title="Facebook" 
-                  src="https://zestawienia.zurawickidesign.pl/assets/images/social-accent/fb.png"
+                  src="${ASSETS_URL}/social-accent/fb.png"
                   width="32"
                   height="32">
                 </a>
@@ -82,7 +84,7 @@ const HTMLfooter = `
                 <img
                   alt="Website"
                   title="Website"
-                  src="https://zestawienia.zurawickidesign.pl/assets/images/social-accent/www.png"
+                  src="${ASSETS_URL}/social-accent/www.png"
                   width="32"
                   height="32"
                 />
@@ -122,7 +124,7 @@ const HTMLheader = `
     <tr style="margin: 30px 0; width: 700px; text-align: right">
       <td style="width: 300px">
         <img
-          src="https://zestawienia.zurawickidesign.pl/assets/images/logo-black.png"
+          src="${ASSETS_URL}/logo-black.png"
           alt="logo"
           style="width: 300px"
         />

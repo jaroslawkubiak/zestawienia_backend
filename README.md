@@ -3,12 +3,57 @@ TODO LIST
 [x] Logowanie do aplikacji,
 [x] Zmiana hasła przez usera
 
+Poprawić:
+[x] klik poza modalem zamyka go
+[x] gdy usuwasz klienta bez nazwy firmy - pusto w komunikacie
+[x] kopiuj link do klienta otwiera okno emaila
+[ ] wygląd/layout wszystkich komentarzy
+[ ] wygląd/layout linku dla dostawców
+[ ] wygląd/layout linku dla klientów
+[x] /me jest także używane do external links
+[x] dodać folder z hashem do plików zestawień /uploads/sets/:setId/:setHash/positions
+[ ] przy usuwaniu set - usunąć komentarze i całą resztę z DB
+[ ] linki w komentarzach. mają działać
+[ ] jak klient wrzuca pliki to nie uaktualnia się badge z ilością
+
+Nowe do poprawy
+[x] wszystkie kolumny pozycji - tekst wyśrodkowany
+[x] pozycja link klikalny
+[ ] nowa kolumna - uwagi textarea - jako ostatania w kolejności
+[ ] meble na wymiar i meble gotowe jako osobne zakładki
+[ ] w komentarzach imię i nazwisko
+[ ] powiadomienie klienta po 10min od dodania ostatniego komentarza
+[ ] podsumowanie komentarzy dla klienta
+[ ] dostawca ma widzieć wszystkie dane klienta i nazwę inwestycji
+[ ] dostawca: kolejność kolumna taka sama, ukryć: ceny i wartości, status, footer
+[ ] rok w stopkach atumatycznie
+[ ] dwie templatki z emailem do dostawców: oferta domyślna, zamówienie jako drugie.
+Tytuł zamówienie
+message: Proszę o realizację zamówienia zgodnie z przesłanym zestawieniem. Prosimy o wystawienie proformy na dane klienta. (wkleić tu dane klienta)
+[ ] lista emaili wysłanych - zły link do klienta
+[x] guzik zapisz na wysokości bookmarks po prawej
+[ ] w nazwie pdf dodać nazwę inwestycji
+[ ] pdf automatycznie na ftp i ma się dodawać każdy kolejny pdf, nie usuwać poprzednich
+
+SPRAWDZIĆ NA PROD:
+[x] wklejanie obrazów do pozycji i poprawne ich wyświetlanie
+[x] wysyłka plików załączników do zestawienia
+[x] pobieranie plików załączników z zestawienia
+[x] tworzenie PDF
+[ ] wysyłka email z poczty firmowej do klientów - nie z gmail
+[ ] wysyłka email z poczty firmowej do dostawców - nie z gmail
+[x] działanie linków dla klienta (logowanie wpisów w DB)
+[x] działanie linków dla dostawcy (logowanie wpisów w DB)
+[ ] brak obrazków w podglądzie email
+[ ] brak miniatur PDF
+[ ] w widoku dużych ikon brak domyślnej ikony pdf
+
 Admin:
 [ ] Logowania użytkowników - lista w ukrytym menu
 [ ] system logowania błędów
 
 Po zalogowaniu:
-[ ] Podsumowanie nowych - nieprzeczytanych komentarzy
+[x] Podsumowanie nowych - nieprzeczytanych komentarzy
 [x] Gdy klient skończy dodawać komentarze - wysłać email z powiadomieniem do biura
 
 Zakładka zestawienia:
@@ -37,6 +82,8 @@ Edycja zestawienia:
 [x] możliwość wpisywania ceny netto lub brutto.
 [x] usunąć z footer ilość, netto i brutto
 [x] pola w pozycji jako textarea
+[x] podgląd obrazków pozycji na całej stronie: ikona lupy albo coś podobnego
+[ ] zmiana kolejności poprzez wpisanie nr pozycji w kolumnie LP
 
 [x] nowe Bookmarks:
 1 PODSUMOWANIE
@@ -98,6 +145,7 @@ Dostawcy:
 
 [x] nowa kolumna dane firmy: adres, nip - textarea
 [x] guzik kopiowania adresu do schowka
+[x] gdy nie ma wpisanego linku produktu to nadal mam napis link w tabeli
 
 Emails:
 [x] wysyłka email z linkiem do zestawienia do klientów (setId/setHash)
@@ -169,13 +217,6 @@ PRODUCTION ISSUE:
 [x] nie ładuje podglądu obrazów
 [x] pliki ładuje do katalogu src/uploads, a nie od razu do uploads
 [x] widoczne menu bez logowania
-
-SPRAWDZIĆ NA PROD:
-[x] wysyłka plików załączników do zestawienia
-[x] tworzenie PDF
-[x] wysyłka email z poczty firmowej - nie z gmail
-[x] działanie linków dla klienta
-[x] działanie linków dla dostawcy
 
 Doprecyzować:
 [ ] kolory statusów

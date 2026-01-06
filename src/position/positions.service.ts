@@ -7,6 +7,8 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
+import { promises as fs } from 'fs';
+import * as path from 'path';
 import { from, Observable } from 'rxjs';
 import { DeepPartial, Repository } from 'typeorm';
 import { ErrorDto } from '../errors/dto/error.dto';
@@ -22,8 +24,6 @@ import { CreateEmptyPositionDto } from './dto/createEmptyPosition.dto';
 import { UpdatePositionDto } from './dto/updatePosition.dto';
 import { Position } from './positions.entity';
 import { IPosition } from './types/IPosition';
-import { promises as fs } from 'fs';
-import * as path from 'path';
 
 @Injectable()
 export class PositionsService {

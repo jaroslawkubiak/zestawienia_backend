@@ -56,6 +56,10 @@ export class UpdatePositionDto {
 
   @IsString()
   @IsOptional()
+  uwagi?: string;
+
+  @IsString()
+  @IsOptional()
   image?: string;
 
   @IsString()

@@ -56,6 +56,10 @@ export class CreateClonePositionDto {
 
   @IsString()
   @IsOptional()
+  uwagi?: string;
+
+  @IsString()
+  @IsOptional()
   status?: string;
 
   @IsOptional()

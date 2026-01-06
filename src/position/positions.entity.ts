@@ -50,6 +50,9 @@ export class Position {
   @Column({ type: 'text', nullable: true })
   link: string;
 
+  @Column({ type: 'text', nullable: true })
+  uwagi: string;
+
   @Column({ type: 'varchar', length: 200, nullable: true })
   image: string;
 

@@ -81,7 +81,7 @@ export class CommentsService {
 
         if (item.authorType === 'client') {
           const client = await this.clientsService.findOne(item.authorId);
-          authorName = client?.firstName;
+          authorName = `${client?.firstName} ${client?.lastName}`;
         } else if (item.authorType === 'user') {
           const user = await this.userService.findOne(item.authorId);
           authorName = user?.name;

@@ -19,9 +19,9 @@ Poprawić:
 Nowe do poprawy
 [x] wszystkie kolumny pozycji - tekst wyśrodkowany
 [x] pozycja link klikalny
-[ ] nowa kolumna - uwagi textarea - jako ostatania w kolejności
-[ ] meble na wymiar i meble gotowe jako osobne zakładki
-[ ] w komentarzach imię i nazwisko
+[x] nowa kolumna - uwagi textarea - jako ostatania w kolejności
+[x] meble na wymiar i meble gotowe jako osobne zakładki
+[x] w komentarzach imię i nazwisko
 [ ] powiadomienie klienta po 10min od dodania ostatniego komentarza
 [ ] podsumowanie komentarzy dla klienta
 [ ] dostawca ma widzieć wszystkie dane klienta i nazwę inwestycji

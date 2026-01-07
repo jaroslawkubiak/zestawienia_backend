@@ -1,12 +1,14 @@
+import { GDPRClause } from './GDPRclause';
 import { ICommentList } from './types/ICommentList';
 const ASSETS_URL = 'https://zurawickidesign.pl/assets/images';
+const currentYear = new Date().getFullYear();
+const socialColor = 'accent'; // black or accent
 
 export function createHTML(
   header: string,
   content: string,
   link: string,
 ): string {
-
   return `
       ${HTMLheader}
       <!-- TITLE -->
@@ -37,73 +39,74 @@ export function createHTML(
 }
 
 const HTMLfooter = `
-<tr>
-  <td style="padding:20px;">
-    <table width="100%" cellspacing="0" cellpadding="0">
+      <!-- FOOTER MESSAGE + SOCIALS -->
       <tr>
-        <!-- LEFT SIDE -->
-        <td valign="top" style="width:50%; padding-right:10px; font-weight: bold;">
-          <p style="margin:0 0 8px 0;">Pozdrawiamy,</p>
-          <p style="margin:0 0 8px 0;">Zespół Żurawicki Design</p>
-          <p style="margin:0 0 8px 0;">Jakub Żurawicki & Joanna Kubiak</p>
-        </td>
-        <!-- RIGHT SIDE (SOCIAL ICONS) -->
-        <td valign="bottom" style="width:50%; text-align:right;">
-
+        <td>
+          <table width="100%" border="0" cellspacing="0" cellpadding="0" style="padding:10px 0;">
+            <tr>
+              <td valign="top">
+                <p style="margin:0 0 10px 0;">Pozdrawiamy,</p>
+                <p style="margin:0 0 10px 0;">Zespół Żurawicki Design</p>
+                <p style="margin:0 0 20px 0;">Jakub Żurawicki, Joanna Kubiak</p>
+                <p style="margin:0 0 10px 0;">ul. Czerkaska 10/7, 85-641 Bydgoszcz</p>
+                <p style="margin:0 0 20px 0;">E-mail: kontakt@zurawickidesign.pl</p>
+              </td>
+            </tr>
+          </table>
           <table cellspacing="0" cellpadding="0" border="0" style="display:inline-block;">
             <tr>
-
               <!-- IG -->
-              <td style="padding-left:20px;">
+              <td>
                 <a href="https://www.instagram.com/zurawicki.design/" target="_blank">
                   <img 
                   alt="Instagram" 
                   title="Instagram" 
-                  src="${ASSETS_URL}/social-accent/ig.png"
+                  src="${ASSETS_URL}/social-${socialColor}/ig.png"
                   width="32"
                   height="32"
                   >
                 </a>
               </td>
-
               <!-- FB -->
               <td style="padding-left:20px;">
                 <a href="https://www.facebook.com/zurawicki.design/?locale=pl_PL" target="_blank">
                   <img 
                   alt="Facebook" 
                   title="Facebook" 
-                  src="${ASSETS_URL}/social-accent/fb.png"
+                  src="${ASSETS_URL}/social-${socialColor}/fb.png"
                   width="32"
                   height="32">
                 </a>
               </td>
-
               <!-- WWW -->
               <td style="padding-left:20px;">
                 <a href="https://zurawickidesign.pl/" target="_blank">
                 <img
                   alt="Website"
                   title="Website"
-                  src="${ASSETS_URL}/social-accent/www.png"
+                  src="${ASSETS_URL}/social-${socialColor}/www.png"
                   width="32"
                   height="32"
                 />
                 </a>
               </td>
             </tr>
-          </table>
+          </table>          
         </td>
       </tr>
-    </table>
-  </td>
-</tr>
-
-<!-- COPYRIGHT -->
-<tr>
-  <td style="padding:30px 0; text-align:center;">
-    <p style="margin:0; font-size:14px;">&copy; 2025 Żurawicki Design</p>
-  </td>
-</tr>
+      <!-- COPYRIGHT -->
+      <tr>
+        <td style="padding:20px 0; text-align:center;">
+          <p style="font-size:14px;">&copy; ${currentYear} Żurawicki Design</p>
+        </td>
+      </tr>
+      </tr>
+      <!-- GDPRClause -->
+      <tr>
+        <td style="padding:10px 0; text-align:left;">
+          <p style="font-size:10px;">${GDPRClause}</p>
+        </td>
+      </tr>
 
 `;
 

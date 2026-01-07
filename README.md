@@ -13,6 +13,7 @@ Poprawić:
 [x] /me jest także używane do external links
 [x] dodać folder z hashem do plików zestawień /uploads/sets/:setId/:setHash/positions
 [ ] przy usuwaniu set - usunąć komentarze i całą resztę z DB
+[ ] przy usuwaniu pozycji usunąć też image
 [ ] linki w komentarzach. mają działać
 [ ] jak klient wrzuca pliki to nie uaktualnia się badge z ilością
 
@@ -24,16 +25,9 @@ Nowe do poprawy
 [x] w komentarzach imię i nazwisko
 [ ] powiadomienie klienta po 10min od dodania ostatniego komentarza
 [ ] podsumowanie komentarzy dla klienta
-[ ] dostawca ma widzieć wszystkie dane klienta i nazwę inwestycji
-[ ] dostawca: kolejność kolumna taka sama, ukryć: ceny i wartości, status, footer
-[ ] rok w stopkach atumatycznie
-[ ] dwie templatki z emailem do dostawców: oferta domyślna, zamówienie jako drugie.
-Tytuł zamówienie
-message: Proszę o realizację zamówienia zgodnie z przesłanym zestawieniem. Prosimy o wystawienie proformy na dane klienta. (wkleić tu dane klienta)
-[ ] lista emaili wysłanych - zły link do klienta
+[x] rok w stopkach automatycznie
+[x] lista emaili wysłanych - zły link do klienta
 [x] guzik zapisz na wysokości bookmarks po prawej
-[ ] w nazwie pdf dodać nazwę inwestycji
-[ ] pdf automatycznie na ftp i ma się dodawać każdy kolejny pdf, nie usuwać poprzednich
 
 SPRAWDZIĆ NA PROD:
 [x] wklejanie obrazów do pozycji i poprawne ich wyświetlanie
@@ -44,12 +38,13 @@ SPRAWDZIĆ NA PROD:
 [ ] wysyłka email z poczty firmowej do dostawców - nie z gmail
 [x] działanie linków dla klienta (logowanie wpisów w DB)
 [x] działanie linków dla dostawcy (logowanie wpisów w DB)
-[ ] brak obrazków w podglądzie email
-[ ] brak miniatur PDF
-[ ] w widoku dużych ikon brak domyślnej ikony pdf
+[x] brak obrazków w podglądzie email
+[x] brak miniatur PDF
+[x] w widoku dużych ikon brak domyślnej ikony pdf
 
 Admin:
-[ ] Logowania użytkowników - lista w ukrytym menu
+[x] Logowania użytkowników
+[ ] lista logowań użytkowników w ukrytym menu admina
 [ ] system logowania błędów
 
 Po zalogowaniu:
@@ -83,7 +78,6 @@ Edycja zestawienia:
 [x] usunąć z footer ilość, netto i brutto
 [x] pola w pozycji jako textarea
 [x] podgląd obrazków pozycji na całej stronie: ikona lupy albo coś podobnego
-[ ] zmiana kolejności poprzez wpisanie nr pozycji w kolumnie LP
 
 [x] nowe Bookmarks:
 1 PODSUMOWANIE
@@ -119,6 +113,8 @@ Generowanie zestawienia w formie PDF:
 [x] przy generowaniu pdf możliwe 3 scenariusze: 1 - otwiera pdf w nowej zakłądce, 2 - zapisuje pdf na dysku, 3 - wysyła pdf na serwer ftp
 [x] różne tło wiersza w zależności od statusu
 [x] zakładka podsumowanie w PDF
+[ ] w nazwie pdf dodać nazwę inwestycji
+[ ] pdf automatycznie na ftp i ma się dodawać każdy kolejny pdf, nie usuwać poprzednich
 
 Emails:
 [x] wysyłka zestawienia via email w postaci HTML do klienta z linkiem do podglądu
@@ -127,7 +123,10 @@ Emails:
 [x] data ostatniego wysłanego emaila do klienta i dostawców w menu
 [x] Email do biura z informacją o dodaniu komentarzy przez klienta
 [x] linki do aplikazji w emailach z komentarzami
-
+[x] dwie templatki z emailem do dostawców: oferta domyślna, zamówienie jako drugie.
+Tytuł zamówienie
+message: Proszę o realizację zamówienia zgodnie z przesłanym zestawieniem. Prosimy o wystawienie proformy na dane klienta. (wkleić tu dane klienta)
+[x] logo w emailu na lewo, sociale na lewo. dodać rodo
 Klienci:
 [x] dodawanie nowych klientów
 [x] edycja klienta
@@ -135,6 +134,11 @@ Klienci:
 [x] jedno pole rozszerzone textarea z: firma z nip, adres, ulica, miasto, kod, email, telefon
 [x] guzik kopiowania adresu do schowka
 [x] widok dla klienta z zakładkami do przełączania, podsumowanie wart netto i brutto
+[x] działający link bez logowania hash łączony z id zestawienia do podglądu dla klientów np: /:id_zestawienia/:hash_zestawienia
+[x] wysyłka email z linkiem do części pozycji do której przypisany jest dostawaca (/setId/setHash/SupplierHash)
+[x] lista wysłanych emaili do klientów z podglądem wysłanej wiadomości
+[x] przed wysyłką możliwa edycja wiadomości
+[x] działający link bez logowania do podglądu dla dostawców np: /:id_zestawienia/:hash_zestawienia/:hash_dostawcy
 
 Dostawcy:
 [x] dodawanie nowych dostawców
@@ -142,18 +146,11 @@ Dostawcy:
 [x] usuwanie dostawcy
 [x] email wymagany
 [x] hash generowany do linków
-
 [x] nowa kolumna dane firmy: adres, nip - textarea
 [x] guzik kopiowania adresu do schowka
 [x] gdy nie ma wpisanego linku produktu to nadal mam napis link w tabeli
-
-Emails:
-[x] wysyłka email z linkiem do zestawienia do klientów (setId/setHash)
-[x] działający link bez logowania hash łączony z id zestawienia do podglądu dla klientów np: /:id_zestawienia/:hash_zestawienia
-[x] wysyłka email z linkiem do części pozycji do której przypisany jest dostawaca (/setId/setHash/SupplierHash)
-[x] lista wysłanych emaili do klientów z podglądem wysłanej wiadomości
-[x] przed wysyłką możliwa edycja wiadomości
-[x] działający link bez logowania do podglądu dla dostawców np: /:id_zestawienia/:hash_zestawienia/:hash_dostawcy
+[ ] dostawca ma widzieć wszystkie dane klienta i nazwę inwestycji
+[ ] dostawca: kolejność kolumna taka sama, ukryć: ceny i wartości, status, footer
 
 comments:
 [x] powiadomienie przy guziku komentarzy o ilości:

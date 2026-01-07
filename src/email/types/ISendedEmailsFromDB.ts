@@ -1,17 +1,25 @@
-export interface IEmailsToSet {
+export interface ISendedEmailsFromDB {
   id: number;
   link: string;
   sendAt: string;
   sendAtTimestamp: number;
-  clientId?: {
+  client?: {
     id: number;
     company: string;
+    firstName: string;
+    lastName: string;
     email: string;
   };
-  supplierId?: {
+  supplier?: {
     id: number;
     company: string;
+    firstName: string;
+    lastName: string;
     email: string;
+  };
+  set: {
+    id: number;
+    name: string;
   };
   sendBy: {
     id: number;

@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { SendEmailDto } from './dto/email.dto';
 import { EmailService } from './email.service';
-import { IEmailsToSet } from './types/IEmailsToSet';
+import { ISendedEmailsFromDB } from './types/ISendedEmailsFromDB';
 
 @UseGuards(JwtAuthGuard)
 @Controller('email')
@@ -16,12 +16,12 @@ export class EmailController {
   }
 
   @Get()
-  findAll(): Observable<IEmailsToSet[]> {
+  findAll(): Observable<ISendedEmailsFromDB[]> {
     return this.emailService.findAll();
   }
 
   @Get(':setId')
-  findOne(@Param('setId') setId: string): Observable<IEmailsToSet[]> {
+  findOne(@Param('setId') setId: string): Observable<ISendedEmailsFromDB[]> {
     return this.emailService.findOne(+setId);
   }
 }

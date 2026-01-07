@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as nodemailer from 'nodemailer';
-import { from, Observable } from 'rxjs';
+import { from, map, Observable } from 'rxjs';
 import { Repository } from 'typeorm';
 import { IComment } from '../comments/types/IComment';
 import { ErrorDto } from '../errors/dto/error.dto';
@@ -23,6 +23,7 @@ import { saveToSentFolder } from './emailSendCopy';
 import { ICommentList } from './types/ICommentList';
 import { IEmailDetails } from './types/IEmailDetails';
 import { IEmailLog } from './types/IEmailLog';
+import { ISendedEmailsFromDB } from './types/ISendedEmailsFromDB';
 
 @Injectable()
 export class EmailService {
@@ -255,7 +256,7 @@ export class EmailService {
     return this.emailRepo.save(newLog);
   }
 
-  findAll(): Observable<Email[]> {
+  findAll(): Observable<ISendedEmailsFromDB[]> {
     const query = this.emailRepo
       .createQueryBuilder('email')
       .leftJoinAndSelect('email.clientId', 'client')
@@ -265,51 +266,128 @@ export class EmailService {
       .select([
         'email.id',
         'email.link',
-        'email.to',
-        'email.subject',
         'email.sendAt',
         'email.sendAtTimestamp',
-        'email.setId',
+        'client.id',
         'client.company',
+        'client.email',
         'client.firstName',
         'client.lastName',
+        'supplier.id',
         'supplier.company',
+        'supplier.email',
+        'supplier.firstName',
+        'supplier.lastName',
+        'user.id',
         'user.name',
         'set.id',
         'set.name',
       ])
       .orderBy('email.id', 'DESC');
 
-    return from(query.getMany());
+    return from(query.getMany()).pipe(
+      map((emails) =>
+        emails.map((email) => ({
+          id: email.id,
+          link: email.link,
+          sendAt: email.sendAt,
+          sendAtTimestamp: email.sendAtTimestamp,
+          set: {
+            id: email.setId.id,
+            name: email.setId.name,
+          },
+          client: email.clientId
+            ? {
+                id: email.clientId.id,
+                company: email.clientId.company,
+                email: email.clientId.email,
+                firstName: email.clientId.firstName,
+                lastName: email.clientId.lastName,
+              }
+            : undefined,
+          supplier: email.supplierId
+            ? {
+                id: email.supplierId.id,
+                company: email.supplierId.company,
+                firstName: email.supplierId.firstName,
+                lastName: email.supplierId.lastName,
+                email: email.supplierId.email,
+              }
+            : undefined,
+          sendBy: {
+            id: email.sendBy.id,
+            name: email.sendBy.name,
+          },
+        })),
+      ),
+    );
   }
 
-  findOne(setId: number): Observable<Email[]> {
+  findOne(setId: number): Observable<ISendedEmailsFromDB[]> {
     const query = this.emailRepo
       .createQueryBuilder('email')
       .leftJoinAndSelect('email.clientId', 'client')
       .leftJoinAndSelect('email.supplierId', 'supplier')
       .leftJoinAndSelect('email.sendBy', 'user')
+      .leftJoinAndSelect('email.setId', 'set')
       .select([
         'email.id',
         'email.link',
         'email.sendAt',
         'email.sendAtTimestamp',
-        'email.setId',
-
         'client.id',
         'client.company',
         'client.email',
-
+        'client.firstName',
+        'client.lastName',
         'supplier.id',
         'supplier.company',
         'supplier.email',
-
+        'supplier.firstName',
+        'supplier.lastName',
         'user.id',
         'user.name',
+        'set.id',
+        'set.name',
       ])
       .where('email.setId.id = :setId', { setId: setId })
       .orderBy('email.id', 'DESC');
 
-    return from(query.getMany());
+    return from(query.getMany()).pipe(
+      map((emails) =>
+        emails.map((email) => ({
+          id: email.id,
+          link: email.link,
+          sendAt: email.sendAt,
+          sendAtTimestamp: email.sendAtTimestamp,
+          client: email.clientId
+            ? {
+                id: email.clientId.id,
+                company: email.clientId.company,
+                firstName: email.clientId.firstName,
+                lastName: email.clientId.lastName,
+                email: email.clientId.email,
+              }
+            : undefined,
+          supplier: email.supplierId
+            ? {
+                id: email.supplierId.id,
+                company: email.supplierId.company,
+                firstName: email.supplierId.firstName,
+                lastName: email.supplierId.lastName,
+                email: email.supplierId.email,
+              }
+            : undefined,
+          set: {
+            id: email.setId.id,
+            name: email.setId.name,
+          },
+          sendBy: {
+            id: email.sendBy.id,
+            name: email.sendBy.name,
+          },
+        })),
+      ),
+    );
   }
 }

@@ -28,7 +28,7 @@ async function bootstrap() {
     origin: [
       'http://localhost:4200',
       'https://zestawienia.zurawickidesign.pl',
-      'http://zestawienia.host355495.stronawcal.pl',
+      'http://zestawienia.host119403.stronawcal.pl',
     ],
     credentials: true,
     methods: 'GET,HEAD,POST,PUT,PATCH,DELETE,OPTIONS',

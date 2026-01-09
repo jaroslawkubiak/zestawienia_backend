@@ -3,9 +3,12 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
+  NotFoundException,
   Param,
   Post,
   Res,
+  StreamableFile,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
@@ -178,5 +181,38 @@ export class FilesController {
     });
 
     archive.pipe(res);
+  }
+
+  //download one file
+  @Get('download/:setId/:fileId')
+  async downloadSingleFile(
+    @Param('setId') setId: string,
+    @Param('fileId') fileId: string,
+  ) {
+    const fileDetails = await this.filesService.findOneFileInSet(
+      +setId,
+      +fileId,
+    );
+
+    if (!fileDetails) {
+      throw new NotFoundException('Plik nie istnieje lub został usunięty');
+    }
+
+    const fileName = fileDetails.fileName;
+    const basePath = process.env.UPLOAD_PATH;
+    const filePath = path.join(basePath, fileDetails.path, fileName);
+
+    if (!fs.existsSync(filePath)) {
+      throw new NotFoundException(
+        'Plik jest chwilowo niedostępny. Spróbuj ponownie później.',
+      );
+    }
+
+    const fileStream = fs.createReadStream(filePath);
+
+    return new StreamableFile(fileStream, {
+      type: 'application/octet-stream',
+      disposition: `attachment; filename="${fileName}"`,
+    });
   }
 }

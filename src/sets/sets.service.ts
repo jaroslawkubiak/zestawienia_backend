@@ -160,7 +160,7 @@ export class SetsService {
         .addSelect(['updatedBy.id', 'updatedBy.name'])
         .leftJoinAndSelect('set.files', 'files')
         .leftJoin('files.setId', 'fileSet')
-        .addSelect(['fileSet.id'])
+        .addSelect(['fileSet.id', 'fileSet.hash'])
         .getOne(),
     ).pipe(
       mergeMap((set) => {

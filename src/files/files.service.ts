@@ -19,16 +19,20 @@ export class FilesService {
     private readonly filesRepo: Repository<Files>,
   ) {}
 
-  findAll(): Promise<IFileFullDetails[]> {
-    return this.filesRepo.find({
-      order: {
-        id: 'DESC',
-      },
-    });
+  async findOne(id: number): Promise<IFileFullDetails> {
+    return this.filesRepo.findOneBy({ id });
   }
 
-  findOne(id: number): Promise<IFileFullDetails> {
-    return this.filesRepo.findOneBy({ id });
+  // find one file in set for download
+  async findOneFileInSet(
+    setId: number,
+    fileId: number,
+  ): Promise<IFileFullDetails> {
+    return this.filesRepo
+      .createQueryBuilder('file')
+      .where('file.id = :fileId', { fileId })
+      .andWhere('file.setId = :setId', { setId })
+      .getOne();
   }
 
   // save file info in db
@@ -61,7 +65,6 @@ export class FilesService {
     try {
       await fs.access(filePath);
     } catch (err) {
-
       return {
         severity: 'warn',
         message: 'Plik nie istnieje',
@@ -81,7 +84,6 @@ export class FilesService {
         fileName: fileToDelete.fileName,
       };
     } catch (err) {
-
       return {
         severity: 'error',
         message: 'Błąd usuwania pliku. Plik Nie został usunięty!',

@@ -15,6 +15,9 @@ export class Files {
   @Column({ type: 'varchar', length: 100, nullable: false })
   fileName: string;
 
+  @Column({ type: 'varchar', length: 100, nullable: false })
+  thumbnail: string;
+
   @Column({ type: 'varchar', length: 10, nullable: false })
   type: string;
 
@@ -25,7 +28,7 @@ export class Files {
   dir: string;
 
   @Column({ type: 'varchar', length: 200, nullable: false })
-  description: string;
+  originalName: string;
 
   @Column({ type: 'int', nullable: false })
   size: number;

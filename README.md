@@ -12,10 +12,11 @@ Poprawić:
 [ ] wygląd/layout linku dla klientów
 [x] /me jest także używane do external links
 [x] dodać folder z hashem do plików zestawień /uploads/sets/:setId/:setHash/positions
-[ ] przy usuwaniu set - usunąć komentarze i całą resztę z DB
-[ ] przy usuwaniu pozycji usunąć też image
+[ ] przy usuwaniu set - usunąć komentarze i całą resztę z DB, przeliczyć ilość setCount dla client
+[ ] przy usuwaniu pozycji usunąć też image oraz posCount w supplier
 [ ] linki w komentarzach. mają działać
 [ ] jak klient wrzuca pliki to nie uaktualnia się badge z ilością
+[ ] update ilości załączników gdy wrzucam pliki z poziomu zestawienia (nie z poziomu listy)
 
 Nowe do poprawy
 [x] wszystkie kolumny pozycji - tekst wyśrodkowany
@@ -28,6 +29,13 @@ Nowe do poprawy
 [x] rok w stopkach automatycznie
 [x] lista emaili wysłanych - zły link do klienta
 [x] guzik zapisz na wysokości bookmarks po prawej
+
+MOBILE VIEW:
+[x] notification jest lekko ucięta z lewej strony
+[x] powiększanie obrazów jest zbyt duże
+[ ] brak podglądu PDF
+[x] potwierdzania usuwania plików - dostosować css
+[x] nie działa download plików
 
 SPRAWDZIĆ NA PROD:
 [x] wklejanie obrazów do pozycji i poprawne ich wyświetlanie
@@ -85,8 +93,9 @@ Edycja zestawienia:
 3 ŁAZIENKA
 4 KUCHNIA
 5 PŁYTKI CERAMICZNE
-6 MEBLE NA WYMIAR, MEBLE GOTOWE
-7 ŚCIANY, SUFITY, PODŁOGI
+6 MEBLE NA WYMIAR
+7 MEBLE GOTOWE
+8 ŚCIANY, SUFITY, PODŁOGI
 
 Edycja nagłówka zestawienia:
 [x] zmiana statusu
@@ -174,6 +183,7 @@ załączniki:
 [x] widok listy z sortowaniem
 [x] osobny folder: robocze - niewidoczny dla klienta
 [x] załączniki: pobierz wszystkie, najlepiej w zip
+[ ] konwersja heic na jpg?
 
 DB:
 [x] zestawienia nagłówek: id, nr zestawienia, id klienta, id usera, data dodania (w czytelnym formacie), created by, create date (timestamp), update by, updated date (timestamp)
@@ -215,6 +225,11 @@ PRODUCTION ISSUE:
 [x] pliki ładuje do katalogu src/uploads, a nie od razu do uploads
 [x] widoczne menu bez logowania
 
+backend:
+[ ] logowania błędów
+[ ] intereceptor dla wszystkich 400 i 500 
+[ ] w types w files mam 2 podobne pliki, może można zrobić 1
+=
 Doprecyzować:
 [ ] kolory statusów
 [ ] PDF - legenda w podsumowaniu?

@@ -15,13 +15,15 @@ import {
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import * as fs from 'fs';
+import * as iconv from 'iconv-lite';
 import { imageSize } from 'image-size';
 import { diskStorage } from 'multer';
 import * as path from 'path';
-import { extname } from 'path';
 import { PDFDocument } from 'pdf-lib';
 import { getFormatedDate } from '../helpers/getFormatedDate';
+import { safeFileName } from '../helpers/safeFileName';
 import { FilesService } from './files.service';
+import { generateThumbnailPdf } from './generateThumbnailPdf';
 import { IFileDetails } from './types/IFileDetails';
 import { IFileFullDetails } from './types/IFileFullDetails';
 
@@ -61,26 +63,22 @@ export class FilesController {
           cb(null, uploadPath);
         },
         filename: (req, file, cb) => {
-          const fileOriginalName = file.originalname.split('.');
-          const newName =
-            fileOriginalName[0] +
-            '-' +
-            getFormatedDate() +
-            extname(file.originalname);
-
-          const sanitazeName = newName
-            .trim()
-            .replace(/\s+/g, '-')
-            .replace(/:/g, '-')
-            .replace(/[()]/g, '');
-          file['type'] = fileOriginalName[fileOriginalName.length - 1];
-          file['sanitizedOriginalName'] = sanitazeName;
-          file['fullFilePath'] = path.join(
-            file['absoluteUploadPath'],
-            sanitazeName,
+          const originalNameUtf8 = iconv.decode(
+            Buffer.from(file.originalname, 'binary'),
+            'utf8',
           );
 
-          cb(null, sanitazeName);
+          const parsed = path.parse(originalNameUtf8);
+          const safeName =
+            safeFileName(parsed.name) +
+            getFormatedDate() +
+            parsed.ext.toLowerCase();
+
+          file['sanitizedOriginalName'] = safeName;
+          file['type'] = parsed.ext.replace('.', '').toUpperCase();
+          file['originalNameUtf8'] = originalNameUtf8;
+
+          cb(null, safeName);
         },
       }),
     }),
@@ -93,12 +91,9 @@ export class FilesController {
 
     const fileDetailsList: IFileDetails[] = await Promise.all(
       files.map(async (file) => {
-        const uploadPath = file['uploadPath'];
-        const relativePath = path.relative(process.cwd(), uploadPath);
-        const normalizedPath = relativePath.replace(/\\/g, '/');
-
-        const fullFilePath = file['fullFilePath'];
+        const fullFilePath = file.path;
         let dimensions = { width: 0, height: 0 };
+        let thumbnailPath = '';
 
         try {
           const fileType = file['type'].toUpperCase();
@@ -111,7 +106,23 @@ export class FilesController {
               width: Math.floor(size.width * PT_TO_MM),
               height: Math.floor(size.height * PT_TO_MM),
             };
-          } else if (['JPG', 'JPEG', 'PNG'].includes(fileType)) {
+
+            // generate thumbnail
+            const fileNameWithoutExt = path.parse(
+              file['sanitizedOriginalName'],
+            ).name;
+
+            thumbnailPath = await generateThumbnailPdf(
+              fullFilePath,
+              fileNameWithoutExt,
+            );
+
+            thumbnailPath = path
+              .relative(process.cwd(), thumbnailPath)
+              .replace(/\\/g, '/');
+          }
+
+          if (['JPG', 'JPEG', 'PNG'].includes(fileType)) {
             const size = imageSize(fileBuffer);
             if (size.width && size.height) {
               dimensions = {
@@ -121,22 +132,33 @@ export class FilesController {
             }
           }
         } catch (error) {
-          console.warn(
-            `Failed to retrieve dimensions for file ${file.filename}:`,
-            error,
-          );
+          let message = `Nie udało się przetworzyć pliku PDF "${file.originalname}". Sprawdź nazwę pliku i spróbuj ponownie.`;
+
+          // chceck if PDF is encrypted
+          if (/is encrypted/i.test(error.message)) {
+            message = `Plik PDF "${file.originalname}" jest zaszyfrowany.`;
+          }
+
+          if (fullFilePath && fs.existsSync(fullFilePath)) {
+            await fs.promises.unlink(fullFilePath);
+          }
+
+          throw new BadRequestException(message);
         }
 
         return {
           fileName: file['sanitizedOriginalName'],
           type: file['type'],
-          path: normalizedPath,
+          path: path
+            .relative(process.cwd(), file['absoluteUploadPath'])
+            .replace(/\\/g, '/'),
           dir: file['dir'],
-          description: file['originalname'],
+          originalName: file['originalNameUtf8'],
           setId: file['setId'],
           size: file['size'],
           width: dimensions.width,
           height: dimensions.height,
+          thumbnail: thumbnailPath,
         };
       }),
     );

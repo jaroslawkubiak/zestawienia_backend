@@ -5,7 +5,7 @@ export interface IFileDetails {
   type: string;
   path: string;
   dir: string;
-  description: string;
+  originalName: string;
   setId: ISet;
   size: number;
   width: number;

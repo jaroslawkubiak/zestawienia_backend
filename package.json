@@ -33,6 +33,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "cookie-parser": "^1.4.7",
+    "iconv-lite": "^0.7.2",
     "image-size": "^2.0.2",
     "imap-simple": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
@@ -44,9 +45,11 @@
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "pdf-lib": "^1.17.1",
+    "pdf-poppler": "^0.2.3",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.2",
-    "sharp": "^0.34.1"
+    "sharp": "^0.34.1",
+    "slugify": "^1.6.6"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

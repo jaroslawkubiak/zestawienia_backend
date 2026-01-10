@@ -1,237 +1,272 @@
-TODO LIST
+# ENGLISH VERSION
+# Interior Design Project Manager – Backend
 
-[x] Logowanie do aplikacji,
-[x] Zmiana hasła przez usera
+A backend system for managing interior design projects, built with **NestJS**.  
+It is responsible for business logic, authentication, database operations, email delivery, and file management.
 
-Poprawić:
-[x] klik poza modalem zamyka go
-[x] gdy usuwasz klienta bez nazwy firmy - pusto w komunikacie
-[x] kopiuj link do klienta otwiera okno emaila
-[ ] wygląd/layout wszystkich komentarzy
-[ ] wygląd/layout linku dla dostawców
-[ ] wygląd/layout linku dla klientów
-[x] /me jest także używane do external links
-[x] dodać folder z hashem do plików zestawień /uploads/sets/:setId/:setHash/positions
-[ ] przy usuwaniu set - usunąć komentarze i całą resztę z DB, przeliczyć ilość setCount dla client
-[ ] przy usuwaniu pozycji usunąć też image oraz posCount w supplier
-[ ] linki w komentarzach. mają działać
-[ ] jak klient wrzuca pliki to nie uaktualnia się badge z ilością
-[ ] update ilości załączników gdy wrzucam pliki z poziomu zestawienia (nie z poziomu listy)
+The system is designed as a **role-based API** supporting multiple user types: designers, clients, and suppliers — with a strong focus on security and clear data access separation.
 
-Nowe do poprawy
-[x] wszystkie kolumny pozycji - tekst wyśrodkowany
-[x] pozycja link klikalny
-[x] nowa kolumna - uwagi textarea - jako ostatania w kolejności
-[x] meble na wymiar i meble gotowe jako osobne zakładki
-[x] w komentarzach imię i nazwisko
-[ ] powiadomienie klienta po 10min od dodania ostatniego komentarza
-[ ] podsumowanie komentarzy dla klienta
-[x] rok w stopkach automatycznie
-[x] lista emaili wysłanych - zły link do klienta
-[x] guzik zapisz na wysokości bookmarks po prawej
+---
 
-MOBILE VIEW:
-[x] notification jest lekko ucięta z lewej strony
-[x] powiększanie obrazów jest zbyt duże
-[ ] brak podglądu PDF
-[x] potwierdzania usuwania plików - dostosować css
-[x] nie działa download plików
+## 🛠️ Tech Stack
 
-SPRAWDZIĆ NA PROD:
-[x] wklejanie obrazów do pozycji i poprawne ich wyświetlanie
-[x] wysyłka plików załączników do zestawienia
-[x] pobieranie plików załączników z zestawienia
-[x] tworzenie PDF
-[ ] wysyłka email z poczty firmowej do klientów - nie z gmail
-[ ] wysyłka email z poczty firmowej do dostawców - nie z gmail
-[x] działanie linków dla klienta (logowanie wpisów w DB)
-[x] działanie linków dla dostawcy (logowanie wpisów w DB)
-[x] brak obrazków w podglądzie email
-[x] brak miniatur PDF
-[x] w widoku dużych ikon brak domyślnej ikony pdf
+- **NestJS**
+- **TypeScript**
+- **TypeORM**
+- **MySQL**
+- JWT authentication
+- File handling (upload / download)
+- SMTP & email templates
 
-Admin:
-[x] Logowania użytkowników
-[ ] lista logowań użytkowników w ukrytym menu admina
-[ ] system logowania błędów
+---
 
-Po zalogowaniu:
-[x] Podsumowanie nowych - nieprzeczytanych komentarzy
-[x] Gdy klient skończy dodawać komentarze - wysłać email z powiadomieniem do biura
+## 🔐 Authentication & Security
 
-Zakładka zestawienia:
-[x] Lista zestawień klientów
-[x] checkbox do pokazania statusu zamkniętych zestawień (domyślnie zamknięte nie będą pobierane)
+- user authentication using JWT,
+- password change functionality,
+- protected API endpoints,
+- public, hash-based links (access without an account),
+- logging client and supplier access via email links.
 
-Nowe zestawienie
-[x] dodawanie nowego zestawienia
-[x] przekierowanie do edit-set
-[x] zapis pozycji do db
-[x] aktualizacja setCount w klientach
-[x] adres inwestycji: textarea
+---
 
-Edycja zestawienia:
-[x] zmiana pozycji poprzed drag and drop i update property kolejność w db
-[x] domyślnie sortowanie po kolejności gdy wyświetlane są pozycje
-[x] dodanie pustej pozycji
-[x] dodanie pustej pozycji gdy na zakładce nie ma ani jednej pozycji
-[x] klonowanie wybranej pozycji
-[x] usuwanie pozycji
-[x] update cen gdy zmienimy ilosc lub cene netto
-[x] przy edycji pozycji - aktualizacja positionCount w dostawcach
-[x] statusy do zestawień: w przygotowaniu, gotowy, otwarty, w realizacji, zamknięty
-[x] status pozycji: (inne tło w zależności od statusu)
-[x] wklejanie obrazów do pozycji ze schowka
-[x] możliwość wpisywania ceny netto lub brutto.
-[x] usunąć z footer ilość, netto i brutto
-[x] pola w pozycji jako textarea
-[x] podgląd obrazków pozycji na całej stronie: ikona lupy albo coś podobnego
+## 🗄️ Data Model
 
-[x] nowe Bookmarks:
-1 PODSUMOWANIE
-2 OŚWIETLENIE, OSPRZĘT ELEKTRYCZNY
-3 ŁAZIENKA
-4 KUCHNIA
-5 PŁYTKI CERAMICZNE
-6 MEBLE NA WYMIAR
-7 MEBLE GOTOWE
-8 ŚCIANY, SUFITY, PODŁOGI
+The backend manages, among others:
+- users,
+- clients,
+- suppliers,
+- project specifications,
+- specification items,
+- comments,
+- attachments,
+- email sending history.
 
-Edycja nagłówka zestawienia:
-[x] zmiana statusu
-[x] zmiana ilości zakładek (bookmarks)
-[x] obiekt z szerokościami zapisywany na etapie dodawania nowego zestawienia z domyślnymi wartościami
-[x] odczyt i zapis szerokości kolumn dla każdej zakładki i dla każdego zestawienia
-[x] dołączyć listę szerokości do obiektu bookmarks w zestwieniach
+Each core entity includes:
+- created by / updated by information,
+- creation and update dates,
+- timestamp fields.
 
-Footer zestawienia:
-[x] obliczanie ceny brutto, wartości netto i wartości brutto
-[x] update footera z sumami poszczególnych kolumn
+---
 
-Załączniki zestawienia:
-[x] wysyłanie obrazów i innych plikó do katalogów /uploads/sets/SETID/POSITIONID/ FILENAME
-[x] podgląd minatur pliku pdf
-[x] pobieranie załączników na dysk
-[x] usuwanie załączników
+## 📊 Specifications & Items
 
-Generowanie zestawienia w formie PDF:
-[x] generowanie PDF! :)
-[x] umieszczanie obrazów w odpowiedniej kolumnie
-[x] nagłowek i stopka na każdej stronie pdf
-[x] footer z podsumowaniem tylko na końcu tabeli - nie na każdej stronie
-[x] przy generowaniu pdf możliwe 3 scenariusze: 1 - otwiera pdf w nowej zakłądce, 2 - zapisuje pdf na dysku, 3 - wysyła pdf na serwer ftp
-[x] różne tło wiersza w zależności od statusu
-[x] zakładka podsumowanie w PDF
-[ ] w nazwie pdf dodać nazwę inwestycji
-[ ] pdf automatycznie na ftp i ma się dodawać każdy kolejny pdf, nie usuwać poprzednich
+- creation of project specifications with automatic numbering,
+- specification statuses (new, in preparation, open, in progress, closed),
+- items with:
+  - net / gross prices,
+  - quantities,
+  - statuses affecting total calculations,
+- automatic value recalculations,
+- updating item counters for assigned suppliers.
 
-Emails:
-[x] wysyłka zestawienia via email w postaci HTML do klienta z linkiem do podglądu
-[x] wysyłka zestawień do wybranego dostawcy, do różnych dostawców, linki z hashami dostawców i id zestawienia
-[x] generowanie menu z listą dostawców dla danego zestawienia - po zmianie i zapisaniu zmian, menu się odświeża
-[x] data ostatniego wysłanego emaila do klienta i dostawców w menu
-[x] Email do biura z informacją o dodaniu komentarzy przez klienta
-[x] linki do aplikazji w emailach z komentarzami
-[x] dwie templatki z emailem do dostawców: oferta domyślna, zamówienie jako drugie.
-Tytuł zamówienie
-message: Proszę o realizację zamówienia zgodnie z przesłanym zestawieniem. Prosimy o wystawienie proformy na dane klienta. (wkleić tu dane klienta)
-[x] logo w emailu na lewo, sociale na lewo. dodać rodo
-Klienci:
-[x] dodawanie nowych klientów
-[x] edycja klienta
-[x] usuwanie klienta
-[x] jedno pole rozszerzone textarea z: firma z nip, adres, ulica, miasto, kod, email, telefon
-[x] guzik kopiowania adresu do schowka
-[x] widok dla klienta z zakładkami do przełączania, podsumowanie wart netto i brutto
-[x] działający link bez logowania hash łączony z id zestawienia do podglądu dla klientów np: /:id_zestawienia/:hash_zestawienia
-[x] wysyłka email z linkiem do części pozycji do której przypisany jest dostawaca (/setId/setHash/SupplierHash)
-[x] lista wysłanych emaili do klientów z podglądem wysłanej wiadomości
-[x] przed wysyłką możliwa edycja wiadomości
-[x] działający link bez logowania do podglądu dla dostawców np: /:id_zestawienia/:hash_zestawienia/:hash_dostawcy
+---
 
-Dostawcy:
-[x] dodawanie nowych dostawców
-[x] edycja dostawcy
-[x] usuwanie dostawcy
-[x] email wymagany
-[x] hash generowany do linków
-[x] nowa kolumna dane firmy: adres, nip - textarea
-[x] guzik kopiowania adresu do schowka
-[x] gdy nie ma wpisanego linku produktu to nadal mam napis link w tabeli
-[ ] dostawca ma widzieć wszystkie dane klienta i nazwę inwestycji
-[ ] dostawca: kolejność kolumna taka sama, ukryć: ceny i wartości, status, footer
+## 🖼️ Files & Attachments
 
-comments:
-[x] powiadomienie przy guziku komentarzy o ilości:
-[x] w komentarzach po kliknięciu na nazwę pozycji przenosi do eydcji
-[x] dodawanie komentarzy przez klientów
-[x] edycja komentarzy przez klientów
-[x] modyfikacja statusu odczynia komentarzy przez klientów
-[x] notyfikacja o nowych komentarzach
-[x] odpowiedź na komentarze w formie iMessage :)
-[x] edycja komentarzy usera
-[x] usuwanie komentarzy usera
-[x] oznaczanie które komentarze klienta są nieprzeczytane
+- file uploads with a structured directory layout,
+- generation of first-page PDF thumbnails for preview,
+- generation of image thumbnails for previews,
+- downloading individual files,
+- downloading selected files as ZIP archives,
+- clients can upload files to their own **Inspirations** folder
+  - and remove them if needed,
+- users can upload files to multiple folders:
+  - moodboards,
+  - 3D models,
+  - functional layouts,
+  - visualizations,
+  - invoices,
+- a **hidden “Working files” folder**, visible only to studio users,
+- storing file metadata in the database,
+- PDF preview and thumbnail support.
 
-status:
-[x] nowe zestawienie ze statusem nowe, przy dodaniu pierwszej pozycji zmiana statusu na w przygotowaniu i blokada usuwania
+---
 
-załączniki:
-[x] zapis plików w DB: nazwa pliku, data doodania, kto dodał, rozszerzenie, folder (będzie kilka)
-[x] wybór folderu przy uploadzie plików
-[x] foldery: moodboard, model3d, rysunki wykonawcze, wizualizacje.
-[x] widok listy z sortowaniem
-[x] osobny folder: robocze - niewidoczny dla klienta
-[x] załączniki: pobierz wszystkie, najlepiej w zip
-[ ] konwersja heic na jpg?
+## 📧 Email System
 
-DB:
-[x] zestawienia nagłówek: id, nr zestawienia, id klienta, id usera, data dodania (w czytelnym formacie), created by, create date (timestamp), update by, updated date (timestamp)
-[x] zestawienia pozycje: id, id zestawienia, id klienta, reszta kolumn
-[x] users: imie, login, haslo
-[x] klienci: id, imie, nazwisko, email, inne kolumny?
-[x] komentarze: id, productid, zestawienie id, comment, createBy, createDate, date timestamp
-[x] rejestracja wysłanych emaili do klientów i dostawców
-[x] imię i nazwisko klienta, email, nr zestawienia generowany autmatycznie, hash (20 znaków) do podglądu generowany automatycznie
-[x] Pozycje: dodać createBy, updateBy, CreateDate, UpdateDate, createTimestamp, updateTimestamp
+- sending emails to:
+  - clients,
+  - suppliers,
+- multiple email templates (offer / order / welcome),
+- email sending history stored in the database,
+- hash-based links providing access without login for clients and suppliers,
+- notifications about comments and project updates.
 
-issue:
-[x] zmiana dostawcy w zestawieniach na ostatniej pozycji - menu się chowa pod tabele
-[x] klienci i dostawcy - form nie walidny - pokaż errors,
-[x] przerobić form klientów i dostawców na nowy styl z new set
-[x] oznaczyć pola obowiązkowe
-[x] footer w pdf wkleja się na każdej stronie zamiast po całej tabeli
+---
 
-[x] legenda statusy/kolory:
+## 💬 Comments & Communication
 
-- biały - domyślny (sumować)
-- różowy - W trakcie wyceny (nie sumować)
-- żółty - zamiennik (nie sumować)
-- jasnozielony - produk zaakceptowany (sumować)
-- czerwony - produkt niezakupiony (sumować)
-- zielone - produkt zakupiony (sumować)
+- comments assigned to items and specifications,
+- comment editing and deletion,
+- read / unread status tracking,
+- notifications for new messages,
+- optional email notifications.
 
-obgadać:
+---
 
-- email: tytuły i treść emaili do klientów i dostawców
-- KOLORY! Design itp :)
-- jaki design dla klientów? jaki layout?
+## ⚙️ Architecture
 
-npx typeorm-model-generator -h localhost -d zestawienia -u root -x -e mysql
+- modular NestJS architecture,
+- clear separation into:
+  - controllers,
+  - services,
+  - entities,
+  - DTOs,
+- prepared for:
+  - global error interceptors,
+  - centralized error logging,
+  - further API expansion.
 
-PRODUCTION ISSUE:
-[x] Przy przejściu na pustą stronę, gdy jestem zalogowany, pokazuje login page
-[x] nie ładuje podglądu obrazów
-[x] pliki ładuje do katalogu src/uploads, a nie od razu do uploads
-[x] widoczne menu bez logowania
+---
 
-backend:
-[ ] logowania błędów
-[ ] intereceptor dla wszystkich 400 i 500 
-[ ] w types w files mam 2 podobne pliki, może można zrobić 1
-=
-Doprecyzować:
-[ ] kolory statusów
-[ ] PDF - legenda w podsumowaniu?
-[ ] PDF - tryb: zapis, otwórz, FTP?
-[ ] Domyślne treści emaili: do klienta, do dostawcy, z podsumowaniem komentarzy
+## 🚀 Project Status
+
+The backend is stable and actively used in a production environment.  
+Planned improvements include:
+- centralized error logging,
+- extended notification system,
+- full email automation,
+- additional security enhancements.
+
+---
+
+## 👤 Author
+
+This project was created as a real-world system supporting the daily work of an interior design studio  
+and as a **backend portfolio project**.
+
+
+# POLISH VERSION
+# Interior Design Project Manager – Backend
+
+Backend systemu do zarządzania projektami wnętrz, zbudowany w **NestJS**.  
+Odpowiada za logikę biznesową, autoryzację, obsługę bazy danych, wysyłkę e-maili oraz zarządzanie plikami.
+
+System został zaprojektowany jako **API obsługujące wiele ról użytkowników**: projektantów, klientów i dostawców – z naciskiem na bezpieczeństwo oraz czytelny podział dostępu do danych.
+
+---
+
+## 🛠️ Stack technologiczny
+
+- **NestJS**
+- **TypeScript**
+- **TypeORM**
+- **MySQL**
+- JWT Authentication
+- Obsługa plików (upload / download)
+- SMTP / e-mail templates
+
+---
+
+## 🔐 Autoryzacja i bezpieczeństwo
+
+- logowanie użytkowników (JWT),
+- zmiana hasła,
+- zabezpieczenie endpointów,
+- publiczne linki z hashami (dostęp bez konta),
+- logowanie wejść klientów i dostawców przez linki z e-maili.
+
+---
+
+## 🗄️ Model danych
+
+Backend obsługuje m.in.:
+- użytkowników (users),
+- klientów,
+- dostawców,
+- zestawienia projektowe,
+- pozycje zestawień,
+- komentarze,
+- załączniki,
+- historię wysłanych e-maili.
+
+Każda kluczowa encja zawiera:
+- informacje o autorze zmian,
+- daty utworzenia i aktualizacji,
+- znaczniki czasowe (timestamp).
+
+---
+
+## 📊 Zestawienia i pozycje
+
+- tworzenie zestawień z automatyczną numeracją,
+- statusy zestawień (nowe, w przygotowaniu, otwarte, w realizacji, zamknięte),
+- pozycje z:
+  - cenami netto / brutto,
+  - ilościami,
+  - statusami wpływającymi na sumowanie,
+- automatyczne przeliczanie wartości,
+- aktualizacja ilości pozycji u dostawców.
+
+---
+
+## 🖼️ Pliki i załączniki
+
+- upload plików do struktury katalogów:
+- generowanie miniatur pierszej strony PDF do podglądu
+- generowanie miniatur plików graficznych do podglądu
+- pobieranie pojedynczych plików
+- pobieranie zaznaczonych plików jako ZIP
+- klient może dodawać pliki do swojego katalogu: inspiracje
+  -może je też usuwać
+- użytkownik może dodawać do różnych katalogów: moodboardy, modele 3D, układ funkcjonalny, wizualizacje, faktury
+- ukryty dla klienta katalog : robocze, widoczny tylko dla użytkowników biura
+- zapisywanie metadanych plików w bazie,
+- podgląd PDF i miniatur.
+
+---
+
+## 📧 System e-mail
+
+- wysyłka e-maili do:
+  - klientów,
+  - dostawców,
+- różne szablony wiadomości (oferta / zamówienie / welcome),
+- rejestr wysłanych e-maili w bazie,
+- linki z hashami umożliwiające dostęp bez logowania dla klientów i dostawców,
+- powiadomienia o komentarzach i zmianach.
+
+---
+
+## 💬 Komentarze i komunikacja
+
+- komentarze przypisane do pozycji i zestawień,
+- edycja i usuwanie komentarzy,
+- oznaczanie komentarzy jako przeczytane,
+- notyfikacje o nowych wpisach,
+- możliwość wysyłki powiadomień e-mail.
+
+---
+
+## ⚙️ Architektura
+
+- modularna struktura NestJS,
+- wyraźny podział na:
+- kontrolery,
+- serwisy,
+- encje,
+- DTO,
+- przygotowane miejsce pod:
+- globalny interceptor błędów,
+- system logowania błędów,
+- dalszą rozbudowę API.
+
+---
+
+## 🚀 Status projektu
+
+Backend jest stabilny i używany w środowisku produkcyjnym.  
+Dalszy rozwój obejmuje:
+- centralne logowanie błędów,
+- rozbudowę notyfikacji,
+- pełną automatyzację wysyłek e-mail,
+- dalsze usprawnienia bezpieczeństwa.
+
+---
+
+## 👤 Autor
+
+Projekt stworzony jako system realnie wspierający pracę biura projektowania wnętrz  
+oraz jako **element portfolio backendowego**.
+

@@ -36,7 +36,7 @@ MOBILE VIEW:
 [ ] brak podglądu PDF
 [x] potwierdzania usuwania plików - dostosować css
 [x] nie działa download plików
-
+[ ] na podsumowaniu - klik na bookmark - twiera bookmark
 SPRAWDZIĆ NA PROD:
 [x] wklejanie obrazów do pozycji i poprawne ich wyświetlanie
 [x] wysyłka plików załączników do zestawienia

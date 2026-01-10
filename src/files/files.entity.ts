@@ -12,23 +12,23 @@ export class Files {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
 
-  @Column({ type: 'varchar', length: 100, nullable: false })
+  @Column({ type: 'varchar', length: 200, nullable: false })
   fileName: string;
 
-  @Column({ type: 'varchar', length: 100, nullable: false })
+  @Column({ type: 'varchar', length: 200, nullable: false })
   thumbnail: string;
 
-  @Column({ type: 'varchar', length: 10, nullable: false })
+  @Column({ type: 'varchar', length: 5, nullable: false })
   type: string;
 
-  @Column({ type: 'varchar', length: 100, nullable: false })
-  path: string;
-
-  @Column({ type: 'varchar', length: 100, nullable: false })
+  @Column({ type: 'varchar', length: 30, nullable: false })
   dir: string;
 
   @Column({ type: 'varchar', length: 200, nullable: false })
   originalName: string;
+
+  @Column({ type: 'varchar', length: 200, nullable: false })
+  path: string;
 
   @Column({ type: 'int', nullable: false })
   size: number;

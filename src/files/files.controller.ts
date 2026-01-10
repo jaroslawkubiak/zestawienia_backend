@@ -16,16 +16,14 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import * as fs from 'fs';
 import * as iconv from 'iconv-lite';
-import { imageSize } from 'image-size';
 import { diskStorage } from 'multer';
 import * as path from 'path';
-import { PDFDocument } from 'pdf-lib';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { safeFileName } from '../helpers/safeFileName';
 import { FilesService } from './files.service';
-import { generateThumbnailPdf } from './generateThumbnailPdf';
 import { IFileDetails } from './types/IFileDetails';
 import { IFileFullDetails } from './types/IFileFullDetails';
+import { IProcessFile } from './types/IProcessFile';
 
 @Controller('files')
 export class FilesController {
@@ -71,6 +69,7 @@ export class FilesController {
           const parsed = path.parse(originalNameUtf8);
           const safeName =
             safeFileName(parsed.name) +
+            '-' +
             getFormatedDate() +
             parsed.ext.toLowerCase();
 
@@ -87,49 +86,27 @@ export class FilesController {
     if (!files || files.length === 0) {
       throw new BadRequestException('Nie przesłano żadnych plików');
     }
-    const PT_TO_MM = 25.4 / 72; // convert point to mm in PDF
 
     const fileDetailsList: IFileDetails[] = await Promise.all(
       files.map(async (file) => {
         const fullFilePath = file.path;
-        let dimensions = { width: 0, height: 0 };
-        let thumbnailPath = '';
+
+        let fileDetails: IProcessFile = {
+          dimensions: { width: 0, height: 0 },
+          thumbnailPath: '',
+          thumbnailFileName: '',
+        };
 
         try {
           const fileType = file['type'].toUpperCase();
           const fileBuffer = await fs.promises.readFile(fullFilePath);
 
           if (fileType === 'PDF') {
-            const pdfDoc = await PDFDocument.load(fileBuffer);
-            const size = pdfDoc.getPage(0).getSize();
-            dimensions = {
-              width: Math.floor(size.width * PT_TO_MM),
-              height: Math.floor(size.height * PT_TO_MM),
-            };
-
-            // generate thumbnail
-            const fileNameWithoutExt = path.parse(
-              file['sanitizedOriginalName'],
-            ).name;
-
-            thumbnailPath = await generateThumbnailPdf(
-              fullFilePath,
-              fileNameWithoutExt,
-            );
-
-            thumbnailPath = path
-              .relative(process.cwd(), thumbnailPath)
-              .replace(/\\/g, '/');
+            fileDetails = await this.filesService.processPdf(fileBuffer, file);
           }
 
           if (['JPG', 'JPEG', 'PNG'].includes(fileType)) {
-            const size = imageSize(fileBuffer);
-            if (size.width && size.height) {
-              dimensions = {
-                width: size.width,
-                height: size.height,
-              };
-            }
+            fileDetails = this.filesService.processImage(fileBuffer);
           }
         } catch (error) {
           let message = `Nie udało się przetworzyć pliku PDF "${file.originalname}". Sprawdź nazwę pliku i spróbuj ponownie.`;
@@ -156,9 +133,9 @@ export class FilesController {
           originalName: file['originalNameUtf8'],
           setId: file['setId'],
           size: file['size'],
-          width: dimensions.width,
-          height: dimensions.height,
-          thumbnail: thumbnailPath,
+          width: fileDetails.dimensions.width,
+          height: fileDetails.dimensions.height,
+          thumbnail: fileDetails.thumbnailFileName,
         };
       }),
     );
@@ -167,13 +144,13 @@ export class FilesController {
       fileDetailsList.map((file) => this.filesService.create(file)),
     );
 
-    const fileCount = addedFiles.length;
-    const fileWord =
-      fileCount === 1 ? 'plik' : fileCount < 5 ? 'pliki' : 'plików';
-    const message = `Pomyślnie przesłano ${fileCount} ${fileWord} do katalogu "${files[0]['dir']}"`;
+    const returnMessage = this.filesService.returnUploadMessage(
+      addedFiles.length,
+      files[0]['dir'],
+    );
 
     return {
-      message,
+      message: returnMessage,
       files: addedFiles,
       fileNames: files?.map((file) => file.filename),
     };

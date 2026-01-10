@@ -3,12 +3,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as archiver from 'archiver';
 import * as fss from 'fs';
 import { promises as fs } from 'fs';
+import { imageSize } from 'image-size';
 import * as path from 'path';
+import { PDFDocument } from 'pdf-lib';
 import { Repository } from 'typeorm';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { Files } from './files.entity';
+import { generateThumbnailPdf } from './generateThumbnailPdf';
 import { IFileDetails } from './types/IFileDetails';
 import { IFileFullDetails } from './types/IFileFullDetails';
+import { IProcessFile } from './types/IProcessFile';
 
 @Injectable()
 export class FilesService {
@@ -121,5 +125,64 @@ export class FilesService {
     archive.finalize();
 
     return archive;
+  }
+
+  returnUploadMessage(filesCount: number, dir: string): string {
+    const fileWord =
+      filesCount === 1 ? 'plik' : filesCount < 5 ? 'pliki' : 'plików';
+    return `Pomyślnie przesłano ${filesCount} ${fileWord} do katalogu "${dir}"`;
+  }
+
+  processImage(fileBuffer: Buffer<ArrayBufferLike>): IProcessFile {
+    const fileDetails: IProcessFile = {
+      dimensions: { width: 0, height: 0 },
+      thumbnailPath: '',
+      thumbnailFileName: '',
+    };
+
+    const size = imageSize(fileBuffer);
+    if (size.width && size.height) {
+      fileDetails.dimensions = {
+        width: size.width,
+        height: size.height,
+      };
+
+      return fileDetails;
+    }
+  }
+
+  async processPdf(
+    fileBuffer: Buffer<ArrayBufferLike>,
+    file: Express.Multer.File,
+  ): Promise<IProcessFile> {
+    const fileDetails: IProcessFile = {
+      dimensions: { width: 0, height: 0 },
+      thumbnailPath: '',
+      thumbnailFileName: '',
+    };
+
+    const PT_TO_MM = 25.4 / 72; // convert point to mm in PDF
+
+    const pdfDoc = await PDFDocument.load(fileBuffer);
+    const size = pdfDoc.getPage(0).getSize();
+
+    fileDetails.dimensions = {
+      width: Math.floor(size.width * PT_TO_MM),
+      height: Math.floor(size.height * PT_TO_MM),
+    };
+
+    // generate thumbnail
+    const fileNameWithoutExt = path.parse(file['sanitizedOriginalName']).name;
+
+    fileDetails.thumbnailFileName = await generateThumbnailPdf(
+      file.path,
+      fileNameWithoutExt,
+    );
+
+    fileDetails.thumbnailPath = path
+      .relative(process.cwd(), fileDetails.thumbnailFileName)
+      .replace(/\\/g, '/');
+
+    return fileDetails;
   }
 }

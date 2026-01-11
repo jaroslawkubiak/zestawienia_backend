@@ -11,12 +11,37 @@ The system is designed as a **role-based API** supporting multiple user types: d
 
 # SCREENSHOTS
 
-<img src="example-files/screenshots/set-edit.jpg" width="400" alt="Set edit view on bookmark page">
-<img src="example-files/screenshots/client-list-view.jpg" width="400" alt="Client list view">
-<img src="example-files/screenshots/client-edit-page.jpg" width="400" alt="Edit client modal">
-<img src="example-files/screenshots/send-files-modal.jpg" width="400" alt="Send files modal with directory to select">
-<img src="example-files/screenshots/send-files-modal-with-selected-files.jpg" width="400" alt="Send files modal with selected files to send">
-<img src="example-files/screenshots/notification-popup.jpg" width="400" alt="Notification popup">
+<div style="display:flex; gap:24px; align-items:flex-start;">
+  <!-- Lewa kolumna -->
+  <div style="display:flex; flex-direction:column; gap:16px;">
+    <p>Set edit view on summary tab</p>
+    <img src="example-files/screenshots/set-edit-summary-tab.jpg" width="400" alt="Set edit view on bookmark page">
+    <p>Set edit view - bathroom tab</p>
+    <img src="example-files/screenshots/set-edit-bathroom-tab.jpg" width="400" alt="Set edit view - bathroom tab">
+    <p>Status select menu - every status has different row color</p>
+    <img src="example-files/screenshots/status-list.jpg" width="400" alt="Status select menu">
+    <p>Client list view</p>
+    <img src="example-files/screenshots/client-list-view.jpg" width="400" alt="Client list view">
+    <p>Edit client modal</p>
+    <img src="example-files/screenshots/client-edit-page.jpg" width="400" alt="Edit client modal">
+    <p>Notification popup</p>
+    <img src="example-files/screenshots/notification-popup.jpg" width="400" alt="Notification popup">
+  </div>
+
+  <!-- Prawa kolumna -->
+  <div style="display:flex; flex-direction:column; gap:16px;">
+    <p>Send files modal with directory to select</p>
+    <img src="example-files/screenshots/send-files-modal.jpg" width="400" alt="Send files modal with directory to select">
+    <p>Send files modal with selected files to send</p>
+    <img src="example-files/screenshots/send-files-modal-with-selected-files.jpg" width="400" alt="Send files modal with selected files to send">
+    <p>Show files modal - icon view</p>
+    <img src="example-files/screenshots/show-files-modal-icon-view.jpg" width="400" alt="Show files modal - icon view">
+    <p>Show files modal - list view</p>
+    <img src="example-files/screenshots/show-files-modal-list-view.jpg" width="400" alt="Show files modal - list view">
+    <p>Delete secelted files</p>
+    <img src="example-files/screenshots/delete-files-confirmation-popup.jpg" width="400" alt="Delete selected files">
+  </div>
+</div>
 
 ## 🛠️ Tech Stack
 

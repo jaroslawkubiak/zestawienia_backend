@@ -1,4 +1,5 @@
 # ENGLISH VERSION
+
 # Interior Design Project Manager – Backend
 
 A backend system for managing interior design projects, built with **NestJS**.  
@@ -7,6 +8,10 @@ It is responsible for business logic, authentication, database operations, email
 The system is designed as a **role-based API** supporting multiple user types: designers, clients, and suppliers — with a strong focus on security and clear data access separation.
 
 ---
+
+# SCREENSHOTS
+
+<img src="example-files/set-edit.jpg" width="400" alt="Set edit view on bookmark page">
 
 ## 🛠️ Tech Stack
 
@@ -33,6 +38,7 @@ The system is designed as a **role-based API** supporting multiple user types: d
 ## 🗄️ Data Model
 
 The backend manages, among others:
+
 - users,
 - clients,
 - suppliers,
@@ -43,6 +49,7 @@ The backend manages, among others:
 - email sending history.
 
 Each core entity includes:
+
 - created by / updated by information,
 - creation and update dates,
 - timestamp fields.
@@ -124,6 +131,7 @@ Each core entity includes:
 
 The backend is stable and actively used in a production environment.  
 Planned improvements include:
+
 - centralized error logging,
 - extended notification system,
 - full email automation,
@@ -136,8 +144,8 @@ Planned improvements include:
 This project was created as a real-world system supporting the daily work of an interior design studio  
 and as a **backend portfolio project**.
 
-
 # POLISH VERSION
+
 # Interior Design Project Manager – Backend
 
 Backend systemu do zarządzania projektami wnętrz, zbudowany w **NestJS**.  
@@ -172,6 +180,7 @@ System został zaprojektowany jako **API obsługujące wiele ról użytkowników
 ## 🗄️ Model danych
 
 Backend obsługuje m.in.:
+
 - użytkowników (users),
 - klientów,
 - dostawców,
@@ -182,6 +191,7 @@ Backend obsługuje m.in.:
 - historię wysłanych e-maili.
 
 Każda kluczowa encja zawiera:
+
 - informacje o autorze zmian,
 - daty utworzenia i aktualizacji,
 - znaczniki czasowe (timestamp).
@@ -258,6 +268,7 @@ Każda kluczowa encja zawiera:
 
 Backend jest stabilny i używany w środowisku produkcyjnym.  
 Dalszy rozwój obejmuje:
+
 - centralne logowanie błędów,
 - rozbudowę notyfikacji,
 - pełną automatyzację wysyłek e-mail,
@@ -269,4 +280,3 @@ Dalszy rozwój obejmuje:
 
 Projekt stworzony jako system realnie wspierający pracę biura projektowania wnętrz  
 oraz jako **element portfolio backendowego**.
-

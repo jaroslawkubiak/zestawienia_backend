@@ -9,40 +9,6 @@ The system is designed as a **role-based API** supporting multiple user types: d
 
 ---
 
-# SCREENSHOTS
-
-<div style="display:flex; gap:24px; align-items:flex-start;">
-  <!-- Lewa kolumna -->
-  <div style="display:flex; flex-direction:column; gap:16px;">
-    <p>Set edit view on summary tab</p>
-    <img src="example-files/screenshots/set-edit-summary-tab.jpg" width="400" alt="Set edit view on bookmark page">
-    <p>Set edit view - bathroom tab</p>
-    <img src="example-files/screenshots/set-edit-bathroom-tab.jpg" width="400" alt="Set edit view - bathroom tab">
-    <p>Status select menu - every status has different row color</p>
-    <img src="example-files/screenshots/status-list.jpg" width="400" alt="Status select menu">
-    <p>Client list view</p>
-    <img src="example-files/screenshots/client-list-view.jpg" width="400" alt="Client list view">
-    <p>Edit client modal</p>
-    <img src="example-files/screenshots/client-edit-page.jpg" width="400" alt="Edit client modal">
-    <p>Notification popup</p>
-    <img src="example-files/screenshots/notification-popup.jpg" width="400" alt="Notification popup">
-  </div>
-
-  <!-- Prawa kolumna -->
-  <div style="display:flex; flex-direction:column; gap:16px;">
-    <p>Send files modal with directory to select</p>
-    <img src="example-files/screenshots/send-files-modal.jpg" width="400" alt="Send files modal with directory to select">
-    <p>Send files modal with selected files to send</p>
-    <img src="example-files/screenshots/send-files-modal-with-selected-files.jpg" width="400" alt="Send files modal with selected files to send">
-    <p>Show files modal - icon view</p>
-    <img src="example-files/screenshots/show-files-modal-icon-view.jpg" width="400" alt="Show files modal - icon view">
-    <p>Show files modal - list view</p>
-    <img src="example-files/screenshots/show-files-modal-list-view.jpg" width="400" alt="Show files modal - list view">
-    <p>Delete secelted files</p>
-    <img src="example-files/screenshots/delete-files-confirmation-popup.jpg" width="400" alt="Delete selected files">
-  </div>
-</div>
-
 ## 🛠️ Tech Stack
 
 - **NestJS**
@@ -99,6 +65,29 @@ Each core entity includes:
 
 ---
 
+# SCREENSHOTS
+
+<table width="600" border="0">
+  <tr>
+    <td width="50%" valign="top">
+    <p>Set edit view on summary tab</p>
+    <img src="example-files/screenshots/set-edit-summary-tab.jpg" width="400" alt="Set edit view on bookmark page"><br><br><br><br>
+    <p>Set edit view - bathroom tab</p>
+    <img src="example-files/screenshots/set-edit-bathroom-tab.jpg" width="400" alt="Set edit view - bathroom tab"><br><br><br><br>
+    <p>Status select menu - every status has different row color</p>
+    <img src="example-files/screenshots/status-list.jpg" width="400" alt="Status select menu"><br><br><br><br>
+    </td>
+    <td width="50%" valign="top">
+    <p>Client list view</p>
+    <img src="example-files/screenshots/client-list-view.jpg" width="400" alt="Client list view"><br><br><br><br>
+    <p>Edit client modal</p>
+    <img src="example-files/screenshots/client-edit-page.jpg" width="400" alt="Edit client modal"><br><br><br><br>
+    <p>Notification popup</p>
+    <img src="example-files/screenshots/notification-popup.jpg" width="400" alt="Notification popup">
+    </td>
+  </tr>
+</table>
+
 ## 🖼️ Files & Attachments
 
 - file uploads with a structured directory layout,
@@ -118,6 +107,28 @@ Each core entity includes:
 - storing file metadata in the database,
 - PDF preview and thumbnail support.
 
+---
+
+# SCREENSHOTS
+
+<table width="600">
+  <tr>
+    <td width="50%" valign="top">
+    <p>Send files modal with directory to select</p>
+    <img src="example-files/screenshots/send-files-modal.jpg" width="400" alt="Send files modal with directory to select"><br><br><br><br>
+    <p>Send files modal with selected files to send</p>
+    <img src="example-files/screenshots/send-files-modal-with-selected-files.jpg" width="400" alt="Send files modal with selected files to send">
+    </td>
+    <td width="50%" valign="top">
+    <p>Show files modal - icon view</p>
+    <img src="example-files/screenshots/show-files-modal-icon-view.jpg" width="400" alt="Show files modal - icon view"><br><br><br><br>
+    <p>Show files modal - list view</p>
+    <img src="example-files/screenshots/show-files-modal-list-view.jpg" width="400" alt="Show files modal - list view"><br><br><br><br>
+    <p>Delete secelted files</p>
+    <img src="example-files/screenshots/delete-files-confirmation-popup.jpg" width="400" alt="Delete selected files">
+    </td>
+  </tr>
+</table>
 ---
 
 ## 📧 Email System
@@ -141,6 +152,16 @@ Each core entity includes:
 - optional email notifications.
 
 ---
+
+# SCREENSHOTS
+
+<table width="600">
+  <tr>
+    <td width="100%" valign="top">
+    <p>Comments section on every set position - works like text messages</p>
+    <img src="example-files/screenshots/comments-on-every-position.jpg" width="400" alt="Comments section on every set positiont">
+  </tr>
+</table>
 
 ## ⚙️ Architecture
 

@@ -160,24 +160,26 @@ export class FilesService {
       thumbnailPath: '',
       thumbnailFileName: '',
     };
-
-    const PT_TO_MM = 25.4 / 72; // convert point to mm in PDF
-
+    const outputDir = (file as any).absoluteUploadPath + '\\thumbnail';
+    
     const pdfDoc = await PDFDocument.load(fileBuffer);
     const size = pdfDoc.getPage(0).getSize();
-
+    
+    const PT_TO_MM = 25.4 / 72; // convert point to mm in PDF
     fileDetails.dimensions = {
       width: Math.floor(size.width * PT_TO_MM),
       height: Math.floor(size.height * PT_TO_MM),
     };
 
+    // TODO - add this for iPhone users
     // generate thumbnail
-    const fileNameWithoutExt = path.parse(file['sanitizedOriginalName']).name;
+    // const fileNameWithoutExt = path.parse(file['sanitizedOriginalName']).name;
+    // console.log(`######## before generateThumbnailPdf #########`);
 
-    fileDetails.thumbnailFileName = await generateThumbnailPdf(
-      file.path,
-      fileNameWithoutExt,
-    );
+    // fileDetails.thumbnailFileName = await generateThumbnailPdf(
+    //   file.path,
+    //   fileNameWithoutExt,
+    // );
 
     fileDetails.thumbnailPath = path
       .relative(process.cwd(), fileDetails.thumbnailFileName)

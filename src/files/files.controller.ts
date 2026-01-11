@@ -15,7 +15,6 @@ import {
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import * as fs from 'fs';
-import * as iconv from 'iconv-lite';
 import { diskStorage } from 'multer';
 import * as path from 'path';
 import { getFormatedDate } from '../helpers/getFormatedDate';
@@ -24,6 +23,7 @@ import { FilesService } from './files.service';
 import { IFileDetails } from './types/IFileDetails';
 import { IFileFullDetails } from './types/IFileFullDetails';
 import { IProcessFile } from './types/IProcessFile';
+import * as iconv from 'iconv-lite';
 
 @Controller('files')
 export class FilesController {
@@ -38,7 +38,7 @@ export class FilesController {
           const setId = req.params.setId;
           const setHash = req.params.setHash;
           const directory = req.params.dir;
-          const baseUploadPath = process.env.UPLOAD_PATH || './uploads';
+          const baseUploadPath = process.env.UPLOAD_PATH;
 
           const uploadPath = path.resolve(
             baseUploadPath,
@@ -65,7 +65,6 @@ export class FilesController {
             Buffer.from(file.originalname, 'binary'),
             'utf8',
           );
-
           const parsed = path.parse(originalNameUtf8);
           const safeName =
             safeFileName(parsed.name) +
@@ -74,8 +73,8 @@ export class FilesController {
             parsed.ext.toLowerCase();
 
           file['sanitizedOriginalName'] = safeName;
-          file['type'] = parsed.ext.replace('.', '').toUpperCase();
           file['originalNameUtf8'] = originalNameUtf8;
+          file['type'] = parsed.ext.replace('.', '').toUpperCase();
 
           cb(null, safeName);
         },
@@ -127,7 +126,7 @@ export class FilesController {
           fileName: file['sanitizedOriginalName'],
           type: file['type'],
           path: path
-            .relative(process.cwd(), file['absoluteUploadPath'])
+            .relative(process.cwd(), file['uploadPath'])
             .replace(/\\/g, '/'),
           dir: file['dir'],
           originalName: file['originalNameUtf8'],

@@ -11,7 +11,12 @@ The system is designed as a **role-based API** supporting multiple user types: d
 
 # SCREENSHOTS
 
-<img src="example-files/set-edit.jpg" width="400" alt="Set edit view on bookmark page">
+<img src="example-files/screenshots/set-edit.jpg" width="400" alt="Set edit view on bookmark page">
+<img src="example-files/screenshots/client-list-view.jpg" width="400" alt="Client list view">
+<img src="example-files/screenshots/client-edit-page.jpg" width="400" alt="Edit client modal">
+<img src="example-files/screenshots/send-files-modal.jpg" width="400" alt="Send files modal with directory to select">
+<img src="example-files/screenshots/send-files-modal-with-selected-files.jpg" width="400" alt="Send files modal with selected files to send">
+<img src="example-files/screenshots/notification-popup.jpg" width="400" alt="Notification popup">
 
 ## 🛠️ Tech Stack
 

@@ -15,8 +15,9 @@ Poprawić:
 [ ] przy usuwaniu set - usunąć komentarze i całą resztę z DB, przeliczyć ilość setCount dla client
 [ ] przy usuwaniu pozycji usunąć też image oraz posCount w supplier
 [ ] linki w komentarzach. mają działać
-[ ] jak klient wrzuca pliki to nie uaktualnia się badge z ilością
-[ ] update ilości załączników gdy wrzucam pliki z poziomu zestawienia (nie z poziomu listy)
+[x] jak klient wrzuca pliki to nie uaktualnia się badge z ilością
+[ ] jak klient wruci plik to badge się uaktualnie, ale po otwarciu show-files nie widać tego pliku - trzeba dodać nowy plik do listy plików
+
 
 Nowe do poprawy
 [x] wszystkie kolumny pozycji - tekst wyśrodkowany
@@ -50,13 +51,17 @@ SPRAWDZIĆ NA PROD:
 [x] działanie linków dla klienta (logowanie wpisów w DB)
 [x] działanie linków dla dostawcy (logowanie wpisów w DB)
 [x] brak obrazków w podglądzie email
-[x] brak miniatur PDF
+[x] brak miniatur PDF na iPhone
 [x] w widoku dużych ikon brak domyślnej ikony pdf
 
 Admin:
 [x] Logowania użytkowników
-[ ] lista logowań użytkowników w ukrytym menu admina
+[ ] ukryte menu admina
+[ ] lista logowań użytkowników
+[ ] lista "logowań" kleintów
+[ ] lista "logowań" dostawców
 [ ] system logowania błędów
+[ ] lista błędów
 
 Po zalogowaniu:
 [x] Podsumowanie nowych - nieprzeczytanych komentarzy
@@ -187,7 +192,7 @@ załączniki:
 [x] osobny folder: robocze - niewidoczny dla klienta
 [x] załączniki: pobierz wszystkie, najlepiej w zip
 [ ] konwersja heic na jpg?
-[ ] gdy wrzucasz nowy załącznik z poziomu zestawienia nie odświeża się ilość w badge
+[x] gdy wrzucasz nowy załącznik z poziomu zestawienia nie odświeża się ilość w badge
 
 DB:
 [x] zestawienia nagłówek: id, nr zestawienia, id klienta, id usera, data dodania (w czytelnym formacie), created by, create date (timestamp), update by, updated date (timestamp)

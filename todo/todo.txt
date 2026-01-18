@@ -16,7 +16,7 @@ Poprawić:
 [ ] przy usuwaniu pozycji usunąć też image oraz posCount w supplier
 [ ] linki w komentarzach. mają działać
 [x] jak klient wrzuca pliki to nie uaktualnia się badge z ilością
-[ ] jak klient wruci plik to badge się uaktualnie, ale po otwarciu show-files nie widać tego pliku - trzeba dodać nowy plik do listy plików
+[x] jak klient wruci plik to badge się uaktualnie, ale po otwarciu show-files nie widać tego pliku - trzeba dodać nowy plik do listy plików
 
 
 Nowe do poprawy
@@ -27,19 +27,18 @@ Nowe do poprawy
 [x] w komentarzach imię i nazwisko
 [ ] powiadomienie klienta po 10min od dodania ostatniego komentarza
 [ ] podsumowanie komentarzy dla klienta
+[ ] jak klient otworzy onko z komentarzami to ma automatycznie je odczytać
 [x] rok w stopkach automatycznie
 [x] lista emaili wysłanych - zły link do klienta
 [x] guzik zapisz na wysokości bookmarks po prawej
-[ ] jak klient otworzy onko z komentarzami to ma automatycznie je odczytać
 
 MOBILE VIEW:
 [x] notification jest lekko ucięta z lewej strony
 [x] powiększanie obrazów jest zbyt duże
-[ ] brak podglądu PDF
+[ ] brak podglądu PDF - tylko na iPhone
 [x] potwierdzania usuwania plików - dostosować css
 [x] nie działa download plików
-[ ] na podsumowaniu - klik na bookmark - twiera bookmark
-[ ] uaktualnie badge dla client jak wrzucasz pik ale nie dorzuca pliku do arraya 
+[x] na podsumowaniu - klik na bookmark - otwiera bookmark
 
 SPRAWDZIĆ NA PROD:
 [x] wklejanie obrazów do pozycji i poprawne ich wyświetlanie
@@ -238,7 +237,7 @@ backend:
 [ ] logowania błędów
 [ ] intereceptor dla wszystkich 400 i 500 
 [ ] w types w files mam 2 podobne pliki, może można zrobić 1
-=
+
 Doprecyzować:
 [ ] kolory statusów
 [ ] PDF - legenda w podsumowaniu?

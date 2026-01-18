@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  InternalServerErrorException
-} from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
 import { Repository } from 'typeorm';
@@ -24,8 +21,8 @@ export class SettingsService {
     return this.settingsRepo.find();
   }
 
-  getByType(type: string): Promise<DbSettings> {
-    return this.settingsRepo.findOneBy({ type });
+  getByName(name: string): Promise<DbSettings> {
+    return this.settingsRepo.findOneBy({ name });
   }
 
   async saveSettings(

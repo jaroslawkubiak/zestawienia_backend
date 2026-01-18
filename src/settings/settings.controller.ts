@@ -21,9 +21,9 @@ export class SettingsController {
     return this.settingsService.findAll();
   }
 
-  @Get(':type')
-  getByType(@Param('type') type: string): Promise<DbSettings> {
-    return this.settingsService.getByType(type);
+  @Get(':name')
+  getByName(@Param('name') name: string): Promise<DbSettings> {
+    return this.settingsService.getByName(name);
   }
 
   @Patch()

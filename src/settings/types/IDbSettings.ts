@@ -1,5 +1,6 @@
 export interface DbSettings {
   id: number;
-  type: string;
+  name: string;
   value: string;
+  type: string;
 }

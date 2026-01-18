@@ -6,8 +6,11 @@ export class Setting {
   id: number;
 
   @Column({ type: 'varchar', length: 50, nullable: false })
-  type: string;
+  name: string;
 
   @Column({ type: 'varchar', length: 150, nullable: false })
   value: string;
+
+  @Column({ type: 'varchar', length: 50, nullable: false })
+  type: string;
 }

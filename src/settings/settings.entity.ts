@@ -8,9 +8,9 @@ export class Setting {
   @Column({ type: 'varchar', length: 50, nullable: false })
   name: string;
 
-  @Column({ type: 'varchar', length: 150, nullable: false })
+  @Column({ type: 'varchar', length: 50, nullable: false })
   value: string;
 
-  @Column({ type: 'varchar', length: 50, nullable: false })
+  @Column({ type: 'varchar', length: 100, nullable: false })
   type: string;
 }

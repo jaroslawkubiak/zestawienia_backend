@@ -14,6 +14,7 @@ import { ErrorsType } from '../errors/types/Errors';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { Position } from '../position/positions.entity';
 import { Set } from '../sets/sets.entity';
+import { SettingsService } from '../settings/settings.service';
 import { UserService } from '../user/user.service';
 import { Comment } from './comments.entity';
 import { CreateCommentDto, UpdateCommentDto } from './dto/comment.dto';
@@ -34,6 +35,7 @@ export class CommentsService {
     private clientsService: ClientsService,
     private userService: UserService,
     private emailService: EmailService,
+    private settingService: SettingsService,
   ) {}
 
   async findOne(id: number): Promise<IComment> {
@@ -155,7 +157,11 @@ export class CommentsService {
       /** -----------------------------
        *  TIMER 1: client → office
        * ------------------------------ */
-      if (authorType === 'client') {
+      const emailAboutNewCommentsFromClient =
+        (await this.settingService.getByName('emailAboutNewCommentsFromClient'))
+          .value === 'true';
+
+      if (emailAboutNewCommentsFromClient && authorType === 'client') {
         if (this.clientTimers.has(setId)) {
           clearTimeout(this.clientTimers.get(setId));
         }
@@ -171,7 +177,11 @@ export class CommentsService {
       /** -----------------------------
        *  TIMER 2: office → client
        * ------------------------------ */
-      if (authorType === 'user') {
+      const emailAboutNewCommentsFromOffice =
+        (await this.settingService.getByName('emailAboutNewCommentsFromOffice'))
+          .value === 'true';
+
+      if (emailAboutNewCommentsFromOffice && authorType === 'user') {
         if (this.userTimers.has(setId)) {
           clearTimeout(this.userTimers.get(setId));
         }
@@ -183,7 +193,12 @@ export class CommentsService {
 
         this.userTimers.set(setId, timer);
       }
-      return savedComment;
+
+      const notificationSend =
+        (emailAboutNewCommentsFromOffice && authorType === 'user') ||
+        (emailAboutNewCommentsFromClient && authorType === 'client');
+
+      return { ...savedComment, notificationSend };
     } catch (err) {
       const newError: ErrorDto = {
         type: ErrorsType.sql,

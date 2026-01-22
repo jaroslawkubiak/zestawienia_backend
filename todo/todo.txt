@@ -18,7 +18,6 @@ Poprawić:
 [x] jak klient wrzuca pliki to nie uaktualnia się badge z ilością
 [x] jak klient wruci plik to badge się uaktualnie, ale po otwarciu show-files nie widać tego pliku - trzeba dodać nowy plik do listy plików
 
-
 Nowe do poprawy
 [x] wszystkie kolumny pozycji - tekst wyśrodkowany
 [x] pozycja link klikalny
@@ -45,8 +44,8 @@ SPRAWDZIĆ NA PROD:
 [x] wysyłka plików załączników do zestawienia
 [x] pobieranie plików załączników z zestawienia
 [x] tworzenie PDF
-[ ] wysyłka email z poczty firmowej do klientów - nie z gmail
-[ ] wysyłka email z poczty firmowej do dostawców - nie z gmail
+[x] wysyłka email z poczty firmowej do klientów - nie z gmail
+[x] wysyłka email z poczty firmowej do dostawców - nie z gmail
 [x] działanie linków dla klienta (logowanie wpisów w DB)
 [x] działanie linków dla dostawcy (logowanie wpisów w DB)
 [x] brak obrazków w podglądzie email
@@ -76,6 +75,7 @@ Nowe zestawienie
 [x] zapis pozycji do db
 [x] aktualizacja setCount w klientach
 [x] adres inwestycji: textarea
+[ ] zapamiętywanie ostatnio aktywnej zakładki i wczytywanie jej przy ponownym otwarciu zestawienia
 
 Edycja zestawienia:
 [x] zmiana pozycji poprzed drag and drop i update property kolejność w db
@@ -143,6 +143,7 @@ Emails:
 Tytuł zamówienie
 message: Proszę o realizację zamówienia zgodnie z przesłanym zestawieniem. Prosimy o wystawienie proformy na dane klienta. (wkleić tu dane klienta)
 [x] logo w emailu na lewo, sociale na lewo. dodać rodo
+
 Klienci:
 [x] dodawanie nowych klientów
 [x] edycja klienta
@@ -155,7 +156,6 @@ Klienci:
 [x] lista wysłanych emaili do klientów z podglądem wysłanej wiadomości
 [x] przed wysyłką możliwa edycja wiadomości
 [x] działający link bez logowania do podglądu dla dostawców np: /:id_zestawienia/:hash_zestawienia/:hash_dostawcy
-[ ] endpoint na settings który przyjmuje listę stringów z name, np: sendingEmailsToCustomers, sendingEmailsToClient i zwraca obiekt z tymi danymi
 
 Dostawcy:
 [x] dodawanie nowych dostawców
@@ -203,6 +203,11 @@ DB:
 [x] rejestracja wysłanych emaili do klientów i dostawców
 [x] imię i nazwisko klienta, email, nr zestawienia generowany autmatycznie, hash (20 znaków) do podglądu generowany automatycznie
 [x] Pozycje: dodać createBy, updateBy, CreateDate, UpdateDate, createTimestamp, updateTimestamp
+
+różne:
+[ ] endpoint na settings który przyjmuje listę stringów z name, np: sendingEmailsToCustomers, sendingEmailsToClient i zwraca obiekt z tymi danymi
+[ ] przenieść notification time do db settings
+[ ] przenieść comments delay time do db settings
 
 issue:
 [x] zmiana dostawcy w zestawieniach na ostatniej pozycji - menu się chowa pod tabele

@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as nodemailer from 'nodemailer';
-import { async, from, map, Observable } from 'rxjs';
+import { from, map, Observable } from 'rxjs';
 import { Repository } from 'typeorm';
 import { IComment } from '../comments/types/IComment';
 import { ErrorDto } from '../errors/dto/error.dto';
@@ -24,9 +24,6 @@ import { ICommentList } from './types/ICommentList';
 import { IEmailDetails } from './types/IEmailDetails';
 import { IEmailLog } from './types/IEmailLog';
 import { ISendedEmailsFromDB } from './types/ISendedEmailsFromDB';
-import { info } from 'console';
-import { create } from 'domain';
-import { query } from 'express';
 
 @Injectable()
 export class EmailService {
@@ -65,10 +62,8 @@ export class EmailService {
         rejectUnauthorized: false,
       },
     });
-    // }
   }
 
-  // bcc: 'admin@zurawickidesign.pl',
   async sendEmail(emailDetails: IEmailDetails) {
     const { to, subject, content } = emailDetails;
     const mailOptions = {
@@ -79,7 +74,6 @@ export class EmailService {
     };
 
     try {
-      // testIMAP();
       const info = await this.transporter.sendMail(mailOptions);
 
       if (info.response.includes('OK')) {
@@ -101,7 +95,7 @@ export class EmailService {
         await this.create(newEmailLog);
 
         // send copy email do Sent folder
-        // await saveToSentFolder(this.getImapConfig(), mailOptions);
+        await saveToSentFolder(this.getImapConfig(), mailOptions);
       }
 
       return info;

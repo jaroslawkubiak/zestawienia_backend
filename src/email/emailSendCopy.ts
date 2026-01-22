@@ -9,18 +9,20 @@ interface IMAPConfig {
   tls: boolean;
 }
 
-export async function saveToSentFolder(
-  imapConfig: IMAPConfig,
-  mailOptions: any,
-) {
+export async function saveToSentFolder(mailOptions: any) {
   const mail = new MailComposer(mailOptions);
+  const user = process.env.EMAIL_USER;
+  const password = process.env.EMAIL_PASS;
+  const host = process.env.EMAIL_IMAP_HOST;
+  const port = Number(process.env.EMAIL_IMAP_PORT);
+  const tls = true;
+
   const rawMessage: Buffer = await new Promise((resolve, reject) => {
     mail.compile().build((err, message) => {
       if (err) return reject(err);
       resolve(message);
     });
   });
-  const { user, password, port, host, tls } = { ...imapConfig };
 
   const connection = await imaps.connect({
     imap: {

@@ -30,16 +30,6 @@ export class EmailService {
   private transporter;
   private APP_URL = 'https://zestawienia.zurawickidesign.pl';
 
-  private getImapConfig() {
-    return {
-      user: process.env.EMAIL_USER,
-      password: process.env.EMAIL_PASS,
-      host: process.env.EMAIL_IMAP_HOST,
-      port: Number(process.env.EMAIL_IMAP_PORT),
-      tls: true,
-    };
-  }
-
   constructor(
     @InjectRepository(Email)
     private readonly emailRepo: Repository<Email>,
@@ -95,7 +85,7 @@ export class EmailService {
         await this.create(newEmailLog);
 
         // send copy email do Sent folder
-        await saveToSentFolder(this.getImapConfig(), mailOptions);
+        await saveToSentFolder(mailOptions);
       }
 
       return info;

@@ -18,7 +18,7 @@ import { SetsService } from '../sets/sets.service';
 import { CreateIdDto } from '../shared/dto/createId.dto';
 import { LogEmailDto } from './dto/logEmail.dto';
 import { Email } from './email.entity';
-import { createCommentsTable, createHTML } from './email.template';
+import { createHTML } from './email.template';
 import { saveToSentFolder } from './emailSendCopy';
 import { ICommentList } from './types/ICommentList';
 import { IEmailDetails } from './types/IEmailDetails';
@@ -147,13 +147,9 @@ export class EmailService {
         const verbComments =
           newComments.length === 1 ? ' komentarza' : ' komentarzy';
 
-        const HTMLheader = `${headerText} ${newComments.length} ${verbComments} do inwestycji: ${set.name}<br /><br />`;
+        const HTMLheader = `${headerText} ${newComments.length} ${verbComments} do Twojej inwestycji: <strong>${set.name}</strong><br /><br />`;
 
-        const html = createHTML(
-          HTMLheader,
-          createCommentsTable(commentsList),
-          link,
-        );
+        const html = createHTML(HTMLheader, commentsList, link);
 
         let sender = process.env.EMAIL_USER;
         if (process.env.GMAIL_USE === 'true') {
@@ -181,7 +177,7 @@ export class EmailService {
 
     const link = `
       <tr>
-        <td style="padding: 20px" colspan="2">
+        <td style="padding: 20px 0px 0px 0px" colspan="2">
           <a href="${this.APP_URL}/${set.id}/${set.hash}" target="_blank" 
           style="color: #3bbfa1; font-size: 24px; font-weight: bold; text-decoration: none">Link do zestawienia</a>
           </p>

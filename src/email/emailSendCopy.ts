@@ -20,15 +20,17 @@ export async function saveToSentFolder(
       resolve(message);
     });
   });
+  const { user, password, port, host, tls } = { ...imapConfig };
 
   const connection = await imaps.connect({
     imap: {
-      user: imapConfig.user,
-      password: imapConfig.password,
-      host: imapConfig.host,
-      port: imapConfig.port,
-      tls: imapConfig.tls,
+      user,
+      password,
+      host,
+      port,
+      tls,
       authTimeout: 10000,
+      tlsOptions: { rejectUnauthorized: false },
     },
   });
 

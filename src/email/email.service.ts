@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as nodemailer from 'nodemailer';
-import { from, map, Observable } from 'rxjs';
+import { async, from, map, Observable } from 'rxjs';
 import { Repository } from 'typeorm';
 import { IComment } from '../comments/types/IComment';
 import { ErrorDto } from '../errors/dto/error.dto';
@@ -24,6 +24,9 @@ import { ICommentList } from './types/ICommentList';
 import { IEmailDetails } from './types/IEmailDetails';
 import { IEmailLog } from './types/IEmailLog';
 import { ISendedEmailsFromDB } from './types/ISendedEmailsFromDB';
+import { info } from 'console';
+import { create } from 'domain';
+import { query } from 'express';
 
 @Injectable()
 export class EmailService {
@@ -34,8 +37,8 @@ export class EmailService {
     return {
       user: process.env.EMAIL_USER,
       password: process.env.EMAIL_PASS,
-      host: process.env.EMAIL_HOST.replace('smtp', 'mail'),
-      port: 993,
+      host: process.env.EMAIL_IMAP_HOST,
+      port: Number(process.env.EMAIL_IMAP_PORT),
       tls: true,
     };
   }
@@ -49,33 +52,23 @@ export class EmailService {
     @Inject(forwardRef(() => PositionsService))
     private readonly positionService: PositionsService,
   ) {
-    if (process.env.GMAIL_USE === 'true') {
-      // for development - gmail
-      this.transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: process.env.GMAIL_USER,
-          pass: process.env.GMAIL_PASS,
-        },
-      });
-    } else {
-      // for production
-      this.transporter = nodemailer.createTransport({
-        host: process.env.EMAIL_HOST,
-        port: Number(process.env.EMAIL_PORT),
-        secure: false,
-        requireTLS: true,
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-        tls: {
-          rejectUnauthorized: false,
-        },
-      });
-    }
+    this.transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_HOST,
+      port: Number(process.env.EMAIL_PORT),
+      secure: false,
+      requireTLS: true,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+      tls: {
+        rejectUnauthorized: false,
+      },
+    });
+    // }
   }
 
+  // bcc: 'admin@zurawickidesign.pl',
   async sendEmail(emailDetails: IEmailDetails) {
     const { to, subject, content } = emailDetails;
     const mailOptions = {
@@ -86,6 +79,7 @@ export class EmailService {
     };
 
     try {
+      // testIMAP();
       const info = await this.transporter.sendMail(mailOptions);
 
       if (info.response.includes('OK')) {
@@ -106,10 +100,8 @@ export class EmailService {
 
         await this.create(newEmailLog);
 
-        if (!process.env.GMAIL_USE || process.env.GMAIL_USE === 'false') {
-          // send copy email do Sent folder
-          await saveToSentFolder(this.getImapConfig(), mailOptions);
-        }
+        // send copy email do Sent folder
+        // await saveToSentFolder(this.getImapConfig(), mailOptions);
       }
 
       return info;

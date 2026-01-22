@@ -249,3 +249,6 @@ Doprecyzować:
 [ ] PDF - legenda w podsumowaniu?
 [ ] PDF - tryb: zapis, otwórz, FTP?
 [ ] Domyślne treści emaili: do klienta, do dostawcy, z podsumowaniem komentarzy
+
+
+wysysłam email z aplikacji nestjs. email zawiera obrazki które po otwarciu emaila nie są widoczne dopóki nie kliknę wczytaj zawartość. można to jakoś obejść?

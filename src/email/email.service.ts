@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as nodemailer from 'nodemailer';
-import { from, map, Observable } from 'rxjs';
+import { firstValueFrom, from, map, Observable } from 'rxjs';
 import { Repository } from 'typeorm';
 import { IComment } from '../comments/types/IComment';
 import { ErrorDto } from '../errors/dto/error.dto';
@@ -128,45 +128,44 @@ export class EmailService {
 
     const set = await this.setsService.findOne(setId);
 
-    this.positionService.getPositions(setId).subscribe({
-      next: (positions) => {
-        const commentsList: ICommentList[] = newComments.map((comment) => {
-          if (!comment.positionId?.id) return;
+    const positions = await firstValueFrom(
+      this.positionService.getPositions(setId),
+    );
 
-          const position = positions.find(
-            (item) => item.id === comment.positionId.id,
-          );
+    const commentsList: ICommentList[] = newComments.map((comment) => {
+      if (!comment.positionId?.id) return;
 
-          return {
-            product: position?.produkt || '',
-            comment: comment.comment,
-            createdAt: comment.createdAt,
-          };
-        });
+      const position = positions.find(
+        (item) => item.id === comment.positionId.id,
+      );
 
-        const verbComments =
-          newComments.length === 1 ? ' komentarza' : ' komentarzy';
-
-        const HTMLheader = `${headerText} ${newComments.length} ${verbComments} do Twojej inwestycji: <strong>${set.name}</strong><br /><br />`;
-
-        const html = createHTML(HTMLheader, commentsList, link);
-
-        let sender = process.env.EMAIL_USER;
-        if (process.env.GMAIL_USE === 'true') {
-          sender = process.env.GMAIL_USER;
-        }
-
-        const mailOptions = {
-          from: sender,
-          to: recipient,
-          subject: `Nowe komentarze w inwestycji: ${set.name}`,
-          html,
-        };
-
-        this.transporter.sendMail(mailOptions);
-      },
-      error: (err) => console.error(err),
+      return {
+        product: position?.produkt || '',
+        comment: comment.comment,
+        createdAt: comment.createdAt,
+      };
     });
+
+    const verbComments =
+      newComments.length === 1 ? ' komentarza' : ' komentarzy';
+
+    const HTMLheader = `${headerText} ${newComments.length} ${verbComments} do Twojej inwestycji: <strong>${set.name}</strong><br /><br />`;
+
+    const html = createHTML(HTMLheader, commentsList, link);
+
+    let sender = process.env.EMAIL_USER;
+    if (process.env.GMAIL_USE === 'true') {
+      sender = process.env.GMAIL_USER;
+    }
+
+    const mailOptions = {
+      from: sender,
+      to: recipient,
+      subject: `Nowe komentarze w inwestycji: ${set.name}`,
+      html,
+    };
+
+    await this.transporter.sendMail(mailOptions);
   }
 
   async sendEmailAboutNewCommentsFromOffice(
@@ -175,14 +174,7 @@ export class EmailService {
   ) {
     const set = await this.setsService.findOne(setId);
 
-    const link = `
-      <tr>
-        <td style="padding: 20px 0px 0px 0px" colspan="2">
-          <a href="${this.APP_URL}/${set.id}/${set.hash}" target="_blank" 
-          style="color: #3bbfa1; font-size: 24px; font-weight: bold; text-decoration: none">Link do zestawienia</a>
-          </p>
-        </td>
-      </tr>`;
+    const link = `${this.APP_URL}/${set.id}/${set.hash}`;
 
     return this.sendEmailAboutNewComments({
       setId,
@@ -198,14 +190,6 @@ export class EmailService {
     newComments: IComment[],
   ) {
     const set = await this.setsService.findOne(setId);
-    const link = `
-      <tr>
-        <td style="padding: 20px" colspan="2">
-          <a href="${this.APP_URL}" target="_blank" 
-          style="color: #3bbfa1; font-size: 24px; font-weight: bold; text-decoration: none">Panel zestawień</a>
-          </p>
-        </td>
-      </tr>`;
 
     const clientFullName = set.clientId.company
       ? set.clientId.company
@@ -215,7 +199,7 @@ export class EmailService {
       setId,
       newComments,
       headerText: `Klient ${clientFullName} zakończył dodawanie`,
-      link,
+      link: this.APP_URL,
       recipient:
         process.env.GMAIL_USE === 'true'
           ? process.env.GMAIL_USER

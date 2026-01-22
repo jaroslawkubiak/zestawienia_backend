@@ -29,7 +29,13 @@ export function createHTML(
     </tr>
 
     <!-- link do zestawienia -->
-    ${link}
+    <tr>
+      <td style="padding: 20px 0px 0px 0px" colspan="2">
+        <a href="${link}" target="_blank" 
+        style="color: #3bbfa1; font-size: 24px; font-weight: bold; text-decoration: none">Link do zestawienia</a>
+        </p>
+      </td>
+    </tr>
 
     <!-- FOOTER MESSAGE + SOCIALS -->
     ${HTMLfooter}

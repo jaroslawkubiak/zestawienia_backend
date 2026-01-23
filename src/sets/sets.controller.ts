@@ -23,19 +23,19 @@ export class SetsController {
   constructor(private setsService: SetsService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Get()
+  @Get('getSets')
   findAll() {
     return this.setsService.findAll();
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('new')
+  @Post('addNew')
   create(@Body() newSet: NewSetDto, @Req() req: Request): Promise<ISavedSet> {
     return this.setsService.create(newSet, req);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Patch(':id')
+  @Patch(':id/saveSet')
   updateSet(
     @Param('id') id: string,
     @Body() updateSetDto: UpdateSetAndPositionDto,
@@ -44,7 +44,7 @@ export class SetsController {
     return this.setsService.update(+id, updateSetDto, req);
   }
 
-  @Get(':setId')
+  @Get('/:setId/getSet')
   findSet(@Param('setId') setId: string): Observable<ISet> {
     return this.setsService.getSet(+setId);
   }

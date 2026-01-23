@@ -20,7 +20,7 @@ export class EmailController {
     return this.emailService.findAll();
   }
 
-  @Get(':setId')
+  @Get(':setId/getEmailListForSet')
   findOne(@Param('setId') setId: string): Observable<ISendedEmailsFromDB[]> {
     return this.emailService.findOne(+setId);
   }

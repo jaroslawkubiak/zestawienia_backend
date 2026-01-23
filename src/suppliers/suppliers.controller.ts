@@ -40,7 +40,7 @@ export class SuppliersController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get()
+  @Get('/getSuppliers')
   findAll(): Promise<ISupplier[]> {
     return this.suppliersService.findAll();
   }

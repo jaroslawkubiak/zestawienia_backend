@@ -10,7 +10,7 @@ import { PositionsService } from './positions.service';
 export class PositionsController {
   constructor(private positionsService: PositionsService) {}
 
-  @Get('/:setId')
+  @Get('/:setId/getPositions')
   getPositions(@Param('setId') setId: string): Observable<IPosition[]> {
     return this.positionsService.getPositions(+setId);
   }

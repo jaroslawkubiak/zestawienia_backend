@@ -15,7 +15,7 @@ export class EmailController {
     return this.emailService.sendEmail(body);
   }
 
-  @Get()
+  @Get('getEmails')
   findAll(): Observable<ISendedEmailsFromDB[]> {
     return this.emailService.findAll();
   }

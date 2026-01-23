@@ -46,7 +46,7 @@ export class SuppliersController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Patch(':id')
+  @Patch(':id/saveSupplier')
   update(
     @Param('id') id: string,
     @Body() updateSupplierDto: UpdateSupplierDto,
@@ -61,13 +61,13 @@ export class SuppliersController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post()
+  @Post('addSupplier')
   create(@Body() createSupplierDto: CreateSupplierDto): Promise<ISupplier> {
     return this.suppliersService.create(createSupplierDto);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete('')
+  @Delete('deleteSupplier')
   remove(@Body() body: { ids: number[] }) {
     body.ids.forEach((id) => {
       return this.suppliersService.remove(+id);

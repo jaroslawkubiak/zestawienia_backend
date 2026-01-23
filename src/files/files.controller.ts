@@ -17,7 +17,7 @@ import { Response } from 'express';
 import * as fs from 'fs';
 import { diskStorage } from 'multer';
 import * as path from 'path';
-import { getFormatedDate } from '../helpers/getFormatedDate';
+import { getFormatedDateForFileName } from '../helpers/getFormatedDateForFileName';
 import { safeFileName } from '../helpers/safeFileName';
 import { FilesService } from './files.service';
 import { IFileDetails } from './types/IFileDetails';
@@ -69,7 +69,7 @@ export class FilesController {
           const safeName =
             safeFileName(parsed.name) +
             '-' +
-            getFormatedDate() +
+            getFormatedDateForFileName() +
             parsed.ext.toLowerCase();
 
           file['sanitizedOriginalName'] = safeName;
@@ -156,13 +156,13 @@ export class FilesController {
   }
 
   // delete files from set id dir
-  @Delete(':id')
+  @Delete(':id/deleteFile')
   remove(@Param('id') id: string) {
     return this.filesService.deleteFile(+id);
   }
 
   // batch delete files from set id dir
-  @Delete('')
+  @Delete('/deleteSomeFiles')
   batchRemove(@Body() body: { ids: number[] }) {
     body.ids.forEach((id) => {
       return this.filesService.deleteFile(+id);

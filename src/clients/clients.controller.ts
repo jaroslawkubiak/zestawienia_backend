@@ -7,7 +7,7 @@ import {
   Patch,
   Post,
   Req,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
@@ -40,13 +40,13 @@ export class ClientsController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get()
+  @Get('getClients')
   findAll() {
     return this.clientsService.findAll();
   }
 
   @UseGuards(JwtAuthGuard)
-  @Patch(':id')
+  @Patch(':id/saveClient')
   update(
     @Param('id') id: string,
     @Body() updateClientDto: UpdateClientDto,
@@ -61,13 +61,13 @@ export class ClientsController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post()
+  @Post('addClient')
   create(@Body() createClientDto: CreateClientDto): Promise<IClient> {
     return this.clientsService.create(createClientDto);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete('')
+  @Delete('deleteClient')
   remove(@Body() body: { ids: number[] }) {
     body.ids.forEach((id) => {
       return this.clientsService.remove(+id);

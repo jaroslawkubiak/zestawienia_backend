@@ -22,8 +22,11 @@ export class Comment {
   @Column({ type: 'int' })
   authorId: number;
 
+  @Column({ type: 'timestamp', nullable: true })
+  seenAt: Date | null;
+
   @Column({ type: 'boolean', default: false })
-  readByReceiver: boolean;
+  needsAttention: boolean;
 
   @Column({ type: 'varchar', length: 50, nullable: true })
   createdAt: string | null;

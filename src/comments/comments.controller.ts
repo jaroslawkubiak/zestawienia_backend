@@ -11,8 +11,9 @@ import {
 import { Request } from 'express';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto, UpdateCommentDto } from './dto/comment.dto';
-import { IComment } from './types/IComment';
+import { IMarkAllAsSeen } from './dto/markAllAsSeen.dto';
 import { IMarkAllComments } from './dto/markAllComments.dto';
+import { IComment } from './types/IComment';
 
 @Controller('comments')
 export class CommentsController {
@@ -36,6 +37,11 @@ export class CommentsController {
     return this.commentsService.create(createCommentDto, req);
   }
 
+  @Post('/seen')
+  markCommentsAsSeen(@Body() body: IMarkAllAsSeen, @Req() req: Request) {
+    return this.commentsService.markCommentsAsSeen(body, req);
+  }
+
   @Patch('/edit')
   update(
     @Body() updateCommentDto: UpdateCommentDto,
@@ -53,7 +59,6 @@ export class CommentsController {
       body.id,
       req,
     );
-
     return updatedComments;
   }
 

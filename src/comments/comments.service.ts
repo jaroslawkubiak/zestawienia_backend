@@ -18,6 +18,7 @@ import { SettingsService } from '../settings/settings.service';
 import { UserService } from '../user/user.service';
 import { Comment } from './comments.entity';
 import { CreateCommentDto, UpdateCommentDto } from './dto/comment.dto';
+import { IMarkAllAsSeen } from './dto/markAllAsSeen.dto';
 import { IMarkAllComments } from './dto/markAllComments.dto';
 import { IComment } from './types/IComment';
 
@@ -48,7 +49,8 @@ export class CommentsService {
         'comment.comment',
         'comment.authorId',
         'comment.authorType',
-        'comment.readByReceiver',
+        'comment.seenAt',
+        'comment.needsAttention',
         'comment.createdAt',
         'comment.createdAtTimestamp',
         'position.id',
@@ -69,7 +71,8 @@ export class CommentsService {
         'comment.comment',
         'comment.authorId',
         'comment.authorType',
-        'comment.readByReceiver',
+        'comment.seenAt',
+        'comment.needsAttention',
         'comment.createdAt',
         'comment.createdAtTimestamp',
         'position.id',
@@ -106,7 +109,8 @@ export class CommentsService {
         'comment.comment',
         'comment.authorId',
         'comment.authorType',
-        'comment.readByReceiver',
+        'comment.seenAt',
+        'comment.needsAttention',
         'comment.createdAt',
         'comment.createdAtTimestamp',
         'position.id',
@@ -147,7 +151,7 @@ export class CommentsService {
         setId: {
           id: setId,
         } as DeepPartial<Set>,
-        readByReceiver: false,
+        needsAttention: false,
         createdAt: getFormatedDate(),
         createdAtTimestamp: Number(Date.now()),
       };
@@ -232,7 +236,7 @@ export class CommentsService {
     if (receiver === 'office') {
       // client → office
       newComments = allComments
-        .filter((item) => item.authorType === 'client' && !item.readByReceiver)
+        .filter((item) => item.authorType === 'client' && !item.needsAttention)
         .sort((a, b) => b.createdAtTimestamp - a.createdAtTimestamp);
 
       await this.emailService.sendEmailAboutNewCommentsFromClient(
@@ -244,7 +248,7 @@ export class CommentsService {
     if (receiver === 'client') {
       // office → client
       newComments = allComments
-        .filter((item) => item.authorType === 'user' && !item.readByReceiver)
+        .filter((item) => item.authorType === 'user' && !item.needsAttention)
         .sort((a, b) => b.createdAtTimestamp - a.createdAtTimestamp);
 
       await this.emailService.sendEmailAboutNewCommentsFromOffice(
@@ -295,13 +299,51 @@ export class CommentsService {
     }
   }
 
+  async markCommentsAsSeen(body: IMarkAllAsSeen, req?: Request): Promise<void> {
+    const { positionId, authorType } = { ...body };
+
+    const oppositeAuthorType = authorType === 'client' ? 'user' : 'client';
+
+    try {
+      await this.commentRepo
+        .createQueryBuilder()
+        .update(Comment)
+        .set({ seenAt: () => 'CURRENT_TIMESTAMP' })
+        .where('positionId = :positionId', { positionId })
+        .andWhere('authorType = :authorType', {
+          authorType: oppositeAuthorType,
+        })
+        .andWhere('seenAt IS NULL')
+        .execute();
+    } catch (err) {
+      const newError: ErrorDto = {
+        type: ErrorsType.sql,
+        message: 'Comment: markCommentsAsSeen()',
+        url: req?.originalUrl || '',
+        error: JSON.stringify(err?.message) || 'null',
+        query: JSON.stringify(err?.query) || 'null',
+        parameters: JSON.stringify(err?.parameters) || 'null',
+        sql: JSON.stringify(err?.driverError?.sql) || 'null',
+        createdAt: getFormatedDate() || new Date().toISOString(),
+        createdAtTimestamp: Number(Date.now()),
+      };
+
+      await this.errorsService.prepareError(newError);
+
+      throw new InternalServerErrorException({
+        message: 'Błąd bazy danych',
+        error: err.message,
+      });
+    }
+  }
+
   async toggleCommentRead(id: number, req?: Request): Promise<IComment> {
     try {
       const originComment = await this.findOne(id);
 
       const updateComment = {
         ...originComment,
-        readByReceiver: !originComment.readByReceiver,
+        needsAttention: !originComment.needsAttention,
       };
       const updateResult = await this.commentRepo.update(id, updateComment);
 
@@ -343,7 +385,7 @@ export class CommentsService {
       await this.commentRepo
         .createQueryBuilder()
         .update()
-        .set({ readByReceiver: readState })
+        .set({ needsAttention: readState })
         .where('positionId = :positionId', { positionId })
         .andWhere('authorType = :authorType', { authorType })
         .execute();
@@ -379,7 +421,7 @@ export class CommentsService {
   async unreadComments(): Promise<number> {
     return await this.commentRepo.count({
       where: {
-        readByReceiver: false,
+        needsAttention: false,
         authorType: 'client',
       },
     });

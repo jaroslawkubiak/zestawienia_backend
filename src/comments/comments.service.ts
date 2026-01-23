@@ -375,13 +375,12 @@ export class CommentsService {
     }
   }
 
-  async markAllComments(
+  async markAllCommentsAsNeedsAttention(
     body: IMarkAllComments,
     req?: Request,
   ): Promise<IComment[]> {
     try {
       const { positionId, readState, authorType } = body;
-
       await this.commentRepo
         .createQueryBuilder()
         .update()
@@ -394,7 +393,7 @@ export class CommentsService {
     } catch (err) {
       const newError: ErrorDto = {
         type: ErrorsType.sql,
-        message: 'Comment: markAllComments()',
+        message: 'Comment: markAllCommentsAsNeedsAttention()',
         url: req.originalUrl,
         error: JSON.stringify(err?.message) || 'null',
         query: JSON.stringify(err?.query) || 'null',
@@ -419,11 +418,10 @@ export class CommentsService {
   }
 
   async unreadComments(): Promise<number> {
-    return await this.commentRepo.count({
-      where: {
-        needsAttention: false,
-        authorType: 'client',
-      },
-    });
+    return this.commentRepo
+      .createQueryBuilder('c')
+      .where('c.authorType = :authorType', { authorType: 'client' })
+      .andWhere('(c.seenAt IS NULL OR c.needsAttention = true)')
+      .getCount();
   }
 }

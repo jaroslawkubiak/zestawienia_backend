@@ -24,9 +24,11 @@ export class CommentsController {
     return this.commentsService.unreadComments();
   }
 
-  @Get(':id')
-  findBySetId(@Param('id') id: string): Promise<IComment[]> {
-    return this.commentsService.findBySetId(+id);
+  @Get(':positionId')
+  findByPositionId(
+    @Param('positionId') positionId: string,
+  ): Promise<IComment[]> {
+    return this.commentsService.findByPositionId(+positionId);
   }
 
   @Post('/add')
@@ -63,11 +65,11 @@ export class CommentsController {
   }
 
   @Patch('positions')
-  async markAllComments(
+  async markAllCommentsAsNeedsAttention(
     @Body() body: IMarkAllComments,
     @Req() req: Request,
   ): Promise<IComment[]> {
-    return this.commentsService.markAllComments(body, req);
+    return this.commentsService.markAllCommentsAsNeedsAttention(body, req);
   }
 
   @Delete(':id')

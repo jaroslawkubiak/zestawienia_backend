@@ -15,6 +15,7 @@ import { ErrorsType } from '../errors/types/Errors';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { PositionsService } from '../position/positions.service';
 import { SetsService } from '../sets/sets.service';
+import { SettingsService } from '../settings/settings.service';
 import { CreateIdDto } from '../shared/dto/createId.dto';
 import { LogEmailDto } from './dto/logEmail.dto';
 import { Email } from './email.entity';
@@ -23,6 +24,7 @@ import { saveToSentFolder } from './emailSendCopy';
 import { ICommentList } from './types/ICommentList';
 import { IEmailDetails } from './types/IEmailDetails';
 import { IEmailLog } from './types/IEmailLog';
+import { IHTMLTemplateOptions } from './types/IHTMLTemplateOptions';
 import { ISendedEmailsFromDB } from './types/ISendedEmailsFromDB';
 
 @Injectable()
@@ -34,6 +36,7 @@ export class EmailService {
     @InjectRepository(Email)
     private readonly emailRepo: Repository<Email>,
     private readonly errorsService: ErrorsService,
+    private readonly settingsService: SettingsService,
     @Inject(forwardRef(() => SetsService))
     private readonly setsService: SetsService,
     @Inject(forwardRef(() => PositionsService))
@@ -127,6 +130,9 @@ export class EmailService {
     const { setId, newComments, headerText, recipient, link } = options;
 
     const set = await this.setsService.findOne(setId);
+    const GDPRClauseRequest =
+      await this.settingsService.getSettingByName('GDPRClause');
+    const GDPRClause = GDPRClauseRequest.value;
 
     const positions = await firstValueFrom(
       this.positionService.getPositions(setId),
@@ -151,7 +157,14 @@ export class EmailService {
 
     const HTMLheader = `${headerText} ${newComments.length} ${verbComments} do Twojej inwestycji: <strong>${set.name}</strong><br /><br />`;
 
-    const html = createHTML(HTMLheader, commentsList, link);
+    const HTMLoptions: IHTMLTemplateOptions = {
+      header: HTMLheader,
+      message: commentsList,
+      link,
+      GDPRClause,
+    };
+
+    const html = createHTML(HTMLoptions);
 
     let sender = process.env.EMAIL_USER;
     if (process.env.GMAIL_USE === 'true') {

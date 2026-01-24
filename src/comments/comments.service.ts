@@ -162,7 +162,7 @@ export class CommentsService {
        *  TIMER 1: client → office
        * ------------------------------ */
       const emailAboutNewCommentsFromClient =
-        (await this.settingService.getByName('emailAboutNewCommentsFromClient'))
+        (await this.settingService.getSettingByName('emailAboutNewCommentsFromClient'))
           .value === 'true';
 
       if (emailAboutNewCommentsFromClient && authorType === 'client') {
@@ -182,7 +182,7 @@ export class CommentsService {
        *  TIMER 2: office → client
        * ------------------------------ */
       const emailAboutNewCommentsFromOffice =
-        (await this.settingService.getByName('emailAboutNewCommentsFromOffice'))
+        (await this.settingService.getSettingByName('emailAboutNewCommentsFromOffice'))
           .value === 'true';
 
       if (emailAboutNewCommentsFromOffice && authorType === 'user') {

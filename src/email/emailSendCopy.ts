@@ -1,14 +1,6 @@
 import * as imaps from 'imap-simple';
 import * as MailComposer from 'nodemailer/lib/mail-composer';
 
-interface IMAPConfig {
-  user: string;
-  password: string;
-  host: string;
-  port: number;
-  tls: boolean;
-}
-
 export async function saveToSentFolder(mailOptions: any) {
   const mail = new MailComposer(mailOptions);
   const user = process.env.EMAIL_USER;

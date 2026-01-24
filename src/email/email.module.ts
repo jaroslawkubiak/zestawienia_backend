@@ -7,12 +7,14 @@ import { SetsModule } from '../sets/sets.module';
 import { EmailController } from './email.controller';
 import { Email } from './email.entity';
 import { EmailService } from './email.service';
+import { SettingsModule } from '../settings/settings.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Email]),
     ErrorsModule,
     forwardRef(() => CommentsModule),
+    forwardRef(() => SettingsModule),
     forwardRef(() => SetsModule),
     forwardRef(() => PositionsModule),
   ],

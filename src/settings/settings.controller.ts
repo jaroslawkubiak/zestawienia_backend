@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Patch,
+  Post,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -22,8 +23,13 @@ export class SettingsController {
   }
 
   @Get(':name')
-  getByName(@Param('name') name: string): Promise<DbSettings> {
-    return this.settingsService.getByName(name);
+  getSettingByName(@Param('name') name: string): Promise<DbSettings> {
+    return this.settingsService.getSettingByName(name);
+  }
+
+  @Post('/getSettingByNames')
+  getSettingsByNames(@Body() names: string[]): Promise<DbSettings[]> {
+    return this.settingsService.getSettingsByNames(names);
   }
 
   @Patch()

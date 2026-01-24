@@ -9,7 +9,7 @@ Poprawić:
 [x] kopiuj link do klienta otwiera okno emaila
 [ ] wygląd/layout wszystkich komentarzy
 [ ] wygląd/layout linku dla dostawców
-[ ] wygląd/layout linku dla klientów
+[x] wygląd/layout linku dla klientów
 [x] /me jest także używane do external links
 [x] dodać folder z hashem do plików zestawień /uploads/sets/:setId/:setHash/positions
 [ ] przy usuwaniu set - usunąć komentarze i całą resztę z DB, przeliczyć ilość setCount dla client
@@ -26,7 +26,7 @@ Nowe do poprawy
 [x] w komentarzach imię i nazwisko
 [x] powiadomienie klienta po 10min od dodania ostatniego komentarza
 [ ] podsumowanie komentarzy dla klienta
-[ ] jak klient otworzy onko z komentarzami to ma automatycznie je odczytać
+[x] jak klient otworzy onko z komentarzami to ma automatycznie je odczytać
 [x] rok w stopkach automatycznie
 [x] lista emaili wysłanych - zły link do klienta
 [x] guzik zapisz na wysokości bookmarks po prawej
@@ -208,6 +208,8 @@ różne:
 [ ] endpoint na settings który przyjmuje listę stringów z name, np: sendingEmailsToCustomers, sendingEmailsToClient i zwraca obiekt z tymi danymi
 [ ] przenieść notification time do db settings
 [ ] przenieść comments delay time do db settings
+[x] przenieść rodo do db settings
+[ ] przenieść email template do db settings
 
 issue:
 [x] zmiana dostawcy w zestawieniach na ostatniej pozycji - menu się chowa pod tabele

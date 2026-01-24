@@ -1,15 +1,13 @@
-import { GDPRClause } from './GDPRclause';
 import { ICommentList } from './types/ICommentList';
+import { IHTMLTemplateOptions } from './types/IHTMLTemplateOptions';
 
 const ASSETS_URL = 'https://zestawienia.zurawickidesign.pl/assets/images';
 const currentYear = new Date().getFullYear();
 const socialColor = 'accent'; // black or accent
 
-export function createHTML(
-  header: string,
-  content: ICommentList[],
-  link: string,
-): string {
+export function createHTML(options: IHTMLTemplateOptions): string {
+  const { GDPRClause, link, header, message } = { ...options };
+
   return `
     ${HTMLheader}
     <!-- TITLE -->
@@ -24,7 +22,7 @@ export function createHTML(
       <td style="padding: 0px" colspan="2">
         <p>${header}</p>
         <p style="font-weight: bold">Nieprzeczytane komentarze: </p>
-        ${createCommentsTable(content)}
+        ${createCommentsTable(message)}
       </td>
     </tr>
 
@@ -38,7 +36,7 @@ export function createHTML(
     </tr>
 
     <!-- FOOTER MESSAGE + SOCIALS -->
-    ${HTMLfooter}
+    ${HTMLfooter(GDPRClause)}
     
     </table>
   </body>
@@ -71,7 +69,8 @@ const HTMLheader = `
     </tr>
 `;
 
-const HTMLfooter = `
+function HTMLfooter(GDPRClause: string): string {
+  return `
 <!-- FOOTER MESSAGE + SOCIALS -->
 <tr>
   <td>
@@ -141,6 +140,7 @@ const HTMLfooter = `
   </td>
 </tr>
 `;
+}
 
 function createCommentsTable(commentsList: ICommentList[]): string {
   let commentsTable = `

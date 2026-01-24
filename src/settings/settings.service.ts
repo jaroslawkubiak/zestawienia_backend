@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
 import { ErrorsType } from '../errors/types/Errors';
@@ -21,8 +21,23 @@ export class SettingsService {
     return this.settingsRepo.find();
   }
 
-  getByName(name: string): Promise<DbSettings> {
+  getSettingByName(name: string): Promise<DbSettings> {
     return this.settingsRepo.findOneBy({ name });
+  }
+
+  async getSettingsByNames(names: string[]): Promise<DbSettings[]> {
+    const settings = await this.settingsRepo.find({
+      where: {
+        name: In(names),
+      },
+    });
+
+    return settings.map((setting) => ({
+      id: setting.id,
+      name: setting.name,
+      value: setting.value,
+      type: setting.type,
+    }));
   }
 
   async saveSettings(

@@ -19,6 +19,7 @@ import {
   throwError,
 } from 'rxjs';
 import { DeepPartial, Repository } from 'typeorm';
+import { Bookmark } from '../bookmarks/bookmarks.entity';
 import { ClientLogsService } from '../client-logs/client-logs.service';
 import { Client } from '../clients/clients.entity';
 import { ClientsService } from '../clients/clients.service';
@@ -130,6 +131,7 @@ export class SetsService {
       .leftJoinAndSelect('set.files', 'files')
       .leftJoin('files.setId', 'fileSet')
       .addSelect(['fileSet.id'])
+      .orderBy('set.id', 'DESC')
       .getMany();
 
     // sort set files from newest to oldest
@@ -161,6 +163,8 @@ export class SetsService {
         .leftJoinAndSelect('set.files', 'files')
         .leftJoin('files.setId', 'fileSet')
         .addSelect(['fileSet.id', 'fileSet.hash'])
+        .leftJoin('set.lastBookmark', 'lastBookmark')
+        .addSelect(['lastBookmark.id'])
         .getOne(),
     ).pipe(
       mergeMap((set) => {
@@ -219,6 +223,9 @@ export class SetsService {
   }
 
   async create(createSet: NewSetDto, req: Request): Promise<ISavedSet> {
+    const bookmarks = createSet.bookmarks;
+    const minBookmarkId = Math.min(...bookmarks.map((b) => b.id));
+
     try {
       const newSet: DeepPartial<Set> = {
         ...createSet,
@@ -231,6 +238,7 @@ export class SetsService {
         createdAtTimestamp: Number(Date.now()),
         updatedAt: getFormatedDate(),
         updatedAtTimestamp: Number(Date.now()),
+        lastBookmark: { id: minBookmarkId } as Bookmark,
       };
 
       const response = await this.setsRepo.save(newSet);

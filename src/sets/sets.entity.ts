@@ -6,12 +6,13 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Bookmark } from '../bookmarks/bookmarks.entity';
 import { Client } from '../clients/clients.entity';
+import { Comment } from '../comments/comments.entity';
 import { Email } from '../email/email.entity';
+import { Files } from '../files/files.entity';
 import { Position } from '../position/positions.entity';
 import { User } from '../user/user.entity';
-import { Comment } from '../comments/comments.entity';
-import { Files } from '../files/files.entity';
 
 @Entity('set')
 export class Set {
@@ -29,6 +30,10 @@ export class Set {
 
   @Column({ type: 'json', nullable: false })
   bookmarks: any;
+
+  @ManyToOne(() => Bookmark, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'lastBookmark' })
+  lastBookmark: Bookmark;
 
   @Column({ type: 'varchar', length: 50, nullable: false })
   status: string;

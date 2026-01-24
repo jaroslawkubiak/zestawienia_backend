@@ -1,11 +1,13 @@
-import { IBookmark } from '../../bookmarks/types/IBookmark';
+import { Bookmark } from '../../bookmarks/bookmarks.entity';
+import { IBookmarksWithTableColumns } from '../../bookmarks/types/IBookmarksWithTableColumns';
 
 export interface ISavedSet {
   id: number;
   name: string;
   address: string;
   clientId: number;
-  bookmarks: IBookmark[];
+  bookmarks: IBookmarksWithTableColumns[];
+  lastBookmark: Bookmark;
   hash: string;
   status: string;
   createdAt: string;

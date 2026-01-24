@@ -1,5 +1,5 @@
+import { IBookmarksWithTableColumns } from '../../bookmarks/types/IBookmarksWithTableColumns';
 import { User } from '../../user/user.entity';
-import { IBookmark } from '../../bookmarks/types/IBookmark';
 
 export interface INewSet {
   id: number;
@@ -13,6 +13,6 @@ export interface INewSet {
   updatedAt: string;
   updatedAtTimestamp: number;
   clientId: number;
-  bookmarks: IBookmark[];
+  bookmarks: IBookmarksWithTableColumns[];
   hash: string;
 }

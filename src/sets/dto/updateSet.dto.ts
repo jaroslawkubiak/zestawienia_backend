@@ -6,6 +6,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { BookmarkDto } from '../../bookmarks/dto/bookmark.dto';
+import { LastBookmarkDto } from './lastBookmark.dto';
 
 export class UpdateSetDto {
   @IsString()
@@ -13,6 +14,10 @@ export class UpdateSetDto {
 
   @IsString()
   address: string;
+
+  @ValidateNested()
+  @Type(() => LastBookmarkDto)
+  lastBookmark: LastBookmarkDto;
 
   @IsArray()
   @ValidateNested({ each: true })

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { Bookmark } from './bookmarks.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { IBookmark } from './types/IBookmark';
+import { Bookmark } from './bookmarks.entity';
+import { IBookmarksWithTableColumns } from './types/IBookmarksWithTableColumns';
 
 @Injectable()
 export class BookmarksService {
@@ -11,7 +11,7 @@ export class BookmarksService {
     private readonly bookmarksRepo: Repository<Bookmark>,
   ) {}
 
-  findAll(): Promise<IBookmark[]> {
+  findAll(): Promise<IBookmarksWithTableColumns[]> {
     return this.bookmarksRepo.find();
   }
 }

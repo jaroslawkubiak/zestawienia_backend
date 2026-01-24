@@ -1,4 +1,4 @@
-import { IBookmark } from '../../bookmarks/types/IBookmark';
+import { IBookmarksWithTableColumns } from '../../bookmarks/types/IBookmarksWithTableColumns';
 import { ISupplier } from '../../suppliers/types/ISupplier';
 import { IUser } from '../../user/types/IUser';
 
@@ -26,7 +26,7 @@ export interface IPosition {
   updatedAt: string;
   updatedAtTimestamp: number;
   supplierId?: ISupplier;
-  bookmarkId: IBookmark;
+  bookmarkId: IBookmarksWithTableColumns;
   createdBy: IUser;
   updatedBy: IUser;
 }

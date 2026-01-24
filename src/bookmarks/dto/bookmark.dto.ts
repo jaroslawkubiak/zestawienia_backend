@@ -12,5 +12,5 @@ export class BookmarkDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => BookmarkWidthDto)
-  width: BookmarkWidthDto[];
+  columnWidth: BookmarkWidthDto[];
 }

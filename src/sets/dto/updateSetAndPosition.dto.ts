@@ -1,10 +1,5 @@
 import { Type } from 'class-transformer';
-import {
-  ArrayNotEmpty,
-  IsArray,
-  IsNumber,
-  ValidateNested,
-} from 'class-validator';
+import { IsArray, IsNumber, ValidateNested } from 'class-validator';
 import { UpdatePositionDto } from '../../position/dto/updatePosition.dto';
 import { UpdateSetDto } from './updateSet.dto';
 

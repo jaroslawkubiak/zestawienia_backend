@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import path from 'path';
 import { getDocument } from 'pdfjs-dist';
-import { safeFileName } from 'src/helpers/safeFileName';
+import { safeFileName } from '../helpers/safeFileName';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function generateThumbnailPdf(

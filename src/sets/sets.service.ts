@@ -33,6 +33,7 @@ import { HashService } from '../hash/hash.service';
 import { getClientIp } from '../helpers/getClientIp';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { ImagesService } from '../images/images.service';
+import { Position } from '../position/positions.entity';
 import { PositionsService } from '../position/positions.service';
 import { SupplierLogsService } from '../supplier-logs/supplier-logs.service';
 import { Supplier } from '../suppliers/suppliers.entity';
@@ -43,7 +44,7 @@ import { Set } from './sets.entity';
 import { ISavedSet } from './types/ISavedSet';
 import { ISet } from './types/ISet';
 import { ISetForSupplier } from './types/ISetForSupplier';
-import { IValidSet } from './types/IValidSet';
+import { IValidSetForSupplier } from './types/IValidSetForSupplier';
 import { SetStatus } from './types/SetStatus';
 
 @Injectable()
@@ -63,6 +64,9 @@ export class SetsService {
 
     @InjectRepository(Supplier)
     private readonly supplierRepo: Repository<Supplier>,
+
+    @InjectRepository(Position)
+    private readonly positionRepo: Repository<Position>,
 
     @Inject(forwardRef(() => ClientsService))
     private readonly clientsService: ClientsService,
@@ -373,7 +377,7 @@ export class SetsService {
     setHash: string,
     clientHash: string,
     req: Request,
-  ): Observable<IValidSet> {
+  ): Observable<any> {
     return from(
       this.setsRepo
         .createQueryBuilder('set')
@@ -404,14 +408,35 @@ export class SetsService {
     setHash: string,
     supplierHash: string,
     req: Request,
-  ): Observable<IValidSet> {
+  ): Observable<IValidSetForSupplier | null> {
     const set$ = from(
       this.setsRepo
         .createQueryBuilder('set')
-        .select(['set.id'])
+        .leftJoin('set.clientId', 'client')
+        .select([
+          'set.id',
+          'client.id',
+          'client.company',
+          'client.firstName',
+          'client.lastName',
+        ])
         .where('set.hash = :setHash', { setHash })
         .getOne(),
-    ).pipe(map((set) => set?.id ?? null));
+    ).pipe(
+      map((set) =>
+        set
+          ? {
+              setId: set.id,
+              client: {
+                id: set.clientId.id,
+                company: set.clientId.company,
+                firstName: set.clientId.firstName,
+                lastName: set.clientId.lastName,
+              },
+            }
+          : null,
+      ),
+    );
 
     const supplier$ = from(
       this.supplierRepo
@@ -422,8 +447,8 @@ export class SetsService {
     ).pipe(map((sup) => (sup ? { id: sup.id, company: sup.company } : null)));
 
     return forkJoin([set$, supplier$]).pipe(
-      map(([setId, supplier]) => {
-        const isValid = !!setId && !!supplier;
+      switchMap(([setData, supplier]) => {
+        const isValid = !!setData && !!supplier;
 
         this.supplierLogsService.createSupplierEntry({
           success: isValid,
@@ -433,12 +458,39 @@ export class SetsService {
           user_agent: req.headers['user-agent'] ?? null,
         });
 
-        return {
-          valid: isValid,
-          setId,
-          supplierId: supplier.id,
-          supplierCompany: supplier.company,
-        };
+        // hashes are not good - return null
+        if (!isValid) {
+          return of(null);
+        }
+
+        // both hashes are good - get position data
+        return from(
+          this.positionRepo
+            .createQueryBuilder('position')
+            .where('position.setId = :setId', { setId: setData.setId })
+            .andWhere('position.supplierId = :supplierId', {
+              supplierId: supplier.id,
+            })
+            .orderBy('position.bookmarkId', 'ASC')
+            .addOrderBy('position.kolejnosc', 'ASC')
+            .getMany(),
+        ).pipe(
+          map((positions) => ({
+            valid: true,
+            setId: setData.setId,
+            supplier: {
+              id: supplier.id,
+              company: supplier.company,
+            },
+            client: {
+              id: setData.client?.id ?? null,
+              company: setData.client?.company ?? null,
+              firstName: setData.client?.firstName ?? null,
+              lastName: setData.client?.lastName ?? null,
+            },
+            positions,
+          })),
+        );
       }),
     );
   }

@@ -15,14 +15,6 @@ export class PositionsController {
     return this.positionsService.getPositions(+setId);
   }
 
-  @Get('/:setId/:supplierId')
-  getPositionsForSupplier(
-    @Param('setId') setId: string,
-    @Param('supplierId') supplierId: string,
-  ): Observable<IPosition[]> {
-    return this.positionsService.getPositionsForSuppliers(+setId, +supplierId);
-  }
-
   @UseGuards(JwtAuthGuard)
   @Post('/new')
   addPosition(@Body() newPosition: CreateEmptyPositionDto): Promise<IPosition> {

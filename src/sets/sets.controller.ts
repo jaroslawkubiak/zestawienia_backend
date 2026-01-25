@@ -17,6 +17,7 @@ import { UpdateSetAndPositionDto } from './dto/updateSetAndPosition.dto';
 import { SetsService } from './sets.service';
 import { ISavedSet } from './types/ISavedSet';
 import { ISet } from './types/ISet';
+import { IValidSetForSupplier } from './types/IValidSetForSupplier';
 
 @Controller('sets')
 export class SetsController {
@@ -44,6 +45,7 @@ export class SetsController {
     return this.setsService.update(+id, updateSetDto, req);
   }
 
+  //TODO potrzebny jest bez guarda? nie, to external client na niego dzwoni
   @Get('/:setId/getSet')
   findSet(@Param('setId') setId: string): Observable<ISet> {
     return this.setsService.getSet(+setId);
@@ -53,5 +55,19 @@ export class SetsController {
   @Delete(':id')
   remove(@Param('id') id: number) {
     return this.setsService.remove(+id);
+  }
+
+  // external link for suppliers
+  @Get('/:hash/:supplierHash')
+  validateSetAndHashForSupplier(
+    @Param('hash') hash: string,
+    @Param('supplierHash') supplierHash: string,
+    @Req() req: Request,
+  ): Observable<IValidSetForSupplier> {
+    return this.setsService.validateSetAndHashForSupplier(
+      hash,
+      supplierHash,
+      req,
+    );
   }
 }

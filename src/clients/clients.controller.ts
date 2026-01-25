@@ -13,7 +13,7 @@ import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { SetsService } from '../sets/sets.service';
-import { IValidSet } from '../sets/types/IValidSet';
+import { IValidSetForSupplier } from '../sets/types/IValidSetForSupplier';
 import { ClientsService } from './clients.service';
 import { CreateClientDto, UpdateClientDto } from './dto/client.dto';
 import { IClient } from './types/IClient';
@@ -31,7 +31,7 @@ export class ClientsController {
     @Param('setHash') setHash: string,
     @Param('clientHash') clientHash: string,
     @Req() req: Request,
-  ): Observable<IValidSet> {
+  ): Observable<IValidSetForSupplier> {
     return this.setsService.validateSetAndHashForClient(
       setHash,
       clientHash,

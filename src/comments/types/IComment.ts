@@ -1,6 +1,3 @@
-import { IPosition } from '../../position/types/IPosition';
-import { ISet } from '../../sets/types/ISet';
-
 export interface IComment {
   id: number;
   comment: string;
@@ -10,8 +7,8 @@ export interface IComment {
   needsAttention: boolean;
   createdAt: string;
   createdAtTimestamp: number;
-  positionId: IPosition;
-  setId: ISet;
+  positionId: { id: number };
+  setId: { id: number };
   authorName?: string;
   notificationSend?: boolean;
 }

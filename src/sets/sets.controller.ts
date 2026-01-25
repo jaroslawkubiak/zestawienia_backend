@@ -17,6 +17,7 @@ import { UpdateSetAndPositionDto } from './dto/updateSetAndPosition.dto';
 import { SetsService } from './sets.service';
 import { ISavedSet } from './types/ISavedSet';
 import { ISet } from './types/ISet';
+import { IValidSetForClient } from './types/IValidSetForClient';
 import { IValidSetForSupplier } from './types/IValidSetForSupplier';
 
 @Controller('sets')
@@ -45,7 +46,6 @@ export class SetsController {
     return this.setsService.update(+id, updateSetDto, req);
   }
 
-  //TODO potrzebny jest bez guarda? nie, to external client na niego dzwoni
   @Get('/:setId/getSet')
   findSet(@Param('setId') setId: string): Observable<ISet> {
     return this.setsService.getSet(+setId);
@@ -58,15 +58,29 @@ export class SetsController {
   }
 
   // external link for suppliers
-  @Get('/:hash/:supplierHash')
+  @Get('open-for-supplier/:setHash/:supplierHash')
   validateSetAndHashForSupplier(
-    @Param('hash') hash: string,
+    @Param('setHash') setHash: string,
     @Param('supplierHash') supplierHash: string,
     @Req() req: Request,
-  ): Observable<IValidSetForSupplier> {
+  ): Observable<IValidSetForSupplier | null> {
     return this.setsService.validateSetAndHashForSupplier(
-      hash,
+      setHash,
       supplierHash,
+      req,
+    );
+  }
+
+  // external link for clients
+  @Get('open-for-client/:setHash/:clientHash')
+  validateSetAndHashForClient(
+    @Param('setHash') setHash: string,
+    @Param('clientHash') clientHash: string,
+    @Req() req: Request,
+  ): Observable<IValidSetForClient | null> {
+    return this.setsService.validateSetAndHashForClient(
+      setHash,
+      clientHash,
       req,
     );
   }

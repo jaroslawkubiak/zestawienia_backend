@@ -14,7 +14,6 @@ Poprawić:
 [x] dodać folder z hashem do plików zestawień /uploads/sets/:setId/:setHash/positions
 [ ] przy usuwaniu set - usunąć komentarze i całą resztę z DB, przeliczyć ilość setCount dla client
 [ ] przy usuwaniu pozycji usunąć też image oraz posCount w supplier
-[ ] linki w komentarzach. mają działać
 [x] jak klient wrzuca pliki to nie uaktualnia się badge z ilością
 [x] jak klient wruci plik to badge się uaktualnie, ale po otwarciu show-files nie widać tego pliku - trzeba dodać nowy plik do listy plików
 
@@ -30,6 +29,7 @@ Nowe do poprawy
 [x] rok w stopkach automatycznie
 [x] lista emaili wysłanych - zły link do klienta
 [x] guzik zapisz na wysokości bookmarks po prawej
+[ ] nie odświeża badge po usunięciu pliku
 
 MOBILE VIEW:
 [x] notification jest lekko ucięta z lewej strony
@@ -120,6 +120,7 @@ Załączniki zestawienia:
 [x] podgląd minatur pliku pdf
 [x] pobieranie załączników na dysk
 [x] usuwanie załączników
+[ ] dodawanie opisów do załączników - np żeby pod dołączoną inspiracją napisać co konkretnie nam się podoba
 
 Generowanie zestawienia w formie PDF:
 [x] generowanie PDF! :)
@@ -180,6 +181,8 @@ comments:
 [x] edycja komentarzy usera
 [x] usuwanie komentarzy usera
 [x] oznaczanie które komentarze klienta są nieprzeczytane
+[ ] ogólne komentarze dla całego zestawienia, nie pod konkretną pozycję.
+[ ] linki w komentarzach. mają działać
 
 status:
 [x] nowe zestawienie ze statusem nowe, przy dodaniu pierwszej pozycji zmiana statusu na w przygotowaniu i blokada usuwania

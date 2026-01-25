@@ -44,6 +44,7 @@ import { Set } from './sets.entity';
 import { ISavedSet } from './types/ISavedSet';
 import { ISet } from './types/ISet';
 import { ISetForSupplier } from './types/ISetForSupplier';
+import { IValidSetForClient } from './types/IValidSetForClient';
 import { IValidSetForSupplier } from './types/IValidSetForSupplier';
 import { SetStatus } from './types/SetStatus';
 
@@ -373,37 +374,6 @@ export class SetsService {
     await this.filesService.removeFilesFromSet(id);
   }
 
-  validateSetAndHashForClient(
-    setHash: string,
-    clientHash: string,
-    req: Request,
-  ): Observable<any> {
-    return from(
-      this.setsRepo
-        .createQueryBuilder('set')
-        .innerJoin('set.clientId', 'client')
-        .where('set.hash = :setHash', { setHash })
-        .andWhere('client.hash = :clientHash', { clientHash })
-        .select(['set.id'])
-        .getOne(),
-    ).pipe(
-      map((set) => {
-        const isValid = !!set;
-        const setId = set?.id ?? null;
-
-        this.clientLogsService.createClientEntry({
-          success: isValid,
-          req_setHash: setHash,
-          req_clientHash: clientHash,
-          ip_address: getClientIp(req),
-          user_agent: req.headers['user-agent'] ?? null,
-        });
-
-        return { valid: isValid, setId };
-      }),
-    );
-  }
-
   validateSetAndHashForSupplier(
     setHash: string,
     supplierHash: string,
@@ -441,10 +411,26 @@ export class SetsService {
     const supplier$ = from(
       this.supplierRepo
         .createQueryBuilder('supplier')
-        .select(['supplier.id', 'supplier.company'])
+        .select([
+          'supplier.id',
+          'supplier.company',
+          'supplier.firstName',
+          'supplier.lastName',
+        ])
         .where('supplier.hash = :supplierHash', { supplierHash })
         .getOne(),
-    ).pipe(map((sup) => (sup ? { id: sup.id, company: sup.company } : null)));
+    ).pipe(
+      map((sup) =>
+        sup
+          ? {
+              id: sup.id,
+              company: sup.company,
+              firstName: sup.firstName,
+              lastName: sup.lastName,
+            }
+          : null,
+      ),
+    );
 
     return forkJoin([set$, supplier$]).pipe(
       switchMap(([setData, supplier]) => {
@@ -481,6 +467,8 @@ export class SetsService {
             supplier: {
               id: supplier.id,
               company: supplier.company,
+              firstName: supplier.firstName,
+              lastName: supplier.lastName,
             },
             client: {
               id: setData.client?.id ?? null,
@@ -490,6 +478,63 @@ export class SetsService {
             },
             positions,
           })),
+        );
+      }),
+    );
+  }
+
+  validateSetAndHashForClient(
+    setHash: string,
+    clientHash: string,
+    req: Request,
+  ): Observable<IValidSetForClient | null> {
+    const set$ = from(
+      this.setsRepo
+        .createQueryBuilder('set')
+        .innerJoin('set.clientId', 'client')
+        .where('set.hash = :setHash', { setHash })
+        .andWhere('client.hash = :clientHash', { clientHash })
+        .select(['set.id'])
+        .getOne(),
+    );
+
+    return set$.pipe(
+      switchMap((set) => {
+        const isValid = !!set;
+
+        this.clientLogsService.createClientEntry({
+          success: isValid,
+          req_setHash: setHash,
+          req_clientHash: clientHash,
+          ip_address: getClientIp(req),
+          user_agent: req.headers['user-agent'] ?? null,
+        });
+
+        if (!isValid) return of(null);
+
+        const setId = set.id;
+
+        const setDetails$ = from(this.getSet(setId));
+        const comments$ = from(this.commentsService.findBySetId(setId));
+        const positions$ = this.positionsService.getPositions(setId);
+
+        return forkJoin([setDetails$, comments$, positions$]).pipe(
+          map(([set, comments, positions]) => {
+            const newCommentsCount =
+              comments?.filter((c) => !c.seenAt).length ?? 0;
+            const fullName = `${set.clientId.firstName} ${set.clientId.lastName}`;
+
+            return {
+              valid: true,
+              set: {
+                ...set,
+                comments,
+                newComments: newCommentsCount,
+                fullName,
+              },
+              positions,
+            } as IValidSetForClient;
+          }),
         );
       }),
     );

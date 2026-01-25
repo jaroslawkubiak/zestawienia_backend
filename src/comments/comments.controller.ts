@@ -14,13 +14,14 @@ import { CreateCommentDto, UpdateCommentDto } from './dto/comment.dto';
 import { IMarkAllAsSeen } from './dto/markAllAsSeen.dto';
 import { IMarkAllComments } from './dto/markAllComments.dto';
 import { IComment } from './types/IComment';
+import { IUnreadComments } from './types/IUnreadComments';
 
 @Controller('comments')
 export class CommentsController {
   constructor(private commentsService: CommentsService) {}
 
-  @Get('unread')
-  async unreadComments(): Promise<number> {
+  @Get('unreadComments')
+  async unreadComments(): Promise<IUnreadComments> {
     return this.commentsService.unreadComments();
   }
 

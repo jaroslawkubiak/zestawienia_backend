@@ -21,6 +21,7 @@ import { CreateCommentDto, UpdateCommentDto } from './dto/comment.dto';
 import { IMarkAllAsSeen } from './dto/markAllAsSeen.dto';
 import { IMarkAllComments } from './dto/markAllComments.dto';
 import { IComment } from './types/IComment';
+import { IUnreadComments } from './types/IUnreadComments';
 
 @Injectable()
 export class CommentsService {
@@ -162,8 +163,11 @@ export class CommentsService {
        *  TIMER 1: client → office
        * ------------------------------ */
       const emailAboutNewCommentsFromClient =
-        (await this.settingService.getSettingByName('emailAboutNewCommentsFromClient'))
-          .value === 'true';
+        (
+          await this.settingService.getSettingByName(
+            'emailAboutNewCommentsFromClient',
+          )
+        ).value === 'true';
 
       if (emailAboutNewCommentsFromClient && authorType === 'client') {
         if (this.clientTimers.has(setId)) {
@@ -182,8 +186,11 @@ export class CommentsService {
        *  TIMER 2: office → client
        * ------------------------------ */
       const emailAboutNewCommentsFromOffice =
-        (await this.settingService.getSettingByName('emailAboutNewCommentsFromOffice'))
-          .value === 'true';
+        (
+          await this.settingService.getSettingByName(
+            'emailAboutNewCommentsFromOffice',
+          )
+        ).value === 'true';
 
       if (emailAboutNewCommentsFromOffice && authorType === 'user') {
         if (this.userTimers.has(setId)) {
@@ -417,11 +424,19 @@ export class CommentsService {
     await this.commentRepo.delete(id);
   }
 
-  async unreadComments(): Promise<number> {
-    return this.commentRepo
+  async unreadComments(): Promise<IUnreadComments> {
+    const result = await this.commentRepo
       .createQueryBuilder('c')
+      .select([
+        `SUM(CASE WHEN c.seenAt IS NULL THEN 1 ELSE 0 END) AS unread`,
+        `SUM(CASE WHEN c.needsAttention = true THEN 1 ELSE 0 END) AS needsAttention`,
+      ])
       .where('c.authorType = :authorType', { authorType: 'client' })
-      .andWhere('(c.seenAt IS NULL OR c.needsAttention = true)')
-      .getCount();
+      .getRawOne();
+
+    return {
+      unread: Number(result.unread),
+      needsAttention: Number(result.needsAttention),
+    };
   }
 }

@@ -385,6 +385,7 @@ export class SetsService {
         .leftJoin('set.clientId', 'client')
         .select([
           'set.id',
+          'set.name',
           'client.id',
           'client.company',
           'client.firstName',
@@ -393,10 +394,12 @@ export class SetsService {
         .where('set.hash = :setHash', { setHash })
         .getOne(),
     ).pipe(
-      map((set) =>
-        set
+      map((set) => {
+        console.log('Fetched set:', set); // <-- tutaj logujesz
+        return set
           ? {
               setId: set.id,
+              setName: set.name,
               client: {
                 id: set.clientId.id,
                 company: set.clientId.company,
@@ -404,8 +407,8 @@ export class SetsService {
                 lastName: set.clientId.lastName,
               },
             }
-          : null,
-      ),
+          : null;
+      }),
     );
 
     const supplier$ = from(
@@ -464,6 +467,7 @@ export class SetsService {
           map((positions) => ({
             valid: true,
             setId: setData.setId,
+            setName: setData.setName,
             supplier: {
               id: supplier.id,
               company: supplier.company,

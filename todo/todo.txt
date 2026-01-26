@@ -167,7 +167,7 @@ Dostawcy:
 [x] nowa kolumna dane firmy: adres, nip - textarea
 [x] guzik kopiowania adresu do schowka
 [x] gdy nie ma wpisanego linku produktu to nadal mam napis link w tabeli
-[ ] dostawca ma widzieć wszystkie dane klienta i nazwę inwestycji
+[x] dostawca ma widzieć wszystkie dane klienta i nazwę inwestycji
 [ ] dostawca: kolejność kolumna taka sama, ukryć: ceny i wartości, status, footer
 
 comments:

@@ -11,4 +11,5 @@ export interface IComment {
   setId: { id: number };
   authorName?: string;
   notificationSend?: boolean;
+  avatar?: string;
 }

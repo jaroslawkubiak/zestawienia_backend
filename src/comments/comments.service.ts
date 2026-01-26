@@ -93,7 +93,10 @@ export class CommentsService {
           authorName = user?.name;
         }
 
-        return { ...item, authorName };
+        const avatar =
+          item.authorType === 'user' ? item.authorId.toString() : 'default';
+
+        return { ...item, authorName, avatar };
       }),
     );
 

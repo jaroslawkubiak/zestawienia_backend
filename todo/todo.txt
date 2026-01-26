@@ -7,8 +7,8 @@ Poprawić:
 [x] klik poza modalem zamyka go
 [x] gdy usuwasz klienta bez nazwy firmy - pusto w komunikacie
 [x] kopiuj link do klienta otwiera okno emaila
-[ ] wygląd/layout wszystkich komentarzy
-[ ] wygląd/layout linku dla dostawców
+[ ] wygląd/layout wszystkich komentarzy dla userów
+[x] wygląd/layout linku dla dostawców
 [x] wygląd/layout linku dla klientów
 [x] /me jest także używane do external links
 [x] dodać folder z hashem do plików zestawień /uploads/sets/:setId/:setHash/positions
@@ -56,7 +56,7 @@ Admin:
 [x] Logowania użytkowników
 [ ] ukryte menu admina
 [ ] lista logowań użytkowników
-[ ] lista "logowań" kleintów
+[ ] lista "logowań" klientów
 [ ] lista "logowań" dostawców
 [ ] system logowania błędów
 [ ] lista błędów
@@ -75,7 +75,7 @@ Nowe zestawienie
 [x] zapis pozycji do db
 [x] aktualizacja setCount w klientach
 [x] adres inwestycji: textarea
-[ ] zapamiętywanie ostatnio aktywnej zakładki i wczytywanie jej przy ponownym otwarciu zestawienia
+[x] zapamiętywanie ostatnio aktywnej zakładki i wczytywanie jej przy ponownym otwarciu zestawienia
 
 Edycja zestawienia:
 [x] zmiana pozycji poprzed drag and drop i update property kolejność w db
@@ -168,7 +168,7 @@ Dostawcy:
 [x] guzik kopiowania adresu do schowka
 [x] gdy nie ma wpisanego linku produktu to nadal mam napis link w tabeli
 [x] dostawca ma widzieć wszystkie dane klienta i nazwę inwestycji
-[ ] dostawca: kolejność kolumna taka sama, ukryć: ceny i wartości, status, footer
+[x] dostawca: kolejność kolumna taka sama, ukryć: ceny i wartości, status, footer
 
 comments:
 [x] powiadomienie przy guziku komentarzy o ilości:
@@ -182,7 +182,7 @@ comments:
 [x] usuwanie komentarzy usera
 [x] oznaczanie które komentarze klienta są nieprzeczytane
 [ ] ogólne komentarze dla całego zestawienia, nie pod konkretną pozycję.
-[ ] linki w komentarzach. mają działać
+[x] linki w komentarzach. mają działać
 
 status:
 [x] nowe zestawienie ze statusem nowe, przy dodaniu pierwszej pozycji zmiana statusu na w przygotowaniu i blokada usuwania
@@ -208,9 +208,7 @@ DB:
 [x] Pozycje: dodać createBy, updateBy, CreateDate, UpdateDate, createTimestamp, updateTimestamp
 
 różne:
-[ ] endpoint na settings który przyjmuje listę stringów z name, np: sendingEmailsToCustomers, sendingEmailsToClient i zwraca obiekt z tymi danymi
-[ ] przenieść notification time do db settings
-[ ] przenieść comments delay time do db settings
+[x] endpoint na settings który przyjmuje listę stringów z name, np: sendingEmailsToCustomers, sendingEmailsToClient i zwraca obiekt z tymi danymi
 [x] przenieść rodo do db settings
 [ ] przenieść email template do db settings
 
@@ -247,7 +245,6 @@ PRODUCTION ISSUE:
 backend:
 [ ] logowania błędów
 [ ] intereceptor dla wszystkich 400 i 500 
-[ ] w types w files mam 2 podobne pliki, może można zrobić 1
 
 Doprecyzować:
 [ ] kolory statusów
@@ -256,4 +253,4 @@ Doprecyzować:
 [ ] Domyślne treści emaili: do klienta, do dostawcy, z podsumowaniem komentarzy
 
 
-wysysłam email z aplikacji nestjs. email zawiera obrazki które po otwarciu emaila nie są widoczne dopóki nie kliknę wczytaj zawartość. można to jakoś obejść?
+[ ] wysysłam email z aplikacji nestjs. email zawiera obrazki które po otwarciu emaila nie są widoczne dopóki nie kliknę wczytaj zawartość. można to jakoś obejść?

@@ -394,9 +394,8 @@ export class SetsService {
         .where('set.hash = :setHash', { setHash })
         .getOne(),
     ).pipe(
-      map((set) => {
-        console.log('Fetched set:', set); // <-- tutaj logujesz
-        return set
+      map((set) =>
+        set
           ? {
               setId: set.id,
               setName: set.name,
@@ -407,8 +406,8 @@ export class SetsService {
                 lastName: set.clientId.lastName,
               },
             }
-          : null;
-      }),
+          : null,
+      ),
     );
 
     const supplier$ = from(

@@ -20,7 +20,6 @@ export interface IPosition {
   status: string;
   acceptedAt: string;
   acceptedAtTimestamp: number;
-  acceptedStatus: string;
   createdAt: string;
   createdAtTimestamp: number;
   updatedAt: string;

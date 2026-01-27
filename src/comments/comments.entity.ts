@@ -35,7 +35,7 @@ export class Comment {
   createdAtTimestamp: number | null;
 
   @ManyToOne(() => Position, (position) => position.comments, {
-    onDelete: 'SET NULL',
+    onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'positionId', referencedColumnName: 'id' })
   positionId: Position;

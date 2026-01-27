@@ -60,9 +60,6 @@ export class Position {
   status: string;
 
   @Column({ type: 'varchar', length: 50, nullable: true })
-  acceptedStatus: string;
-
-  @Column({ type: 'varchar', length: 50, nullable: true })
   acceptedAt: string;
 
   @Column({ type: 'bigint', nullable: true })

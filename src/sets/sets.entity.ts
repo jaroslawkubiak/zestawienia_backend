@@ -78,7 +78,9 @@ export class Set {
   })
   email: Email[];
 
-  @OneToMany(() => Comment, (comment) => comment.setId)
+  @OneToMany(() => Comment, (comment) => comment.setId, {
+    onDelete: 'CASCADE',
+  })
   comments: Comment[];
 
   @OneToMany(() => Files, (file) => file.setId)

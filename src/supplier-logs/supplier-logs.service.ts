@@ -1,18 +1,18 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
+import { ClientsService } from '../clients/clients.service';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { SetsService } from '../sets/sets.service';
 import { SuppliersService } from '../suppliers/suppliers.service';
 import { SupplierLogs } from './supplier-logs.entity';
 import { ISupplierLogs } from './types/ISupplierLogs';
-import { ClientsService } from '../clients/clients.service';
 
 @Injectable()
 export class SupplierLogsService {
   constructor(
     @InjectRepository(SupplierLogs)
-    private readonly supplierLogsRepo: Repository<SupplierLogs>,
+    private readonly supplierLogsRepository: Repository<SupplierLogs>,
 
     @Inject(forwardRef(() => SetsService))
     private readonly setsService: SetsService,
@@ -40,20 +40,26 @@ export class SupplierLogsService {
         null
       : null;
 
-    const createData: ISupplierLogs = {
-      ...data,
+    const createData: DeepPartial<SupplierLogs> = {
+      success: data.success,
       supplier_name: supplier ? supplier.company || null : null,
       client_name,
-      set: set || null,
-      supplier: supplier || null,
-      client: client || null,
+      req_setHash,
+      req_supplierHash,
       date: getFormatedDate(),
-      timestamp: Number(Date.now()),
+      timestamp: Date.now(),
+      set: set ? { id: set?.id } : null,
+      supplier: supplier ? { id: supplier?.id } : null,
+      client: client ? { id: client?.id } : null,
+      ip_address: data.ip_address ?? null,
+      user_agent: data.user_agent ?? null,
     };
-    const entry = this.supplierLogsRepo.create(createData);
+    const entry = this.supplierLogsRepository.create(createData);
 
-    this.supplierLogsRepo.save(entry).catch((err) => {
+    try {
+      await this.supplierLogsRepository.save(entry);
+    } catch (err) {
       console.error('Error saving supplier login entry:', err);
-    });
+    }
   }
 }

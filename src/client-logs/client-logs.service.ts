@@ -1,7 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import { ClientsService } from '../clients/clients.service';
-import { Repository } from 'typeorm';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { SetsService } from '../sets/sets.service';
 import { ClientLogs } from './client-logs.entity';
@@ -11,7 +11,7 @@ import { IClientLogs } from './types/IClientLogs';
 export class ClientLogsService {
   constructor(
     @InjectRepository(ClientLogs)
-    private readonly clientLogsRepo: Repository<ClientLogs>,
+    private readonly clientLogsRepository: Repository<ClientLogs>,
 
     @Inject(forwardRef(() => SetsService))
     private readonly setsService: SetsService,
@@ -24,7 +24,6 @@ export class ClientLogsService {
     const { req_setHash, req_clientHash } = data;
 
     const set = await this.setsService.findOneByHash(req_setHash);
-
     const clientId = set?.clientId?.id;
     const client = clientId
       ? await this.clientsService.findOne(clientId)
@@ -35,21 +34,21 @@ export class ClientLogsService {
         null
       : null;
 
-    const createData: IClientLogs = {
+    const createData: DeepPartial<ClientLogs> = {
       ...data,
       client_name,
-      set: set || null,
-      client,
+      set: set ? { id: set?.id } : null,
+      client: client ? { id: client?.id } : null,
       req_setHash,
       req_clientHash,
       date: getFormatedDate(),
       timestamp: Date.now(),
     };
 
-    const entry = this.clientLogsRepo.create(createData);
+    const entry = this.clientLogsRepository.create(createData);
 
     try {
-      await this.clientLogsRepo.save(entry);
+      await this.clientLogsRepository.save(entry);
     } catch (err) {
       console.error('Error saving client login entry:', err);
     }

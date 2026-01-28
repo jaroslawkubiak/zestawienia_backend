@@ -1,13 +1,12 @@
-import { ISet } from '../../sets/types/ISet';
-
 export interface IFileFullDetails {
   id: number;
   fileName: string;
   type: string;
+  thumbnail: string;
   path: string;
   dir: string;
   originalName: string;
-  setId: ISet;
+  setId: number;
   size: number;
   width: number;
   height: number;

@@ -9,7 +9,7 @@ import { PDFDocument } from 'pdf-lib';
 import { Repository } from 'typeorm';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { Files } from './files.entity';
-import { generateThumbnailPdf } from './generateThumbnailPdf';
+import { IDeletedFileResponse } from './types/IDeletedFileResponse';
 import { IFileDetails } from './types/IFileDetails';
 import { IFileFullDetails } from './types/IFileFullDetails';
 import { IProcessFile } from './types/IProcessFile';
@@ -20,19 +20,27 @@ export class FilesService {
 
   constructor(
     @InjectRepository(Files)
-    private readonly filesRepo: Repository<Files>,
+    private readonly filesRepository: Repository<Files>,
   ) {}
 
-  async findOne(id: number): Promise<IFileFullDetails> {
-    return this.filesRepo.findOneBy({ id });
+  async findOneFile(id: number): Promise<IFileFullDetails> {
+    const oneFile = await this.filesRepository.findOne({
+      where: { id },
+      relations: ['setId'],
+    });
+
+    const returnedFile: IFileFullDetails = {
+      ...oneFile,
+      createdAtTimestamp: +oneFile.createdAtTimestamp!,
+      setId: oneFile.setId?.id ?? null,
+    };
+
+    return returnedFile;
   }
 
   // find one file in set for download
-  async findOneFileInSet(
-    setId: number,
-    fileId: number,
-  ): Promise<IFileFullDetails> {
-    return this.filesRepo
+  async findOneFileInSet(setId: number, fileId: number): Promise<Files> {
+    return this.filesRepository
       .createQueryBuilder('file')
       .where('file.id = :fileId', { fileId })
       .andWhere('file.setId = :setId', { setId })
@@ -40,20 +48,20 @@ export class FilesService {
   }
 
   // save file info in db
-  async create(file: IFileDetails): Promise<IFileFullDetails> {
-    const newFile = {
+  async createFileEntry(file: IFileDetails): Promise<any> {
+    const newFile = this.filesRepository.create({
       ...file,
+      setId: { id: Number(file.setId) },
       createdAt: getFormatedDate(),
-      createdAtTimestamp: Number(Date.now()),
-    };
+      createdAtTimestamp: Date.now(),
+    });
 
-    const savedFile = this.filesRepo.create(newFile);
-    return this.filesRepo.save(savedFile);
+    return this.filesRepository.save(newFile);
   }
 
   // delete file from set
-  async deleteFile(id: number) {
-    const fileToDelete = await this.findOne(id);
+  async deleteFile(id: number): Promise<IDeletedFileResponse> {
+    const fileToDelete = await this.findOneFile(id);
     const filePath = path.join(
       this.baseUploadPath,
       fileToDelete.path,
@@ -97,18 +105,18 @@ export class FilesService {
   }
 
   async removeFromDB(id: number): Promise<void> {
-    await this.filesRepo.delete(id);
+    await this.filesRepository.delete(id);
   }
 
   async removeFilesFromSet(setId: number): Promise<void> {
-    await this.filesRepo.delete({ setId: { id: setId } });
+    await this.filesRepository.delete({ setId: { id: setId } });
   }
 
   async downloadByIds(ids: number[]): Promise<archiver.Archiver> {
     const archive = archiver('zip', { zlib: { level: 9 } });
 
     for (const id of ids) {
-      const file: IFileFullDetails = await this.findOne(id);
+      const file: IFileFullDetails = await this.findOneFile(id);
       if (!file) {
         return;
       }
@@ -161,10 +169,10 @@ export class FilesService {
       thumbnailFileName: '',
     };
     const outputDir = (file as any).absoluteUploadPath + '\\thumbnail';
-    
+
     const pdfDoc = await PDFDocument.load(fileBuffer);
     const size = pdfDoc.getPage(0).getSize();
-    
+
     const PT_TO_MM = 25.4 / 72; // convert point to mm in PDF
     fileDetails.dimensions = {
       width: Math.floor(size.width * PT_TO_MM),

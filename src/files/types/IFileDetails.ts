@@ -1,4 +1,3 @@
-import { ISet } from '../../sets/types/ISet';
 
 export interface IFileDetails {
   fileName: string;
@@ -6,7 +5,7 @@ export interface IFileDetails {
   path: string;
   dir: string;
   originalName: string;
-  setId: ISet;
+  setId: number;
   size: number;
   width: number;
   height: number;

@@ -24,6 +24,7 @@ import { IFileDetails } from './types/IFileDetails';
 import { IFileFullDetails } from './types/IFileFullDetails';
 import { IProcessFile } from './types/IProcessFile';
 import * as iconv from 'iconv-lite';
+import { IDeletedFileResponse } from './types/IDeletedFileResponse';
 
 @Controller('files')
 export class FilesController {
@@ -140,7 +141,7 @@ export class FilesController {
     );
 
     const addedFiles: IFileFullDetails[] = await Promise.all(
-      fileDetailsList.map((file) => this.filesService.create(file)),
+      fileDetailsList.map((file) => this.filesService.createFileEntry(file)),
     );
 
     const returnMessage = this.filesService.returnUploadMessage(
@@ -157,7 +158,7 @@ export class FilesController {
 
   // delete files from set id dir
   @Delete(':id/deleteFile')
-  remove(@Param('id') id: string) {
+  deleteFile(@Param('id') id: string): Promise<IDeletedFileResponse> {
     return this.filesService.deleteFile(+id);
   }
 

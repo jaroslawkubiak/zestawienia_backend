@@ -572,6 +572,7 @@ export class SetsService {
         type: file.type,
         path: file.path,
         dir: file.dir,
+        thumbnail: file.thumbnail,
         originalName: file.originalName,
         size: file.size,
         width: file.width,

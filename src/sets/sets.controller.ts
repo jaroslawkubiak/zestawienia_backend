@@ -26,14 +26,17 @@ export class SetsController {
 
   @UseGuards(JwtAuthGuard)
   @Get('getSets')
-  findAll() {
-    return this.setsService.findAll();
+  findAllSets() {
+    return this.setsService.findAllSets();
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('addNew')
-  create(@Body() newSet: NewSetDto, @Req() req: Request): Promise<ISavedSet> {
-    return this.setsService.create(newSet, req);
+  createSet(
+    @Body() newSet: NewSetDto,
+    @Req() req: Request,
+  ): Promise<ISavedSet> {
+    return this.setsService.createSet(newSet, req);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -42,19 +45,19 @@ export class SetsController {
     @Param('id') id: string,
     @Body() updateSetDto: UpdateSetAndPositionDto,
     @Req() req: Request,
-  ): Promise<any> {
-    return this.setsService.update(+id, updateSetDto, req);
+  ): Promise<ISet> {
+    return this.setsService.updateSet(+id, updateSetDto, req);
   }
 
   @Get('/:setId/getSet')
-  findSet(@Param('setId') setId: string): Observable<ISet> {
+  getSet(@Param('setId') setId: string): Observable<ISet> {
     return this.setsService.getSet(+setId);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.setsService.remove(+id);
+  removeSet(@Param('id') id: number) {
+    return this.setsService.removeSet(+id);
   }
 
   // external link for suppliers

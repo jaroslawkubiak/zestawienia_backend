@@ -1,10 +1,10 @@
 import { Type } from 'class-transformer';
-import { IsArray, IsNumber, ValidateNested } from 'class-validator';
+import { IsArray, IsDefined, IsNumber, ValidateNested } from 'class-validator';
 import { UpdatePositionDto } from '../../position/dto/updatePosition.dto';
 import { UpdateSetDto } from './updateSet.dto';
 
 export class UpdateSetAndPositionDto {
-  @ValidateNested({ each: true })
+  @ValidateNested()
   @Type(() => UpdateSetDto)
   set: UpdateSetDto;
 
@@ -13,6 +13,7 @@ export class UpdateSetAndPositionDto {
   @Type(() => UpdatePositionDto)
   positions: UpdatePositionDto[];
 
+  @IsDefined()
   @IsNumber()
   userId: number;
 

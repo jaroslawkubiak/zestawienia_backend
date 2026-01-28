@@ -168,7 +168,7 @@ export class PositionsService {
     try {
       const updatedByUser = { id: userId } as DeepPartial<User>;
       const positionFromDB = await this.findOne(positionId);
-      const setFromDB = await this.setsService.findOne(setId);
+      const setFromDB = await this.setsService.findOneSet(setId);
 
       if (positionFromDB && setFromDB) {
         const query = await this.positionsRepository

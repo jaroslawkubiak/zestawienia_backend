@@ -1,5 +1,6 @@
 import { IBookmarksWithTableColumns } from '../../bookmarks/types/IBookmarksWithTableColumns';
 import { IComment } from '../../comments/types/IComment';
+import { IUnreadComments } from '../../comments/types/IUnreadComments';
 import { IFileFullDetails } from '../../files/types/IFileFullDetails';
 
 export interface ISet {
@@ -18,6 +19,7 @@ export interface ISet {
   };
   files?: IFileFullDetails[];
   comments?: IComment[];
+  newCommentsCount: IUnreadComments;
   clientId: {
     id: number;
     lastName: string;

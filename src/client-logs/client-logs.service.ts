@@ -23,7 +23,7 @@ export class ClientLogsService {
   async createClientEntry(data: IClientLogs) {
     const { req_setHash, req_clientHash } = data;
 
-    const set = await this.setsService.findOneByHash(req_setHash);
+    const set = await this.setsService.findOneSetByHash(req_setHash);
     const clientId = set?.clientId?.id;
     const client = clientId
       ? await this.clientsService.findOne(clientId)

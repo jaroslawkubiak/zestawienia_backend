@@ -27,7 +27,7 @@ export class SupplierLogsService {
   async createSupplierEntry(data: ISupplierLogs) {
     const { req_setHash, req_supplierHash } = data;
 
-    const set = await this.setsService.findOneByHash(req_setHash);
+    const set = await this.setsService.findOneSetByHash(req_setHash);
     const supplier = await this.supplierService.findOneByHash(req_supplierHash);
 
     const clientId = set?.clientId?.id;

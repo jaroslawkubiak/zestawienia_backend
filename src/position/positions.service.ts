@@ -72,7 +72,7 @@ export class PositionsService {
     userId: number,
     positions: UpdatePositionDto[],
     req: Request,
-  ): Promise<any> {
+  ): Promise<void> {
     try {
       positions.forEach((position) => {
         const savedPosition = {
@@ -83,7 +83,7 @@ export class PositionsService {
           updatedAtTimestamp: Number(Date.now()),
         };
 
-        this.updateOne(position.id, savedPosition, req.originalUrl);
+        this.updateOnePosition(position.id, savedPosition, req.originalUrl);
       });
     } catch (err) {
       const newError: ErrorDto = {
@@ -108,11 +108,11 @@ export class PositionsService {
     }
   }
 
-  async updateOne(
+  private async updateOnePosition(
     id: number,
     updatePosition: UpdatePositionDto,
     url: string = 'null',
-  ): Promise<any> {
+  ): Promise<void> {
     try {
       const oldPosition = await this.findOne(id);
       const oldSupplierId = oldPosition?.supplierId?.id;
@@ -134,13 +134,11 @@ export class PositionsService {
         if (findSupplierId !== oldSupplierId) {
           this.updatePositionCountBySupplierId(oldSupplierId);
         }
-
-        return this.findOne(id);
       }
     } catch (err) {
       const newError: ErrorDto = {
         type: ErrorsType.sql,
-        message: 'Position: updateOne()',
+        message: 'Position: updateOnePosition()',
         url,
         error: JSON.stringify(err?.message) || 'null',
         query: JSON.stringify(err?.query) || 'null',

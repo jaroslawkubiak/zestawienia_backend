@@ -16,12 +16,14 @@ export class EmailController {
   }
 
   @Get('getEmails')
-  findAll(): Observable<ISendedEmailsFromDB[]> {
-    return this.emailService.findAll();
+  findAllEmails(): Observable<ISendedEmailsFromDB[]> {
+    return this.emailService.findAllEmails();
   }
 
   @Get(':setId/getEmailListForSet')
-  findOne(@Param('setId') setId: string): Observable<ISendedEmailsFromDB[]> {
-    return this.emailService.findOne(+setId);
+  findOneEmail(
+    @Param('setId') setId: string,
+  ): Observable<ISendedEmailsFromDB[]> {
+    return this.emailService.findOneEmail(+setId);
   }
 }

@@ -23,7 +23,6 @@ import { createHTML } from './email.template';
 import { saveToSentFolder } from './emailSendCopy';
 import { ICommentList } from './types/ICommentList';
 import { IEmailDetails } from './types/IEmailDetails';
-import { IEmailLog } from './types/IEmailLog';
 import { IHTMLTemplateOptions } from './types/IHTMLTemplateOptions';
 import { ISendedEmailsFromDB } from './types/ISendedEmailsFromDB';
 
@@ -34,11 +33,13 @@ export class EmailService {
 
   constructor(
     @InjectRepository(Email)
-    private readonly emailRepo: Repository<Email>,
+    private readonly emailRepository: Repository<Email>,
     private readonly errorsService: ErrorsService,
     private readonly settingsService: SettingsService,
+
     @Inject(forwardRef(() => SetsService))
     private readonly setsService: SetsService,
+
     @Inject(forwardRef(() => PositionsService))
     private readonly positionService: PositionsService,
   ) {
@@ -85,7 +86,7 @@ export class EmailService {
             : (null as CreateIdDto),
         };
 
-        await this.create(newEmailLog);
+        await this.createEmailLog(newEmailLog);
 
         // send copy email do Sent folder
         await saveToSentFolder(mailOptions);
@@ -129,7 +130,7 @@ export class EmailService {
   }) {
     const { setId, newComments, headerText, recipient, link } = options;
 
-    const set = await this.setsService.findOne(setId);
+    const set = await this.setsService.findOneSet(setId);
     const GDPRClauseRequest =
       await this.settingsService.getSettingByName('GDPRClause');
     const GDPRClause = GDPRClauseRequest.value;
@@ -139,11 +140,9 @@ export class EmailService {
     );
 
     const commentsList: ICommentList[] = newComments.map((comment) => {
-      if (!comment.positionId?.id) return;
+      if (!comment.positionId) return;
 
-      const position = positions.find(
-        (item) => item.id === comment.positionId.id,
-      );
+      const position = positions.find((item) => item.id === comment.positionId);
 
       return {
         product: position?.produkt || '',
@@ -185,7 +184,7 @@ export class EmailService {
     setId: number,
     newComments: IComment[],
   ) {
-    const set = await this.setsService.findOne(setId);
+    const set = await this.setsService.findOneSet(setId);
 
     const link = `${this.APP_URL}/${set.id}/${set.hash}`;
 
@@ -202,7 +201,7 @@ export class EmailService {
     setId: number,
     newComments: IComment[],
   ) {
-    const set = await this.setsService.findOne(setId);
+    const set = await this.setsService.findOneSet(setId);
 
     const clientFullName = set.clientId.company
       ? set.clientId.company
@@ -220,13 +219,13 @@ export class EmailService {
     });
   }
 
-  async create(emailLog: LogEmailDto): Promise<IEmailLog> {
-    const newLog = this.emailRepo.create(emailLog);
-    return this.emailRepo.save(newLog);
+  async createEmailLog(emailLog: LogEmailDto): Promise<Email> {
+    const newLog = this.emailRepository.create(emailLog);
+    return this.emailRepository.save(newLog);
   }
 
-  findAll(): Observable<ISendedEmailsFromDB[]> {
-    const query = this.emailRepo
+  findAllEmails(): Observable<ISendedEmailsFromDB[]> {
+    const query = this.emailRepository
       .createQueryBuilder('email')
       .leftJoinAndSelect('email.clientId', 'client')
       .leftJoinAndSelect('email.supplierId', 'supplier')
@@ -292,8 +291,8 @@ export class EmailService {
     );
   }
 
-  findOne(setId: number): Observable<ISendedEmailsFromDB[]> {
-    const query = this.emailRepo
+  findOneEmail(setId: number): Observable<ISendedEmailsFromDB[]> {
+    const query = this.emailRepository
       .createQueryBuilder('email')
       .leftJoinAndSelect('email.clientId', 'client')
       .leftJoinAndSelect('email.supplierId', 'supplier')

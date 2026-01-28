@@ -16,9 +16,9 @@ export class PositionsController {
     return this.positionsService.getPositions(+setId);
   }
 
-  @Post('/new')
-  addPosition(@Body() newPosition: CreateEmptyPositionDto): Promise<IPosition> {
-    return this.positionsService.addPosition(newPosition);
+  @Post('/addNew')
+  addEmptyPosition(@Body() newPosition: CreateEmptyPositionDto): Promise<IPosition> {
+    return this.positionsService.addEmptyPosition(newPosition);
   }
 
   @Post('/clone')

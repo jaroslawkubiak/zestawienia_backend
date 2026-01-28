@@ -60,12 +60,6 @@ export class Position {
   status: string;
 
   @Column({ type: 'varchar', length: 50, nullable: true })
-  acceptedAt: string;
-
-  @Column({ type: 'bigint', nullable: true })
-  acceptedAtTimestamp: number | null;
-
-  @Column({ type: 'varchar', length: 50, nullable: true })
   createdAt: string | null;
 
   @Column({ type: 'bigint', nullable: true })

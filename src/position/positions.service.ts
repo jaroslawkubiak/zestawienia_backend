@@ -29,22 +29,26 @@ import { IPosition } from './types/IPosition';
 export class PositionsService {
   constructor(
     @InjectRepository(Position)
-    private readonly positionsRepo: Repository<Position>,
-    private readonly errorsService: ErrorsService,
-    @Inject(forwardRef(() => SetsService)) private setsService: SetsService,
+    private readonly positionsRepository: Repository<Position>,
+
+    @Inject(forwardRef(() => SetsService))
+    private setsService: SetsService,
+
     @Inject(forwardRef(() => SuppliersService))
-    private suppliersService: SuppliersService,
+    private readonly suppliersService: SuppliersService,
+
+    private readonly errorsService: ErrorsService,
   ) {}
 
   findOne(id: number): Promise<IPosition> {
-    return this.positionsRepo.findOne({
+    return this.positionsRepository.findOne({
       where: { id },
       relations: ['supplierId'],
     });
   }
 
   getPositions(setId: number): Observable<IPosition[]> {
-    const query = this.positionsRepo
+    const query = this.positionsRepository
       .createQueryBuilder('position')
       .where('position.setId = :id', { id: setId })
       .leftJoin('position.bookmarkId', 'bookmark')
@@ -112,7 +116,10 @@ export class PositionsService {
     try {
       const oldPosition = await this.findOne(id);
       const oldSupplierId = oldPosition?.supplierId?.id;
-      const updateResult = await this.positionsRepo.update(id, updatePosition);
+      const updateResult = await this.positionsRepository.update(
+        id,
+        updatePosition,
+      );
 
       if (updateResult?.affected === 0) {
         throw new NotFoundException(`Position with ID ${id} not found`);
@@ -166,7 +173,7 @@ export class PositionsService {
       const setFromDB = await this.setsService.findOne(setId);
 
       if (positionFromDB && setFromDB) {
-        const query = await this.positionsRepo
+        const query = await this.positionsRepository
           .createQueryBuilder()
           .update(Position)
           .set({
@@ -217,7 +224,6 @@ export class PositionsService {
     }
   }
 
-  // delete position
   async removePosition(
     id: number,
     setId: number,
@@ -245,7 +251,7 @@ export class PositionsService {
       await removeDirSafe(dirPath);
     }
 
-    await this.positionsRepo.delete(id);
+    await this.positionsRepository.delete(id);
 
     const supplierId = position?.supplierId?.id;
     if (supplierId) {
@@ -253,8 +259,7 @@ export class PositionsService {
     }
   }
 
-  // when add new empty position
-  async addPosition(
+  async addEmptyPosition(
     createEmptyPositionDto: CreateEmptyPositionDto,
   ): Promise<IPosition> {
     const positionToSave = {
@@ -265,11 +270,10 @@ export class PositionsService {
       updatedAtTimestamp: Number(Date.now()),
     };
 
-    const newPosition = this.positionsRepo.create(positionToSave);
-    return this.positionsRepo.save(newPosition);
+    const newPosition = this.positionsRepository.create(positionToSave);
+    return this.positionsRepository.save(newPosition);
   }
 
-  // when clone position
   async clonePosition(
     createClonePositionDto: CreateClonePositionDto,
   ): Promise<IPosition> {
@@ -280,7 +284,7 @@ export class PositionsService {
       updatedAt: getFormatedDate(),
       updatedAtTimestamp: Number(Date.now()),
     };
-    const newPosition = this.positionsRepo.create(positionToSave);
+    const newPosition = this.positionsRepository.create(positionToSave);
 
     //update positionCount to supplier
     const findSupplierId = positionToSave?.supplierId?.id;
@@ -288,12 +292,12 @@ export class PositionsService {
       this.updatePositionCountBySupplierId(findSupplierId);
     }
 
-    return this.positionsRepo.save(newPosition);
+    return this.positionsRepository.save(newPosition);
   }
 
   // count position count for supplierId
   async getPositionsCountBySupplierId(supplierId: number): Promise<number> {
-    const query = await this.positionsRepo
+    const query = await this.positionsRepository
       .createQueryBuilder('position')
       .select('COUNT(position.supplierId)', 'positionCount')
       .where('position.supplierId = :supplierId', { supplierId })

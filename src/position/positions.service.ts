@@ -9,7 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
 import { promises as fs } from 'fs';
 import * as path from 'path';
-import { from, Observable } from 'rxjs';
+import { from, map, Observable } from 'rxjs';
 import { DeepPartial, Repository } from 'typeorm';
 import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
@@ -48,24 +48,66 @@ export class PositionsService {
   }
 
   getPositions(setId: number): Observable<IPosition[]> {
-    const query = this.positionsRepository
-      .createQueryBuilder('position')
-      .where('position.setId = :id', { id: setId })
-      .leftJoin('position.bookmarkId', 'bookmark')
-      .addSelect(['bookmark.name', 'bookmark.id'])
-      .leftJoin('position.supplierId', 'supplier')
-      .addSelect([
-        'supplier.id',
-        'supplier.company',
-        'supplier.firstName',
-        'supplier.lastName',
-      ])
-      .leftJoin('position.createdBy', 'createdBy')
-      .addSelect(['createdBy.id', 'createdBy.name'])
-      .leftJoin('position.updatedBy', 'updatedBy')
-      .addSelect(['updatedBy.id', 'updatedBy.name']);
-
-    return from(query.getMany());
+    return from(
+      this.positionsRepository
+        .createQueryBuilder('position')
+        .where('position.setId = :id', { id: setId })
+        .leftJoin('position.bookmarkId', 'bookmark')
+        .addSelect(['bookmark.id', 'bookmark.name'])
+        .leftJoin('position.supplierId', 'supplier')
+        .addSelect([
+          'supplier.id',
+          'supplier.company',
+          'supplier.firstName',
+          'supplier.lastName',
+        ])
+        .leftJoin('position.createdBy', 'createdBy')
+        .addSelect(['createdBy.id', 'createdBy.name'])
+        .leftJoin('position.updatedBy', 'updatedBy')
+        .addSelect(['updatedBy.id', 'updatedBy.name'])
+        // subquery for comments count
+        .addSelect((subQuery) => {
+          return subQuery
+            .select('COUNT(comment.id)', 'allComments')
+            .from('comment', 'comment')
+            .where('comment.positionId = position.id');
+        }, 'allComments')
+        .addSelect((subQuery) => {
+          return subQuery
+            .select('COUNT(comment.id)', 'unreadComments')
+            .from('comment', 'comment')
+            .where('comment.positionId = position.id')
+            .andWhere('comment.authorType = :authorType', {
+              authorType: 'client',
+            })
+            .andWhere('comment.seenAt IS NULL');
+        }, 'unreadComments')
+        .addSelect((subQuery) => {
+          return subQuery
+            .select('COUNT(comment.id)', 'needsAttentionComments')
+            .from('comment', 'comment')
+            .where('comment.positionId = position.id')
+            .andWhere('comment.authorType = :authorType', {
+              authorType: 'client',
+            })
+            .andWhere('comment.needsAttention = true');
+        }, 'needsAttentionComments')
+        .getRawAndEntities(),
+    ).pipe(
+      map(({ entities, raw }) =>
+        entities.map((position, idx) => {
+          const row = raw[idx];
+          return {
+            ...position,
+            newCommentsCount: {
+              all: parseInt(row.allComments, 10),
+              unread: parseInt(row.unreadComments, 10),
+              needsAttention: parseInt(row.needsAttentionComments, 10),
+            },
+          };
+        }),
+      ),
+    );
   }
 
   async update(
@@ -268,8 +310,13 @@ export class PositionsService {
       updatedAtTimestamp: Number(Date.now()),
     };
 
+    const newCommentsCount = { unread: 0, needsAttention: 0, all: 0 };
+
     const newPosition = this.positionsRepository.create(positionToSave);
-    return this.positionsRepository.save(newPosition);
+
+    const savedPosition = await this.positionsRepository.save(newPosition);
+
+    return { ...savedPosition, newCommentsCount };
   }
 
   async clonePosition(
@@ -282,7 +329,10 @@ export class PositionsService {
       updatedAt: getFormatedDate(),
       updatedAtTimestamp: Number(Date.now()),
     };
+
     const newPosition = this.positionsRepository.create(positionToSave);
+
+    const newCommentsCount = { unread: 0, needsAttention: 0, all: 0 };
 
     //update positionCount to supplier
     const findSupplierId = positionToSave?.supplierId?.id;
@@ -290,7 +340,9 @@ export class PositionsService {
       this.updatePositionCountBySupplierId(findSupplierId);
     }
 
-    return this.positionsRepository.save(newPosition);
+    const clonedPosition = await this.positionsRepository.save(newPosition);
+
+    return { ...clonedPosition, newCommentsCount };
   }
 
   // count position count for supplierId

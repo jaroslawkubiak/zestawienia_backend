@@ -1,4 +1,5 @@
 import { IBookmarksWithTableColumns } from '../../bookmarks/types/IBookmarksWithTableColumns';
+import { IUnreadComments } from '../../comments/types/IUnreadComments';
 import { ISupplier } from '../../suppliers/types/ISupplier';
 import { IUser } from '../../user/types/IUser';
 
@@ -18,6 +19,7 @@ export interface IPosition {
   uwagi: string;
   image: string;
   status: string;
+  newCommentsCount?: IUnreadComments;
   createdAt: string;
   createdAtTimestamp: number;
   updatedAt: string;

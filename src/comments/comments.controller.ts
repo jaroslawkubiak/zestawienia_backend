@@ -20,52 +20,51 @@ import { IUnreadComments } from './types/IUnreadComments';
 export class CommentsController {
   constructor(private commentsService: CommentsService) {}
 
+  // for welcome screen
   @Get('unreadComments')
   async unreadComments(): Promise<IUnreadComments> {
     return this.commentsService.unreadComments();
   }
 
-  @Get(':positionId')
+  @Get(':positionId/getCommentsForPosition')
   findByPositionId(
     @Param('positionId') positionId: string,
   ): Promise<IComment[]> {
-    return this.commentsService.findByPositionId(+positionId);
+    return this.commentsService.findAllCommentsByPositionId(+positionId);
   }
 
-  @Post('/add')
-  create(
+  @Post('addComment')
+  addComment(
     @Body() createCommentDto: CreateCommentDto,
     @Req() req: Request,
   ): Promise<IComment> {
-    return this.commentsService.create(createCommentDto, req);
+    return this.commentsService.addComment(createCommentDto, req);
   }
 
-  @Post('/seen')
-  markCommentsAsSeen(@Body() body: IMarkAllAsSeen, @Req() req: Request) {
-    return this.commentsService.markCommentsAsSeen(body, req);
+  @Post('markAllAsSeen')
+  markAllCommentsAsSeen(@Body() body: IMarkAllAsSeen, @Req() req: Request) {
+    return this.commentsService.markAllCommentsAsSeen(body, req);
   }
 
-  @Patch('/edit')
-  update(
+  @Patch('editComment')
+  editComment(
     @Body() updateCommentDto: UpdateCommentDto,
     @Req() req: Request,
   ): Promise<IComment> {
-    return this.commentsService.update(updateCommentDto, req);
+    return this.commentsService.editComment(updateCommentDto, req);
   }
 
-  @Patch('')
-  async toggleCommentRead(
+  @Patch('needsAttention')
+  async toggleCommentAsNeedAttention(
     @Body() body: { id: number },
     @Req() req: Request,
   ): Promise<IComment> {
-    const updatedComments = await this.commentsService.toggleCommentRead(
-      body.id,
-      req,
-    );
+    const updatedComments =
+      await this.commentsService.toggleCommentAsNeedAttention(body.id, req);
     return updatedComments;
   }
 
-  @Patch('positions')
+  @Patch('allNeedsAttention')
   async markAllCommentsAsNeedsAttention(
     @Body() body: IMarkAllComments,
     @Req() req: Request,
@@ -73,8 +72,8 @@ export class CommentsController {
     return this.commentsService.markAllCommentsAsNeedsAttention(body, req);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.commentsService.remove(+id);
+  @Delete(':id/deleteComment')
+  deleteComment(@Param('id') id: string) {
+    return this.commentsService.deleteComment(+id);
   }
 }

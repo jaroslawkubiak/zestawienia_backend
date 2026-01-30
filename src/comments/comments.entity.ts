@@ -22,6 +22,9 @@ export class Comment {
   @Column({ type: 'int' })
   authorId: number;
 
+  @Column({ type: 'varchar', length: 50, nullable: false })
+  authorName: string;
+
   @Column({ type: 'timestamp', nullable: true })
   seenAt: Date | null;
 

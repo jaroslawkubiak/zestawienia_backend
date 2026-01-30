@@ -19,7 +19,7 @@ export interface ISet {
   };
   files?: IFileFullDetails[];
   comments?: IComment[];
-  newCommentsCount: IUnreadComments;
+  newCommentsCount?: IUnreadComments;
   fullName?: string;
   clientId: {
     id: number;

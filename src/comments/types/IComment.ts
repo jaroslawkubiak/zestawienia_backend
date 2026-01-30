@@ -3,13 +3,11 @@ export interface IComment {
   comment: string;
   authorType: 'client' | 'user';
   authorId: number;
+  authorName: string;
   seenAt: Date;
   needsAttention: boolean;
   createdAt: string;
   createdAtTimestamp: number;
-  positionId: { id: number };
-  setId: { id: number };
-  authorName?: string;
-  notificationSend?: boolean;
-  avatar?: string;
+  positionId: number;
+  setId: number;
 }

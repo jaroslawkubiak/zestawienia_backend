@@ -100,9 +100,9 @@ export class PositionsService {
           return {
             ...position,
             newCommentsCount: {
-              all: parseInt(row.allComments, 10),
               unread: parseInt(row.unreadComments, 10),
               needsAttention: parseInt(row.needsAttentionComments, 10),
+              all: parseInt(row.allComments, 10),
             },
           };
         }),

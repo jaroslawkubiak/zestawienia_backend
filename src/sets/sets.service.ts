@@ -180,7 +180,7 @@ export class SetsService {
     return result;
   }
 
-  getSet(setId: number): Observable<ISet> {
+  getSet(setId: number, authorType: 'client' | 'user'): Observable<ISet> {
     return from(
       this.setsRepository
         .createQueryBuilder('set')
@@ -215,7 +215,7 @@ export class SetsService {
         }
 
         return from(
-          this.commentsService.countUnreadBySetId(setId, 'client'),
+          this.commentsService.countUnreadBySetId(setId, authorType),
         ).pipe(
           map((newCommentsCount) => this.mapSetToDto(set, newCommentsCount)),
         );
@@ -536,19 +536,18 @@ export class SetsService {
 
         const setId = set.id;
 
-        const setDetails$ = from(this.getSet(setId));
-        const comments$ = from(this.commentsService.findBySetId(setId));
+        const setDetails$ = from(this.getSet(setId, 'user'));
+        // const comments$ = from(this.commentsService.findBySetId(setId));
         const positions$ = this.positionsService.getPositions(setId);
 
-        return forkJoin([setDetails$, comments$, positions$]).pipe(
-          map(([set, comments, positions]) => {
+        return forkJoin([setDetails$, positions$]).pipe(
+          map(([set, positions]) => {
             const fullName = `${set.clientId.firstName} ${set.clientId.lastName}`;
 
             return {
               valid: true,
               set: {
                 ...set,
-                comments,
                 fullName,
               },
               positions,

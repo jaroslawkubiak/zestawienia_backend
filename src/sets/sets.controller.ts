@@ -51,7 +51,7 @@ export class SetsController {
 
   @Get('/:setId/getSet')
   getSet(@Param('setId') setId: string): Observable<ISet> {
-    return this.setsService.getSet(+setId);
+    return this.setsService.getSet(+setId, 'client');
   }
 
   @UseGuards(JwtAuthGuard)

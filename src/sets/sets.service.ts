@@ -462,6 +462,18 @@ export class SetsService {
         return from(
           this.positionRepository
             .createQueryBuilder('position')
+            .select([
+              'position.id',
+              'position.produkt',
+              'position.producent',
+              'position.kolekcja',
+              'position.nrKatalogowy',
+              'position.kolor',
+              'position.ilosc',
+              'position.pomieszczenie',
+              'position.link',
+              'position.image',
+            ])
             .where('position.setId = :setId', { setId: setData.setId })
             .andWhere('position.supplierId = :supplierId', {
               supplierId: supplier.id,

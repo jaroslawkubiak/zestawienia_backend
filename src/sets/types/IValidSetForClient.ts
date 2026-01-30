@@ -1,8 +1,8 @@
-import { IPosition } from '../../position/types/IPosition';
+import { IPositionForSupplier } from '../../position/types/IPositionForSupplier';
 import { ISet } from './ISet';
 
 export interface IValidSetForClient {
   valid: boolean;
   set: ISet;
-  positions: IPosition[];
+  positions: IPositionForSupplier[];
 }

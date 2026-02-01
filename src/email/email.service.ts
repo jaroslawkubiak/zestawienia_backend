@@ -26,6 +26,7 @@ import { ICommentList } from './types/ICommentList';
 import { IEmailDetails } from './types/IEmailDetails';
 import { IHTMLTemplateOptions } from './types/IHTMLTemplateOptions';
 import { ISendedEmailsFromDB } from './types/ISendedEmailsFromDB';
+import { ISendEmailAboutNewComments } from './types/ISendEmailAboutNewComments';
 
 @Injectable()
 export class EmailService {
@@ -122,14 +123,7 @@ export class EmailService {
     }
   }
 
-  private async sendEmailAboutNewComments(options: {
-    setId: number;
-    newComments: IComment[];
-    headerText: string;
-    link: string;
-    recipient: string;
-    commentAuthorType: TAuthorType;
-  }) {
+  private async sendEmailAboutNewComments(options: ISendEmailAboutNewComments) {
     const {
       setId,
       newComments,
@@ -198,14 +192,16 @@ export class EmailService {
 
     const link = `${this.APP_URL}/${set.id}/${set.hash}`;
 
-    return this.sendEmailAboutNewComments({
+    const options: ISendEmailAboutNewComments = {
       setId,
       newComments,
       headerText: `Biuro Żurawicki Design zakończyło dodawanie`,
       link,
       recipient: set.clientId.email,
       commentAuthorType,
-    });
+    };
+
+    return this.sendEmailAboutNewComments(options);
   }
 
   async sendEmailAboutNewCommentsFromClient(
@@ -219,7 +215,7 @@ export class EmailService {
       ? set.clientId.company
       : `${set.clientId.firstName} ${set.clientId.lastName}`;
 
-    return this.sendEmailAboutNewComments({
+    const options: ISendEmailAboutNewComments = {
       setId,
       newComments,
       headerText: `Klient ${clientFullName} zakończył dodawanie`,
@@ -229,7 +225,9 @@ export class EmailService {
           ? process.env.GMAIL_USER
           : process.env.EMAIL_USER,
       commentAuthorType,
-    });
+    };
+
+    return this.sendEmailAboutNewComments(options);
   }
 
   async createEmailLog(emailLog: LogEmailDto): Promise<Email> {

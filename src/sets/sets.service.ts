@@ -158,6 +158,7 @@ export class SetsService {
       .leftJoin('files.setId', 'fileSet')
       .addSelect(['fileSet.id'])
       .leftJoinAndSelect('set.lastBookmark', 'lastBookmark')
+      .leftJoinAndSelect('set.lastUsedClientBookmark', 'lastUsedClientBookmark')
       .orderBy('set.id', 'DESC')
       .getMany();
 
@@ -204,6 +205,8 @@ export class SetsService {
         .addSelect(['fileSet.id'])
         .leftJoin('set.lastBookmark', 'lastBookmark')
         .addSelect(['lastBookmark.id'])
+        .leftJoin('set.lastUsedClientBookmark', 'lastUsedClientBookmark')
+        .addSelect(['lastUsedClientBookmark.id'])
         .getOne(),
     ).pipe(
       mergeMap((set) => {
@@ -253,6 +256,7 @@ export class SetsService {
         updatedAt: getFormatedDate(),
         updatedAtTimestamp: Number(Date.now()),
         lastBookmark: { id: minBookmarkId } as Bookmark,
+        lastUsedClientBookmark: { id: minBookmarkId } as Bookmark,
       };
 
       const response = await this.setsRepository.save(newSet);
@@ -570,17 +574,19 @@ export class SetsService {
       address: set.address,
       status: set.status,
       hash: set.hash,
+      clientId: set.clientId,
 
+      newCommentsCount,
+
+      lastBookmark: { id: set.lastBookmark.id },
+      lastUsedClientBookmark: { id: set.lastUsedClientBookmark.id },
+
+      createdBy: set.createdBy,
+      updatedBy: set.updatedBy,
       createdAt: set.createdAt!,
       createdAtTimestamp: set.createdAtTimestamp!,
       updatedAt: set.updatedAt!,
       updatedAtTimestamp: set.updatedAtTimestamp!,
-
-      clientId: set.clientId,
-      createdBy: set.createdBy,
-      updatedBy: set.updatedBy,
-
-      newCommentsCount,
 
       files: set.files?.map((file) => ({
         id: file.id,
@@ -598,7 +604,6 @@ export class SetsService {
         setId: file.setId.id,
       })),
       bookmarks: set.bookmarks,
-      lastBookmark: { id: set.lastBookmark.id },
     };
   }
 }

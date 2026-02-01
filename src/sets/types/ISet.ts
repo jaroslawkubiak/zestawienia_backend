@@ -17,6 +17,9 @@ export interface ISet {
   lastBookmark: {
     id: number;
   };
+  lastUsedClientBookmark?: {
+    id: number;
+  };
   files?: IFileFullDetails[];
   comments?: IComment[];
   newCommentsCount?: IUnreadComments;

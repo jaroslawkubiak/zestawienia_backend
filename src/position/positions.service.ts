@@ -47,7 +47,10 @@ export class PositionsService {
     });
   }
 
-  getPositions(setId: number): Observable<IPosition[]> {
+  getPositions(
+    setId: number,
+    commentAuthorType: 'client' | 'user',
+  ): Observable<IPosition[]> {
     return from(
       this.positionsRepository
         .createQueryBuilder('position')
@@ -78,7 +81,7 @@ export class PositionsService {
             .from('comment', 'comment')
             .where('comment.positionId = position.id')
             .andWhere('comment.authorType = :authorType', {
-              authorType: 'client',
+              authorType: commentAuthorType,
             })
             .andWhere('comment.seenAt IS NULL');
         }, 'unreadComments')
@@ -88,7 +91,7 @@ export class PositionsService {
             .from('comment', 'comment')
             .where('comment.positionId = position.id')
             .andWhere('comment.authorType = :authorType', {
-              authorType: 'client',
+              authorType: commentAuthorType,
             })
             .andWhere('comment.needsAttention = true');
         }, 'needsAttentionComments')

@@ -510,6 +510,7 @@ export class SetsService {
     clientHash: string,
     req: Request,
   ): Observable<IValidSetForClient | null> {
+    const commentAuthorType = 'user';
     const set$ = from(
       this.setsRepository
         .createQueryBuilder('set')
@@ -536,9 +537,12 @@ export class SetsService {
 
         const setId = set.id;
 
-        const setDetails$ = from(this.getSet(setId, 'user'));
+        const setDetails$ = from(this.getSet(setId, commentAuthorType));
         // const comments$ = from(this.commentsService.findBySetId(setId));
-        const positions$ = this.positionsService.getPositions(setId);
+        const positions$ = this.positionsService.getPositions(
+          setId,
+          commentAuthorType,
+        );
 
         return forkJoin([setDetails$, positions$]).pipe(
           map(([set, positions]) => {

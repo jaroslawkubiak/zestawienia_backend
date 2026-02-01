@@ -127,8 +127,16 @@ export class EmailService {
     headerText: string;
     link: string;
     recipient: string;
+    commentAuthorType: 'client' | 'user';
   }) {
-    const { setId, newComments, headerText, recipient, link } = options;
+    const {
+      setId,
+      newComments,
+      headerText,
+      recipient,
+      link,
+      commentAuthorType,
+    } = options;
 
     const set = await this.setsService.findOneSet(setId);
     const GDPRClauseRequest =
@@ -136,7 +144,7 @@ export class EmailService {
     const GDPRClause = GDPRClauseRequest.value;
 
     const positions = await firstValueFrom(
-      this.positionService.getPositions(setId),
+      this.positionService.getPositions(setId, commentAuthorType),
     );
 
     const commentsList: ICommentList[] = newComments.map((comment) => {
@@ -185,6 +193,7 @@ export class EmailService {
     newComments: IComment[],
   ) {
     const set = await this.setsService.findOneSet(setId);
+    const commentAuthorType: 'client' | 'user' = 'user';
 
     const link = `${this.APP_URL}/${set.id}/${set.hash}`;
 
@@ -194,6 +203,7 @@ export class EmailService {
       headerText: `Biuro Żurawicki Design zakończyło dodawanie`,
       link,
       recipient: set.clientId.email,
+      commentAuthorType,
     });
   }
 
@@ -202,6 +212,7 @@ export class EmailService {
     newComments: IComment[],
   ) {
     const set = await this.setsService.findOneSet(setId);
+    const commentAuthorType: 'client' | 'user' = 'client';
 
     const clientFullName = set.clientId.company
       ? set.clientId.company
@@ -216,6 +227,7 @@ export class EmailService {
         process.env.GMAIL_USE === 'true'
           ? process.env.GMAIL_USER
           : process.env.EMAIL_USER,
+      commentAuthorType,
     });
   }
 

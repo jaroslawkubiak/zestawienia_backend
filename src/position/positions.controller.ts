@@ -13,11 +13,13 @@ export class PositionsController {
 
   @Get('/:setId/getPositions')
   getPositions(@Param('setId') setId: string): Observable<IPosition[]> {
-    return this.positionsService.getPositions(+setId);
+    return this.positionsService.getPositions(+setId, 'client');
   }
 
   @Post('/addNew')
-  addEmptyPosition(@Body() newPosition: CreateEmptyPositionDto): Promise<IPosition> {
+  addEmptyPosition(
+    @Body() newPosition: CreateEmptyPositionDto,
+  ): Promise<IPosition> {
     return this.positionsService.addEmptyPosition(newPosition);
   }
 

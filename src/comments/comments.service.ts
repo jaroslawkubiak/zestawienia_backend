@@ -20,6 +20,7 @@ import { IMarkAllAsSeen } from './dto/markAllAsSeen.dto';
 import { IMarkAllComments } from './dto/markAllComments.dto';
 import { IComment } from './types/IComment';
 import { IUnreadComments } from './types/IUnreadComments';
+import { TAuthorType } from './types/authorType.type';
 
 @Injectable()
 export class CommentsService {
@@ -82,7 +83,7 @@ export class CommentsService {
 
   async countUnreadBySetId(
     setId: number,
-    authorType: 'client' | 'user',
+    authorType: TAuthorType,
   ): Promise<IUnreadComments> {
     const unreadCount = await this.commentRepository
       .createQueryBuilder('comment')

@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { Position } from '../position/positions.entity';
 import { Set } from '../sets/sets.entity';
+import { TAuthorType } from './types/authorType.type';
 
 @Entity('comment')
 export class Comment {
@@ -17,7 +18,7 @@ export class Comment {
   comment: string;
 
   @Column({ type: 'enum', enum: ['client', 'user'] })
-  authorType: 'client' | 'user';
+  authorType: TAuthorType;
 
   @Column({ type: 'int' })
   authorId: number;

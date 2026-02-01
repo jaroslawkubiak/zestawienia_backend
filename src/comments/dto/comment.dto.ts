@@ -1,4 +1,5 @@
 import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { TAuthorType } from '../types/authorType.type';
 
 export class CreateCommentDto {
   @IsString()
@@ -10,7 +11,7 @@ export class CreateCommentDto {
   authorName: string;
 
   @IsEnum(['client', 'user'])
-  authorType: 'client' | 'user';
+  authorType: TAuthorType;
 
   @IsNumber()
   authorId: number;

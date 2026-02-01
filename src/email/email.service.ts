@@ -8,6 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as nodemailer from 'nodemailer';
 import { firstValueFrom, from, map, Observable } from 'rxjs';
 import { Repository } from 'typeorm';
+import { TAuthorType } from '../comments/types/authorType.type';
 import { IComment } from '../comments/types/IComment';
 import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
@@ -127,7 +128,7 @@ export class EmailService {
     headerText: string;
     link: string;
     recipient: string;
-    commentAuthorType: 'client' | 'user';
+    commentAuthorType: TAuthorType;
   }) {
     const {
       setId,
@@ -193,7 +194,7 @@ export class EmailService {
     newComments: IComment[],
   ) {
     const set = await this.setsService.findOneSet(setId);
-    const commentAuthorType: 'client' | 'user' = 'user';
+    const commentAuthorType: TAuthorType = 'user';
 
     const link = `${this.APP_URL}/${set.id}/${set.hash}`;
 
@@ -212,7 +213,7 @@ export class EmailService {
     newComments: IComment[],
   ) {
     const set = await this.setsService.findOneSet(setId);
-    const commentAuthorType: 'client' | 'user' = 'client';
+    const commentAuthorType: TAuthorType = 'client';
 
     const clientFullName = set.clientId.company
       ? set.clientId.company

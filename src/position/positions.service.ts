@@ -10,6 +10,7 @@ import { Request } from 'express';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import { from, map, Observable } from 'rxjs';
+import { TAuthorType } from 'src/comments/types/authorType.type';
 import { DeepPartial, Repository } from 'typeorm';
 import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
@@ -49,7 +50,7 @@ export class PositionsService {
 
   getPositions(
     setId: number,
-    commentAuthorType: 'client' | 'user',
+    commentAuthorType: TAuthorType,
   ): Observable<IPosition[]> {
     return from(
       this.positionsRepository

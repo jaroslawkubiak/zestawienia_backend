@@ -18,6 +18,7 @@ import {
   switchMap,
   throwError,
 } from 'rxjs';
+import { TAuthorType } from 'src/comments/types/authorType.type';
 import { DeepPartial, Repository } from 'typeorm';
 import { Bookmark } from '../bookmarks/bookmarks.entity';
 import { ClientLogsService } from '../client-logs/client-logs.service';
@@ -180,7 +181,7 @@ export class SetsService {
     return result;
   }
 
-  getSet(setId: number, authorType: 'client' | 'user'): Observable<ISet> {
+  getSet(setId: number, authorType: TAuthorType): Observable<ISet> {
     return from(
       this.setsRepository
         .createQueryBuilder('set')

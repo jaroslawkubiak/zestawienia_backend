@@ -226,6 +226,45 @@ export class SetsService {
     );
   }
 
+  getSetWithComments(setId: number, authorType: TAuthorType): Observable<ISet> {
+    return from(
+      this.setsRepository
+        .createQueryBuilder('set')
+        .where('set.id = :id', { id: setId })
+        .leftJoin('set.clientId', 'client')
+        .addSelect([
+          'client.id',
+          'client.company',
+          'client.email',
+          'client.firstName',
+          'client.lastName',
+          'client.hash',
+        ])
+        .leftJoin('set.createdBy', 'createdBy')
+        .addSelect(['createdBy.id', 'createdBy.name'])
+        .leftJoin('set.updatedBy', 'updatedBy')
+        .addSelect(['updatedBy.id', 'updatedBy.name'])
+        .leftJoin('set.lastBookmark', 'lastBookmark')
+        .addSelect(['lastBookmark.id'])
+        .leftJoinAndSelect('set.comments', 'comments')
+        .leftJoinAndSelect('comments.positionId', 'commentPosition')
+        .leftJoinAndSelect('comments.setId', 'commentSet')
+        .getOne(),
+    ).pipe(
+      mergeMap((set) => {
+        if (!set) {
+          return throwError(() => new Error('Set not found'));
+        }
+
+        return from(
+          this.commentsService.countUnreadBySetId(setId, authorType),
+        ).pipe(
+          map((newCommentsCount) => this.mapSetToDto(set, newCommentsCount)),
+        );
+      }),
+    );
+  }
+
   async getSetsCountByClientId(clientId: number): Promise<number> {
     const query = await this.setsRepository
       .createQueryBuilder('set')
@@ -656,6 +695,20 @@ export class SetsService {
 
       lastBookmark: { id: set.lastBookmark.id },
       lastUsedClientBookmark: set.lastUsedClientBookmark,
+
+      comments: set.comments?.map((comment) => ({
+        id: comment.id,
+        comment: comment.comment,
+        authorType: comment.authorType,
+        authorId: comment.authorId,
+        authorName: comment.authorName,
+        seenAt: comment.seenAt,
+        needsAttention: comment.needsAttention,
+        createdAt: comment.createdAt,
+        createdAtTimestamp: comment.createdAtTimestamp,
+        positionId: comment.positionId?.id,
+        setId: comment.setId?.id,
+      })),
 
       createdBy: set.createdBy,
       updatedBy: set.updatedBy,

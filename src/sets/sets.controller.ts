@@ -55,6 +55,11 @@ export class SetsController {
     return this.setsService.getSet(+setId, 'client');
   }
 
+  @Get('/:setId/getSetWithComments')
+  getSetWithComments(@Param('setId') setId: string): Observable<ISet> {
+    return this.setsService.getSetWithComments(+setId, 'client');
+  }
+
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   removeSet(@Param('id') id: number) {

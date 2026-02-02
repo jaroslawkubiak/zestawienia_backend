@@ -33,6 +33,13 @@ export class CommentsController {
     return this.commentsService.findAllCommentsByPositionId(+positionId);
   }
 
+  @Get(':setId/getCommentsForSet')
+  findBySetId(
+    @Param('setId') setId: string,
+  ): Promise<IComment[]> {
+    return this.commentsService.findAllCommentsBySetId(+setId);
+  }
+
   @Post('addComment')
   addComment(
     @Body() createCommentDto: CreateCommentDto,

@@ -129,6 +129,25 @@ export class CommentsService {
     return updatedComments;
   }
 
+  async findAllCommentsBySetId(setId: number): Promise<IComment[]> {
+    const comments = await this.commentRepository
+      .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.setId', 'set')
+      .leftJoinAndSelect('comment.positionId', 'position')
+      .where('comment.setId = :setId', { setId })
+      .select()
+      .orderBy('comment.id', 'ASC')
+      .getMany();
+
+    const updatedComments = await Promise.all(
+      comments.map(async (item) => {
+        return this.mapCommentToIComment(item);
+      }),
+    );
+
+    return updatedComments;
+  }
+
   async addComment(
     createCommentDto: CreateCommentDto,
     req: Request,

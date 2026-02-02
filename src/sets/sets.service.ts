@@ -1,5 +1,6 @@
 import {
   forwardRef,
+  HttpException,
   Inject,
   Injectable,
   InternalServerErrorException,
@@ -578,6 +579,48 @@ export class SetsService {
 
       return this.findOneSet(setId);
     } catch (err) {
+      const newError: ErrorDto = {
+        type: ErrorsType.sql,
+        message: 'Sets: updateLastUsedBookmark()',
+        url: req?.originalUrl,
+        error: JSON.stringify(err?.message) || 'null',
+        query: JSON.stringify(err?.query) || 'null',
+        parameters: JSON.stringify(err?.parameters?.[0]) || 'null',
+        sql: JSON.stringify(err?.driverError?.sql) || 'null',
+        createdAt: getFormatedDate() || new Date().toISOString(),
+        createdAtTimestamp: Number(Date.now()),
+      };
+
+      await this.errorsService.prepareError(newError);
+
+      throw new InternalServerErrorException({
+        message: 'Błąd bazy danych',
+        error: err.message,
+        details: err,
+      });
+    }
+  }
+
+  async updateLastUsedClientBookmark(
+    setHash: string,
+    newBookmark: number,
+    req: Request,
+  ): Promise<ISet> {
+    try {
+      const updateSetResult = await this.setsRepository.update(
+        { hash: setHash },
+        { lastUsedClientBookmark: newBookmark },
+      );
+
+      if (updateSetResult?.affected === 0) {
+        throw new NotFoundException(`Set not found`);
+      }
+
+      return this.findOneSetByHash(setHash);
+    } catch (err) {
+      if (err instanceof HttpException) {
+        throw err;
+      }
       const newError: ErrorDto = {
         type: ErrorsType.sql,
         message: 'Sets: updateLastUsedBookmark()',

@@ -40,6 +40,7 @@ import { SupplierLogsService } from '../supplier-logs/supplier-logs.service';
 import { Supplier } from '../suppliers/suppliers.entity';
 import { User } from '../user/user.entity';
 import { NewSetDto } from './dto/NewSet.dto';
+import { UpdateSetDto } from './dto/updateSet.dto';
 import { UpdateSetAndPositionDto } from './dto/updateSetAndPosition.dto';
 import { Set } from './sets.entity';
 import { ISavedSet } from './types/ISavedSet';
@@ -158,7 +159,6 @@ export class SetsService {
       .leftJoin('files.setId', 'fileSet')
       .addSelect(['fileSet.id'])
       .leftJoinAndSelect('set.lastBookmark', 'lastBookmark')
-      .leftJoinAndSelect('set.lastUsedClientBookmark', 'lastUsedClientBookmark')
       .orderBy('set.id', 'DESC')
       .getMany();
 
@@ -205,8 +205,6 @@ export class SetsService {
         .addSelect(['fileSet.id'])
         .leftJoin('set.lastBookmark', 'lastBookmark')
         .addSelect(['lastBookmark.id'])
-        .leftJoin('set.lastUsedClientBookmark', 'lastUsedClientBookmark')
-        .addSelect(['lastUsedClientBookmark.id'])
         .getOne(),
     ).pipe(
       mergeMap((set) => {
@@ -256,7 +254,7 @@ export class SetsService {
         updatedAt: getFormatedDate(),
         updatedAtTimestamp: Number(Date.now()),
         lastBookmark: { id: minBookmarkId } as Bookmark,
-        lastUsedClientBookmark: { id: minBookmarkId } as Bookmark,
+        lastUsedClientBookmark: minBookmarkId,
       };
 
       const response = await this.setsRepository.save(newSet);
@@ -567,6 +565,41 @@ export class SetsService {
     );
   }
 
+  async updateLastUsedBookmark(
+    setId: number,
+    set: UpdateSetDto,
+    req: Request,
+  ): Promise<ISet> {
+    try {
+      const updateSetResult = await this.setsRepository.update(setId, set);
+      if (updateSetResult?.affected === 0) {
+        throw new NotFoundException(`Set with ID ${setId} not found`);
+      }
+
+      return this.findOneSet(setId);
+    } catch (err) {
+      const newError: ErrorDto = {
+        type: ErrorsType.sql,
+        message: 'Sets: updateLastUsedBookmark()',
+        url: req?.originalUrl,
+        error: JSON.stringify(err?.message) || 'null',
+        query: JSON.stringify(err?.query) || 'null',
+        parameters: JSON.stringify(err?.parameters?.[0]) || 'null',
+        sql: JSON.stringify(err?.driverError?.sql) || 'null',
+        createdAt: getFormatedDate() || new Date().toISOString(),
+        createdAtTimestamp: Number(Date.now()),
+      };
+
+      await this.errorsService.prepareError(newError);
+
+      throw new InternalServerErrorException({
+        message: 'Błąd bazy danych',
+        error: err.message,
+        details: err,
+      });
+    }
+  }
+
   private mapSetToDto(set: Set, newCommentsCount: IUnreadComments): ISet {
     return {
       id: set.id,
@@ -579,7 +612,7 @@ export class SetsService {
       newCommentsCount,
 
       lastBookmark: { id: set.lastBookmark.id },
-      lastUsedClientBookmark: { id: set.lastUsedClientBookmark.id },
+      lastUsedClientBookmark: set.lastUsedClientBookmark,
 
       createdBy: set.createdBy,
       updatedBy: set.updatedBy,

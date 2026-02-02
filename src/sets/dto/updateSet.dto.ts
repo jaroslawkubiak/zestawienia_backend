@@ -3,6 +3,7 @@ import {
   ArrayNotEmpty,
   IsArray,
   IsDefined,
+  IsNumber,
   IsString,
   ValidateNested,
 } from 'class-validator';
@@ -20,6 +21,9 @@ export class UpdateSetDto {
   @ValidateNested()
   @Type(() => LastBookmarkDto)
   lastBookmark: LastBookmarkDto;
+
+  @IsNumber()
+  lastUsedClientBookmark: number;
 
   @IsDefined()
   @IsArray()

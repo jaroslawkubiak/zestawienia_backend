@@ -12,10 +12,11 @@ Poprawić:
 [x] wygląd/layout linku dla klientów
 [x] /me jest także używane do external links
 [x] dodać folder z hashem do plików zestawień /uploads/sets/:setId/:setHash/positions
-[ ] przy usuwaniu set - usunąć komentarze i całą resztę z DB, przeliczyć ilość setCount dla client
-[ ] przy usuwaniu pozycji usunąć też image oraz posCount w supplier
+[x] przy usuwaniu set - usunąć komentarze i całą resztę z DB, przeliczyć ilość setCount dla client
+[x] przy usuwaniu pozycji usunąć też image oraz posCount w supplier
 [x] jak klient wrzuca pliki to nie uaktualnia się badge z ilością
 [x] jak klient wruci plik to badge się uaktualnie, ale po otwarciu show-files nie widać tego pliku - trzeba dodać nowy plik do listy plików
+[x] przy pobieraniu position policzyć ilość nowych komentarzy i zwrócić jako nowe property w positions. a gdy otwieram okno z komentarzami to robić request po nowe kom do tej pozycji
 
 Nowe do poprawy
 [x] wszystkie kolumny pozycji - tekst wyśrodkowany
@@ -29,7 +30,8 @@ Nowe do poprawy
 [x] rok w stopkach automatycznie
 [x] lista emaili wysłanych - zły link do klienta
 [x] guzik zapisz na wysokości bookmarks po prawej
-[ ] nie odświeża badge po usunięciu pliku
+[x] nie odświeża badge po usunięciu pliku
+[ ] dodać setHash do każdego endpointu w comment component
 
 MOBILE VIEW:
 [x] notification jest lekko ucięta z lewej strony
@@ -93,6 +95,7 @@ Edycja zestawienia:
 [x] usunąć z footer ilość, netto i brutto
 [x] pola w pozycji jako textarea
 [x] podgląd obrazków pozycji na całej stronie: ikona lupy albo coś podobnego
+[ ] przy każdym przełączeniu zakładki - zrobić request i zapisać bieżącą zakładkę
 
 [x] nowe Bookmarks:
 1 PODSUMOWANIE
@@ -110,6 +113,8 @@ Edycja nagłówka zestawienia:
 [x] obiekt z szerokościami zapisywany na etapie dodawania nowego zestawienia z domyślnymi wartościami
 [x] odczyt i zapis szerokości kolumn dla każdej zakładki i dla każdego zestawienia
 [x] dołączyć listę szerokości do obiektu bookmarks w zestwieniach
+[ ] zmiana status na wysłane, gdy klient otrzyma pierwszy email
+[ ] zmiana status na odczytane gdy klient pierwszy raz otworzy link z zestawieniem
 
 Footer zestawienia:
 [x] obliczanie ceny brutto, wartości netto i wartości brutto
@@ -157,6 +162,7 @@ Klienci:
 [x] lista wysłanych emaili do klientów z podglądem wysłanej wiadomości
 [x] przed wysyłką możliwa edycja wiadomości
 [x] działający link bez logowania do podglądu dla dostawców np: /:id_zestawienia/:hash_zestawienia/:hash_dostawcy
+[ ] dodać zapamiętywanie ostatnio otwartej zakładki dla klienów - external
 
 Dostawcy:
 [x] dodawanie nowych dostawców
@@ -169,6 +175,7 @@ Dostawcy:
 [x] gdy nie ma wpisanego linku produktu to nadal mam napis link w tabeli
 [x] dostawca ma widzieć wszystkie dane klienta i nazwę inwestycji
 [x] dostawca: kolejność kolumna taka sama, ukryć: ceny i wartości, status, footer
+[x] usunąć powyższe usunięte kolumny ze zwracanych danych
 
 comments:
 [x] powiadomienie przy guziku komentarzy o ilości:
@@ -183,6 +190,7 @@ comments:
 [x] oznaczanie które komentarze klienta są nieprzeczytane
 [ ] ogólne komentarze dla całego zestawienia, nie pod konkretną pozycję.
 [x] linki w komentarzach. mają działać
+[x] usuwanie komantarza - w potwierdzeniu usunięcia dodać aby enter domyślnie zaznaczał "tak"
 
 status:
 [x] nowe zestawienie ze statusem nowe, przy dodaniu pierwszej pozycji zmiana statusu na w przygotowaniu i blokada usuwania
@@ -211,6 +219,8 @@ różne:
 [x] endpoint na settings który przyjmuje listę stringów z name, np: sendingEmailsToCustomers, sendingEmailsToClient i zwraca obiekt z tymi danymi
 [x] przenieść rodo do db settings
 [ ] przenieść email template do db settings
+[ ] przerobic status na obiekt JSON i tak zapisywać w DB - nie będzie potrzeby przerabiania go w kilku miejscach
+[ ] zamienić new HttpHeaders({}) w serwisach na headers: this.HTTP_HEADERS, jak w edit-set.service
 
 issue:
 [x] zmiana dostawcy w zestawieniach na ostatniej pozycji - menu się chowa pod tabele

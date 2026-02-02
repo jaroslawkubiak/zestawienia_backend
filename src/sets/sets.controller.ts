@@ -19,6 +19,7 @@ import { ISavedSet } from './types/ISavedSet';
 import { ISet } from './types/ISet';
 import { IValidSetForClient } from './types/IValidSetForClient';
 import { IValidSetForSupplier } from './types/IValidSetForSupplier';
+import { UpdateSetDto } from './dto/updateSet.dto';
 
 @Controller('sets')
 export class SetsController {
@@ -58,6 +59,16 @@ export class SetsController {
   @Delete(':id')
   removeSet(@Param('id') id: number) {
     return this.setsService.removeSet(+id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/updateBookmark')
+  updateLastUsedBookmark(
+    @Param('id') setId: string,
+    @Body() updateSetDto: UpdateSetDto,
+    @Req() req: Request,
+  ): Promise<ISet> {
+    return this.setsService.updateLastUsedBookmark(+setId, updateSetDto, req);
   }
 
   // external link for suppliers

@@ -541,28 +541,49 @@ export class SetsService {
 
         const setId = set.id;
 
-        const setDetails$ = from(this.getSet(setId, commentAuthorType));
-        // const comments$ = from(this.commentsService.findBySetId(setId));
-        const positions$ = this.positionsService.getPositions(
-          setId,
-          commentAuthorType,
-        );
+        return from(this.markAsReadAtFirstLinkOpenByClient(setId)).pipe(
+          switchMap(() => {
+            const setDetails$ = from(this.getSet(setId, commentAuthorType));
+            const positions$ = this.positionsService.getPositions(
+              setId,
+              commentAuthorType,
+            );
 
-        return forkJoin([setDetails$, positions$]).pipe(
-          map(([set, positions]) => {
-            const fullName = `${set.clientId.firstName} ${set.clientId.lastName}`;
+            return forkJoin([setDetails$, positions$]).pipe(
+              map(([set, positions]) => {
+                const fullName = `${set.clientId.firstName} ${set.clientId.lastName}`;
 
-            return {
-              valid: true,
-              set: {
-                ...set,
-                fullName,
-              },
-              positions,
-            } as IValidSetForClient;
+                return {
+                  valid: true,
+                  set: {
+                    ...set,
+                    fullName,
+                  },
+                  positions,
+                } as IValidSetForClient;
+              }),
+            );
           }),
         );
       }),
+    );
+  }
+
+  async markAsReadAtFirstLinkOpenByClient(setId: number): Promise<void> {
+    const set = await this.setsRepository.findOne({
+      where: { id: setId },
+      select: ['id', 'status'],
+    });
+
+    if (!set) return;
+
+    if (set.status !== SetStatus.sended) return;
+
+    await this.setsRepository.update(
+      { id: setId },
+      {
+        status: SetStatus.readed,
+      },
     );
   }
 

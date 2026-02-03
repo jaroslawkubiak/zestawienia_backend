@@ -601,6 +601,41 @@ export class SetsService {
     }
   }
 
+  async updateSetStatus(
+    setId: number,
+    set: UpdateSetDto,
+    req: Request,
+  ): Promise<ISet> {
+    try {
+      const updateSetResult = await this.setsRepository.update(setId, set);
+      if (updateSetResult?.affected === 0) {
+        throw new NotFoundException(`Set with ID ${setId} not found`);
+      }
+
+      return this.findOneSet(setId);
+    } catch (err) {
+      const newError: ErrorDto = {
+        type: ErrorsType.sql,
+        message: 'Sets: updateSetStatus()',
+        url: req?.originalUrl,
+        error: JSON.stringify(err?.message) || 'null',
+        query: JSON.stringify(err?.query) || 'null',
+        parameters: JSON.stringify(err?.parameters?.[0]) || 'null',
+        sql: JSON.stringify(err?.driverError?.sql) || 'null',
+        createdAt: getFormatedDate() || new Date().toISOString(),
+        createdAtTimestamp: Number(Date.now()),
+      };
+
+      await this.errorsService.prepareError(newError);
+
+      throw new InternalServerErrorException({
+        message: 'Błąd bazy danych',
+        error: err.message,
+        details: err,
+      });
+    }
+  }
+
   async updateLastActiveClientBookmark(
     setHash: string,
     newBookmark: number,

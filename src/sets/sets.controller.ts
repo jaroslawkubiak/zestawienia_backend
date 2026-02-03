@@ -71,6 +71,16 @@ export class SetsController {
     return this.setsService.updateLastUsedBookmark(+setId, updateSetDto, req);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/updateSetStatus')
+  updateSetStatus(
+    @Param('id') setId: string,
+    @Body() updateSetDto: UpdateSetDto,
+    @Req() req: Request,
+  ): Promise<ISet> {
+    return this.setsService.updateSetStatus(+setId, updateSetDto, req);
+  }
+
   // external link for suppliers
   @Get('open-for-supplier/:setHash/:supplierHash')
   validateSetAndHashForSupplier(

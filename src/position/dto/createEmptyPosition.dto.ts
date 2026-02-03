@@ -3,6 +3,7 @@ import { IsNumber, ValidateNested } from 'class-validator';
 import { BookmarkDto } from '../../bookmarks/dto/bookmark.dto';
 import { NewSetForPositionDto } from '../../sets/dto/NewSet.dto';
 import { CreateUserDto } from '../../user/dto/user.dto';
+import { PositionStatusDto } from './positionStatus.dto';
 
 export class CreateEmptyPositionDto {
   @IsNumber()
@@ -11,6 +12,10 @@ export class CreateEmptyPositionDto {
   @ValidateNested({ each: true })
   @Type(() => BookmarkDto)
   bookmarkId: BookmarkDto;
+
+  @ValidateNested()
+  @Type(() => PositionStatusDto)
+  status: PositionStatusDto;
 
   @ValidateNested({ each: true })
   @Type(() => CreateUserDto)

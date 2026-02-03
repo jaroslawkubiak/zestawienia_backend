@@ -17,7 +17,6 @@ import { ErrorsService } from '../errors/errors.service';
 import { ErrorsType } from '../errors/types/Errors';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { SetsService } from '../sets/sets.service';
-import { Supplier } from '../suppliers/suppliers.entity';
 import { SuppliersService } from '../suppliers/suppliers.service';
 import { User } from '../user/user.entity';
 import { CreateClonePositionDto } from './dto/createClonePosition.dto';
@@ -120,17 +119,19 @@ export class PositionsService {
     req: Request,
   ): Promise<void> {
     try {
-      positions.forEach((position) => {
-        const savedPosition = {
-          ...position,
-          updatedBy: { id: userId } as DeepPartial<User>,
-          supplierId: position?.supplierId as DeepPartial<Supplier>,
+      for (const position of positions) {
+        const entity = await this.positionsRepository.findOneBy({
+          id: position.id,
+        });
+
+        Object.assign(entity, position, {
+          updatedBy: { id: userId },
           updatedAt: getFormatedDate(),
           updatedAtTimestamp: Number(Date.now()),
-        };
+        });
 
-        this.updateOnePosition(position.id, savedPosition, req.originalUrl);
-      });
+        await this.positionsRepository.save(entity);
+      }
     } catch (err) {
       const newError: ErrorDto = {
         type: ErrorsType.sql,
@@ -153,7 +154,6 @@ export class PositionsService {
       });
     }
   }
-
   private async updateOnePosition(
     id: number,
     updatePosition: UpdatePositionDto,

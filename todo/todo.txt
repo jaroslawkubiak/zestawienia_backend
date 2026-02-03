@@ -17,6 +17,8 @@ Poprawić:
 [x] jak klient wrzuca pliki to nie uaktualnia się badge z ilością
 [x] jak klient wruci plik to badge się uaktualnie, ale po otwarciu show-files nie widać tego pliku - trzeba dodać nowy plik do listy plików
 [x] przy pobieraniu position policzyć ilość nowych komentarzy i zwrócić jako nowe property w positions. a gdy otwieram okno z komentarzami to robić request po nowe kom do tej pozycji
+[ ] sumowanie jak status pusty
+[ ] zerowanie statusów przy restarcie nesta
 
 Nowe do poprawy
 [x] wszystkie kolumny pozycji - tekst wyśrodkowany
@@ -221,8 +223,8 @@ różne:
 [x] endpoint na settings który przyjmuje listę stringów z name, np: sendingEmailsToCustomers, sendingEmailsToClient i zwraca obiekt z tymi danymi
 [x] przenieść rodo do db settings
 [ ] przenieść email template do db settings
-[ ] przerobic status na obiekt JSON i tak zapisywać w DB - nie będzie potrzeby przerabiania go w kilku miejscach
-[ ] zamienić new HttpHeaders({}) w serwisach na headers: this.HTTP_HEADERS, jak w edit-set.service
+[x] przerobic status na obiekt JSON i tak zapisywać w DB - nie będzie potrzeby przerabiania go w kilku miejscach
+[x] zamienić const headers = new HttpHeaders w serwisach na headers: this.HTTP_HEADERS, jak w edit-set.service
 
 issue:
 [x] zmiana dostawcy w zestawieniach na ostatniej pozycji - menu się chowa pod tabele

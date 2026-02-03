@@ -9,7 +9,7 @@ import { BookmarkDto } from '../../bookmarks/dto/bookmark.dto';
 import { NewSetForPositionDto } from '../../sets/dto/NewSet.dto';
 import { UpdateSupplierDto } from '../../suppliers/dto/supplier.dto';
 import { CreateUserDto } from '../../user/dto/user.dto';
-import { IPositionStatus } from '../types/IPositionStatus';
+import { PositionStatusDto } from './positionStatus.dto';
 
 export class CreateClonePositionDto {
   @IsString()
@@ -59,8 +59,9 @@ export class CreateClonePositionDto {
   @IsOptional()
   uwagi?: string;
 
-  @IsOptional()
-  status?: IPositionStatus;
+  @ValidateNested()
+  @Type(() => PositionStatusDto)
+  status: PositionStatusDto;
 
   @IsOptional()
   @ValidateNested()

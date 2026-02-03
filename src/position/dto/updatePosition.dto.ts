@@ -6,6 +6,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { UpdateSupplierDto } from '../../suppliers/dto/supplier.dto';
+import { IPositionStatus } from '../types/IPositionStatus';
 
 export class UpdatePositionDto {
   @IsNumber()
@@ -62,9 +63,8 @@ export class UpdatePositionDto {
   @IsOptional()
   image?: string;
 
-  @IsString()
   @IsOptional()
-  status?: string;
+  status?: IPositionStatus;
 
   @IsOptional()
   @ValidateNested({ each: true })

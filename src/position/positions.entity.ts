@@ -11,6 +11,7 @@ import { Comment } from '../comments/comments.entity';
 import { Set } from '../sets/sets.entity';
 import { Supplier } from '../suppliers/suppliers.entity';
 import { User } from '../user/user.entity';
+import { IPositionStatus } from './types/IPositionStatus';
 
 @Entity('position')
 export class Position {
@@ -56,8 +57,8 @@ export class Position {
   @Column({ type: 'varchar', length: 200, nullable: true })
   image: string;
 
-  @Column({ type: 'varchar', length: 50, nullable: true })
-  status: string;
+  @Column({ type: 'json', nullable: true })
+  status: IPositionStatus;
 
   @Column({ type: 'varchar', length: 50, nullable: true })
   createdAt: string | null;

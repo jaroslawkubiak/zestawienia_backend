@@ -237,14 +237,11 @@ export class CommentsService {
     }
   }
 
-  // OK dla usera
-  //TODO sprawdzić też dla klienta
   async markAllCommentsAsSeen(
     body: IMarkAllAsSeen,
     req?: Request,
   ): Promise<void> {
     const { positionId, authorType } = { ...body };
-
     const oppositeAuthorType = authorType === 'client' ? 'user' : 'client';
 
     try {
@@ -258,6 +255,7 @@ export class CommentsService {
         })
         .andWhere('seenAt IS NULL')
         .execute();
+
     } catch (err) {
       const newError: ErrorDto = {
         type: ErrorsType.sql,

@@ -100,8 +100,8 @@ export class SetsService {
         'client.email',
         'client.hash',
       ])
-      .leftJoin('set.lastBookmark', 'lastBookmark')
-      .addSelect(['lastBookmark.id'])
+      .leftJoin('set.lastActiveUserBookmark', 'lastActiveUserBookmark')
+      .addSelect(['lastActiveUserBookmark.id'])
       .getOne();
 
     const newCommentsCount = await this.commentsService.countUnreadBySetId(
@@ -116,8 +116,8 @@ export class SetsService {
     const set = await this.setsRepository
       .createQueryBuilder('set')
       .where('set.hash = :hash', { hash: hash })
-      .leftJoin('set.lastBookmark', 'lastBookmark')
-      .addSelect(['lastBookmark.id'])
+      .leftJoin('set.lastActiveUserBookmark', 'lastActiveUserBookmark')
+      .addSelect(['lastActiveUserBookmark.id'])
       .leftJoin('set.clientId', 'client')
       .addSelect([
         'client.id',
@@ -159,7 +159,7 @@ export class SetsService {
       .leftJoinAndSelect('set.files', 'files')
       .leftJoin('files.setId', 'fileSet')
       .addSelect(['fileSet.id'])
-      .leftJoinAndSelect('set.lastBookmark', 'lastBookmark')
+      .leftJoinAndSelect('set.lastActiveUserBookmark', 'lastActiveUserBookmark')
       .orderBy('set.id', 'DESC')
       .getMany();
 
@@ -204,8 +204,8 @@ export class SetsService {
         .leftJoinAndSelect('set.files', 'files')
         .leftJoin('files.setId', 'fileSet')
         .addSelect(['fileSet.id'])
-        .leftJoin('set.lastBookmark', 'lastBookmark')
-        .addSelect(['lastBookmark.id'])
+        .leftJoin('set.lastActiveUserBookmark', 'lastActiveUserBookmark')
+        .addSelect(['lastActiveUserBookmark.id'])
         .getOne(),
     ).pipe(
       mergeMap((set) => {
@@ -254,8 +254,8 @@ export class SetsService {
         createdAtTimestamp: Number(Date.now()),
         updatedAt: getFormatedDate(),
         updatedAtTimestamp: Number(Date.now()),
-        lastBookmark: { id: minBookmarkId } as Bookmark,
-        lastUsedClientBookmark: minBookmarkId,
+        lastActiveUserBookmark: { id: minBookmarkId } as Bookmark,
+        lastActiveClientBookmarkId: minBookmarkId,
       };
 
       const response = await this.setsRepository.save(newSet);
@@ -601,7 +601,7 @@ export class SetsService {
     }
   }
 
-  async updateLastUsedClientBookmark(
+  async updateLastActiveClientBookmark(
     setHash: string,
     newBookmark: number,
     req: Request,
@@ -609,7 +609,7 @@ export class SetsService {
     try {
       const updateSetResult = await this.setsRepository.update(
         { hash: setHash },
-        { lastUsedClientBookmark: newBookmark },
+        { lastActiveClientBookmarkId: newBookmark },
       );
 
       if (updateSetResult?.affected === 0) {
@@ -654,8 +654,8 @@ export class SetsService {
 
       newCommentsCount,
 
-      lastBookmark: { id: set.lastBookmark.id },
-      lastUsedClientBookmark: set.lastUsedClientBookmark,
+      lastActiveUserBookmark: { id: set.lastActiveUserBookmark.id },
+      lastActiveClientBookmarkId: set.lastActiveClientBookmarkId,
 
       comments: set.comments?.map((comment) => ({
         id: comment.id,

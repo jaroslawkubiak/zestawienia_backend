@@ -32,11 +32,11 @@ export class Set {
   bookmarks: any;
 
   @ManyToOne(() => Bookmark, { nullable: true, onDelete: 'SET NULL' })
-  @JoinColumn({ name: 'lastBookmark' })
-  lastBookmark: Bookmark;
+  @JoinColumn({ name: 'lastActiveUserBookmark' })
+  lastActiveUserBookmark: Bookmark;
 
   @Column({ nullable: true })
-  lastUsedClientBookmark: number;
+  lastActiveClientBookmarkId: number;
 
   @Column({ type: 'varchar', length: 50, nullable: false })
   status: string;

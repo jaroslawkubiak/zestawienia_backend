@@ -7,8 +7,8 @@ export interface ISavedSet {
   address: string;
   clientId: number;
   bookmarks: IBookmarksWithTableColumns[];
-  lastBookmark: Bookmark;
-  lastUsedClientBookmark: number;
+  lastActiveUserBookmark: Bookmark;
+  lastActiveClientBookmarkId: number;
   hash: string;
   status: string;
   createdAt: string;

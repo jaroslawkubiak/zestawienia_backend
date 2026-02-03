@@ -8,7 +8,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { BookmarkDto } from '../../bookmarks/dto/bookmark.dto';
-import { LastBookmarkDto } from './lastBookmark.dto';
+import { LastActiveUserBookmarkDto } from './lastActiveUserBookmark.dto';
 
 export class UpdateSetDto {
   @IsString()
@@ -19,11 +19,11 @@ export class UpdateSetDto {
 
   @IsDefined()
   @ValidateNested()
-  @Type(() => LastBookmarkDto)
-  lastBookmark: LastBookmarkDto;
+  @Type(() => LastActiveUserBookmarkDto)
+  lastActiveUserBookmark: LastActiveUserBookmarkDto;
 
   @IsNumber()
-  lastUsedClientBookmark: number;
+  lastActiveClientBookmarkId: number;
 
   @IsDefined()
   @IsArray()

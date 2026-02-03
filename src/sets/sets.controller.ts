@@ -100,13 +100,13 @@ export class SetsController {
   }
 
   // external link for clients - save last used bookmark
-  @Patch(':setHash/:newBookmark/lastUsedClientBookmark')
-  updateLastUsedClientBookmark(
+  @Patch(':setHash/:newBookmark/lastActiveClientBookmark')
+  updateLastActiveClientBookmark(
     @Param('setHash') setHash: string,
     @Param('newBookmark') newBookmark: string,
     @Req() req: Request,
   ): Promise<ISet> {
-    return this.setsService.updateLastUsedClientBookmark(
+    return this.setsService.updateLastActiveClientBookmark(
       setHash,
       +newBookmark,
       req,

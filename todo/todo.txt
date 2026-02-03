@@ -7,7 +7,7 @@ Poprawić:
 [x] klik poza modalem zamyka go
 [x] gdy usuwasz klienta bez nazwy firmy - pusto w komunikacie
 [x] kopiuj link do klienta otwiera okno emaila
-[ ] wygląd/layout wszystkich komentarzy dla userów
+[x] wygląd/layout wszystkich komentarzy dla userów
 [x] wygląd/layout linku dla dostawców
 [x] wygląd/layout linku dla klientów
 [x] /me jest także używane do external links
@@ -25,7 +25,7 @@ Nowe do poprawy
 [x] meble na wymiar i meble gotowe jako osobne zakładki
 [x] w komentarzach imię i nazwisko
 [x] powiadomienie klienta po 10min od dodania ostatniego komentarza
-[ ] podsumowanie komentarzy dla klienta
+[ ] podsumowanie komentarzy dla klienta tylko w desktop
 [x] jak klient otworzy onko z komentarzami to ma automatycznie je odczytać
 [x] rok w stopkach automatycznie
 [x] lista emaili wysłanych - zły link do klienta
@@ -40,6 +40,7 @@ MOBILE VIEW:
 [x] potwierdzania usuwania plików - dostosować css
 [x] nie działa download plików
 [x] na podsumowaniu - klik na bookmark - otwiera bookmark
+[x] notification przy komentarzach jest teraz za szeroka na mobile
 
 SPRAWDZIĆ NA PROD:
 [x] wklejanie obrazów do pozycji i poprawne ich wyświetlanie
@@ -95,7 +96,7 @@ Edycja zestawienia:
 [x] usunąć z footer ilość, netto i brutto
 [x] pola w pozycji jako textarea
 [x] podgląd obrazków pozycji na całej stronie: ikona lupy albo coś podobnego
-[ ] przy każdym przełączeniu zakładki - zrobić request i zapisać bieżącą zakładkę
+[x] przy każdym przełączeniu zakładki - zrobić request i zapisać bieżącą zakładkę
 
 [x] nowe Bookmarks:
 1 PODSUMOWANIE
@@ -162,7 +163,8 @@ Klienci:
 [x] lista wysłanych emaili do klientów z podglądem wysłanej wiadomości
 [x] przed wysyłką możliwa edycja wiadomości
 [x] działający link bez logowania do podglądu dla dostawców np: /:id_zestawienia/:hash_zestawienia/:hash_dostawcy
-[ ] dodać zapamiętywanie ostatnio otwartej zakładki dla klienów - external
+[x] dodać zapamiętywanie ostatnio otwartej zakładki dla klienów - external
+[ ] przenieść wszystki external endpoint do nowego modułu
 
 Dostawcy:
 [x] dodawanie nowych dostawców

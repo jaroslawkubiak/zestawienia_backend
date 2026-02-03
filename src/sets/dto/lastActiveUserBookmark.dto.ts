@@ -1,6 +1,6 @@
 import { IsInt } from 'class-validator';
 
-export class LastBookmarkDto {
+export class LastActiveUserBookmarkDto {
   @IsInt()
   id: number;
 }

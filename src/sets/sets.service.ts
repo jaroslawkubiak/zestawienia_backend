@@ -587,7 +587,7 @@ export class SetsService {
     );
   }
 
-  async updateLastUsedBookmark(
+  async updateLastActiveUserBookmark(
     setId: number,
     set: UpdateSetDto,
     req: Request,

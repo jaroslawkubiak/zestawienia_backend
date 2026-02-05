@@ -62,13 +62,17 @@ export class SetsController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Patch(':id/updateBookmark')
-  updateLastUsedBookmark(
+  @Patch(':id/updateLastActiveUserBookmark')
+  updateLastActiveUserBookmark(
     @Param('id') setId: string,
     @Body() updateSetDto: UpdateSetDto,
     @Req() req: Request,
   ): Promise<ISet> {
-    return this.setsService.updateLastUsedBookmark(+setId, updateSetDto, req);
+    return this.setsService.updateLastActiveUserBookmark(
+      +setId,
+      updateSetDto,
+      req,
+    );
   }
 
   @UseGuards(JwtAuthGuard)

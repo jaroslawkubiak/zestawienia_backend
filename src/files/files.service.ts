@@ -182,7 +182,6 @@ export class FilesService {
     // TODO - add this for iPhone users
     // generate thumbnail
     // const fileNameWithoutExt = path.parse(file['sanitizedOriginalName']).name;
-    // console.log(`######## before generateThumbnailPdf #########`);
 
     // fileDetails.thumbnailFileName = await generateThumbnailPdf(
     //   file.path,

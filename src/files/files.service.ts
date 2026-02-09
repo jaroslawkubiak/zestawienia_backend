@@ -13,6 +13,7 @@ import { IDeletedFileResponse } from './types/IDeletedFileResponse';
 import { IFileDetails } from './types/IFileDetails';
 import { IFileFullDetails } from './types/IFileFullDetails';
 import { IProcessFile } from './types/IProcessFile';
+import { EFileDirectoryList } from './types/file-directory-list.enum';
 
 @Injectable()
 export class FilesService {
@@ -56,7 +57,25 @@ export class FilesService {
       createdAtTimestamp: Date.now(),
     });
 
-    return this.filesRepository.save(newFile);
+    const response = await this.filesRepository.save(newFile);
+
+    const mappedFile: IFileFullDetails = {
+      id: response.id,
+      fileName: response.fileName,
+      type: response.type,
+      path: response.path,
+      dir: response.dir as EFileDirectoryList,
+      originalName: response.originalName,
+      size: response.size,
+      width: response.width,
+      height: response.height,
+      setId: response.setId.id,
+      createdAt: response.createdAt,
+      createdAtTimestamp: response.createdAtTimestamp,
+      thumbnail: response.thumbnail,
+    };
+
+    return mappedFile;
   }
 
   // delete file from set

@@ -136,8 +136,8 @@ Generowanie zestawienia w formie PDF:
 [x] przy generowaniu pdf możliwe 3 scenariusze: 1 - otwiera pdf w nowej zakłądce, 2 - zapisuje pdf na dysku, 3 - wysyła pdf na serwer ftp
 [x] różne tło wiersza w zależności od statusu
 [x] zakładka podsumowanie w PDF
-[ ] w nazwie pdf dodać nazwę inwestycji
-[ ] pdf automatycznie na ftp i ma się dodawać każdy kolejny pdf, nie usuwać poprzednich
+[x] w nazwie pdf dodać nazwę inwestycji
+[x] pdf automatycznie na ftp i ma się dodawać każdy kolejny pdf, nie usuwać poprzednich
 
 Emails:
 [x] wysyłka zestawienia via email w postaci HTML do klienta z linkiem do podglądu

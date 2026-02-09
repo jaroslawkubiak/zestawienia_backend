@@ -19,6 +19,7 @@ import { Email } from './email/email.entity';
 import { EmailModule } from './email/email.module';
 import { Errors } from './errors/errors.entity';
 import { ErrorsModule } from './errors/errors.module';
+import { ExternalModule } from './external/external.module';
 import { FilesController } from './files/files.controller';
 import { Files } from './files/files.entity';
 import { FilesModule } from './files/files.module';
@@ -114,6 +115,7 @@ if (!(global as any).crypto) {
     ClientLogsModule,
     SupplierLogsModule,
     HashModule,
+    ExternalModule,
   ],
   controllers: [AppController, ImagesController, FilesController],
   providers: [AppService, ImagesService],

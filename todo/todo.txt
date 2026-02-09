@@ -17,8 +17,8 @@ Poprawić:
 [x] jak klient wrzuca pliki to nie uaktualnia się badge z ilością
 [x] jak klient wruci plik to badge się uaktualnie, ale po otwarciu show-files nie widać tego pliku - trzeba dodać nowy plik do listy plików
 [x] przy pobieraniu position policzyć ilość nowych komentarzy i zwrócić jako nowe property w positions. a gdy otwieram okno z komentarzami to robić request po nowe kom do tej pozycji
-[ ] sumowanie jak status pusty
-[ ] zerowanie statusów przy restarcie nesta
+[x] sumowanie jak status pusty
+[x] zerowanie statusów przy restarcie nesta
 
 Nowe do poprawy
 [x] wszystkie kolumny pozycji - tekst wyśrodkowany
@@ -27,13 +27,13 @@ Nowe do poprawy
 [x] meble na wymiar i meble gotowe jako osobne zakładki
 [x] w komentarzach imię i nazwisko
 [x] powiadomienie klienta po 10min od dodania ostatniego komentarza
-[ ] podsumowanie komentarzy dla klienta tylko w desktop
+[x] podsumowanie komentarzy dla klienta tylko w desktop
 [x] jak klient otworzy onko z komentarzami to ma automatycznie je odczytać
 [x] rok w stopkach automatycznie
 [x] lista emaili wysłanych - zły link do klienta
 [x] guzik zapisz na wysokości bookmarks po prawej
 [x] nie odświeża badge po usunięciu pliku
-[ ] dodać setHash do każdego endpointu w comment component
+[x] dodać setHash do każdego endpointu w comment component
 
 MOBILE VIEW:
 [x] notification jest lekko ucięta z lewej strony
@@ -116,8 +116,6 @@ Edycja nagłówka zestawienia:
 [x] obiekt z szerokościami zapisywany na etapie dodawania nowego zestawienia z domyślnymi wartościami
 [x] odczyt i zapis szerokości kolumn dla każdej zakładki i dla każdego zestawienia
 [x] dołączyć listę szerokości do obiektu bookmarks w zestwieniach
-[ ] zmiana status na wysłane, gdy klient otrzyma pierwszy email
-[ ] zmiana status na odczytane gdy klient pierwszy raz otworzy link z zestawieniem
 
 Footer zestawienia:
 [x] obliczanie ceny brutto, wartości netto i wartości brutto
@@ -166,7 +164,7 @@ Klienci:
 [x] przed wysyłką możliwa edycja wiadomości
 [x] działający link bez logowania do podglądu dla dostawców np: /:id_zestawienia/:hash_zestawienia/:hash_dostawcy
 [x] dodać zapamiętywanie ostatnio otwartej zakładki dla klienów - external
-[ ] przenieść wszystki external endpoint do nowego modułu
+[x] przenieść wszystki external endpoint do nowego modułu
 
 Dostawcy:
 [x] dodawanie nowych dostawców
@@ -198,6 +196,8 @@ comments:
 
 status:
 [x] nowe zestawienie ze statusem nowe, przy dodaniu pierwszej pozycji zmiana statusu na w przygotowaniu i blokada usuwania
+[x] zmiana status na wysłane, gdy klient otrzyma pierwszy email
+[x] zmiana status na odczytane gdy klient pierwszy raz otworzy link z zestawieniem
 
 załączniki:
 [x] zapis plików w DB: nazwa pliku, data doodania, kto dodał, rozszerzenie, folder (będzie kilka)
@@ -222,7 +222,6 @@ DB:
 różne:
 [x] endpoint na settings który przyjmuje listę stringów z name, np: sendingEmailsToCustomers, sendingEmailsToClient i zwraca obiekt z tymi danymi
 [x] przenieść rodo do db settings
-[ ] przenieść email template do db settings
 [x] przerobic status na obiekt JSON i tak zapisywać w DB - nie będzie potrzeby przerabiania go w kilku miejscach
 [x] zamienić const headers = new HttpHeaders w serwisach na headers: this.HTTP_HEADERS, jak w edit-set.service
 

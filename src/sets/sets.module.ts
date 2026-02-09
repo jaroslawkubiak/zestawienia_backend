@@ -7,6 +7,7 @@ import { CommentsModule } from '../comments/comments.module';
 import { EmailModule } from '../email/email.module';
 import { ErrorsModule } from '../errors/errors.module';
 import { FilesModule } from '../files/files.module';
+import { HashModule } from '../hash/hash.module';
 import { ImagesModule } from '../images/images.module';
 import { Position } from '../position/positions.entity';
 import { PositionsModule } from '../position/positions.module';
@@ -16,7 +17,6 @@ import { User } from '../user/user.entity';
 import { SetsController } from './sets.controller';
 import { Set } from './sets.entity';
 import { SetsService } from './sets.service';
-import { HashModule } from '../hash/hash.module';
 
 @Module({
   imports: [

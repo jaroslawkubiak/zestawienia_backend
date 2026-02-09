@@ -27,6 +27,10 @@ export class ClientsService {
     return this.clientsRepo.findOneBy({ id });
   }
 
+  findOneByHash(hash: string): Promise<IClient | null> {
+    return this.clientsRepo.findOneBy({ hash });
+  }
+
   async create(createClientDto: CreateClientDto): Promise<IClient> {
     const newClient = {
       ...createClientDto,

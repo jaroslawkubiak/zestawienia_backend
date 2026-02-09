@@ -24,14 +24,10 @@ export class ClientLogsService {
     const { req_setHash, req_clientHash } = data;
 
     const set = await this.setsService.findOneSetByHash(req_setHash);
-    const clientId = set?.clientId?.id;
-    const client = clientId
-      ? await this.clientsService.findOne(clientId)
-      : null;
+    const client = await this.clientsService.findOneByHash(req_clientHash);
 
-    const client_name = set
-      ? `${set.clientId?.firstName ?? ''} ${set.clientId?.lastName ?? ''}`.trim() ||
-        null
+    const client_name = client
+      ? `${client.firstName ?? ''} ${client.lastName ?? ''}`.trim() || null
       : null;
 
     const createData: DeepPartial<ClientLogs> = {

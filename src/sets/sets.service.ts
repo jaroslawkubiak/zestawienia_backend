@@ -15,17 +15,17 @@ import {
   map,
   mergeMap,
   Observable,
-  of,
   switchMap,
+  tap,
   throwError,
 } from 'rxjs';
-import { TAuthorType } from 'src/comments/types/authorType.type';
 import { DeepPartial, Repository } from 'typeorm';
 import { Bookmark } from '../bookmarks/bookmarks.entity';
 import { ClientLogsService } from '../client-logs/client-logs.service';
 import { Client } from '../clients/clients.entity';
 import { ClientsService } from '../clients/clients.service';
 import { CommentsService } from '../comments/comments.service';
+import { TAuthorType } from '../comments/types/authorType.type';
 import { IUnreadComments } from '../comments/types/IUnreadComments';
 import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
@@ -46,6 +46,7 @@ import { UpdateSetAndPositionDto } from './dto/updateSetAndPosition.dto';
 import { Set } from './sets.entity';
 import { ISavedSet } from './types/ISavedSet';
 import { ISet } from './types/ISet';
+import { ISetForSupplier } from './types/ISetForSupplier';
 import { IValidSetForClient } from './types/IValidSetForClient';
 import { IValidSetForSupplier } from './types/IValidSetForSupplier';
 import { SetStatus } from './types/SetStatus';
@@ -385,11 +386,11 @@ export class SetsService {
     await this.filesService.removeFilesFromSet(id);
   }
 
-  validateSetAndHashForSupplier(
+  validateSetHashAndSupplierHash(
     setHash: string,
     supplierHash: string,
     req: Request,
-  ): Observable<IValidSetForSupplier | null> {
+  ): Observable<ISetForSupplier | null> {
     const set$ = from(
       this.setsRepository
         .createQueryBuilder('set')
@@ -408,14 +409,16 @@ export class SetsService {
       map((set) =>
         set
           ? {
-              setId: set.id,
-              setName: set.name,
-              client: {
-                id: set.clientId.id,
-                company: set.clientId.company,
-                firstName: set.clientId.firstName,
-                lastName: set.clientId.lastName,
-              },
+              id: set.id,
+              name: set.name,
+              client: set.clientId
+                ? {
+                    id: set.clientId.id,
+                    company: set.clientId.company,
+                    firstName: set.clientId.firstName,
+                    lastName: set.clientId.lastName,
+                  }
+                : null,
             }
           : null,
       ),
@@ -446,8 +449,8 @@ export class SetsService {
     );
 
     return forkJoin([set$, supplier$]).pipe(
-      switchMap(([setData, supplier]) => {
-        const isValid = !!setData && !!supplier;
+      map(([set, supplier]) => {
+        const isValid = !!set && !!supplier;
 
         this.supplierLogsService.createSupplierEntry({
           success: isValid,
@@ -457,65 +460,68 @@ export class SetsService {
           user_agent: req.headers['user-agent'] ?? null,
         });
 
-        // hashes are not good - return null
-        if (!isValid) {
-          return of(null);
-        }
+        if (!isValid) return null;
 
-        // both hashes are good - get position data
-        return from(
-          this.positionRepository
-            .createQueryBuilder('position')
-            .select([
-              'position.id',
-              'position.produkt',
-              'position.producent',
-              'position.kolekcja',
-              'position.nrKatalogowy',
-              'position.kolor',
-              'position.ilosc',
-              'position.pomieszczenie',
-              'position.link',
-              'position.image',
-            ])
-            .where('position.setId = :setId', { setId: setData.setId })
-            .andWhere('position.supplierId = :supplierId', {
-              supplierId: supplier.id,
-            })
-            .orderBy('position.bookmarkId', 'ASC')
-            .addOrderBy('position.kolejnosc', 'ASC')
-            .getMany(),
-        ).pipe(
-          map((positions) => ({
-            valid: true,
-            setId: setData.setId,
-            setName: setData.setName,
-            supplier: {
-              id: supplier.id,
-              company: supplier.company,
-              firstName: supplier.firstName,
-              lastName: supplier.lastName,
-            },
-            client: {
-              id: setData.client?.id ?? null,
-              company: setData.client?.company ?? null,
-              firstName: setData.client?.firstName ?? null,
-              lastName: setData.client?.lastName ?? null,
-            },
-            positions,
-          })),
-        );
+        return { set, supplier };
       }),
     );
   }
 
-  validateSetAndHashForClient(
+  getSetDataForSupplier(
+    data: ISetForSupplier,
+  ): Observable<IValidSetForSupplier> {
+    const { set, supplier } = data;
+
+    return from(
+      this.positionRepository
+        .createQueryBuilder('position')
+        .select([
+          'position.id',
+          'position.produkt',
+          'position.producent',
+          'position.kolekcja',
+          'position.nrKatalogowy',
+          'position.kolor',
+          'position.ilosc',
+          'position.pomieszczenie',
+          'position.link',
+          'position.image',
+        ])
+        .where('position.setId = :setId', { setId: set.id })
+        .andWhere('position.supplierId = :supplierId', {
+          supplierId: supplier.id,
+        })
+        .orderBy('position.bookmarkId', 'ASC')
+        .addOrderBy('position.kolejnosc', 'ASC')
+        .getMany(),
+    ).pipe(
+      map((positions) => ({
+        valid: true,
+        setId: set.id,
+        setName: set.name,
+        supplier: {
+          id: supplier.id,
+          company: supplier.company,
+          firstName: supplier.firstName,
+          lastName: supplier.lastName,
+        },
+        client: {
+          id: set.client?.id ?? null,
+          company: set.client?.company ?? null,
+          firstName: set.client?.firstName ?? null,
+          lastName: set.client?.lastName ?? null,
+        },
+        positions,
+      })),
+    );
+  }
+
+  validateSetHashAndClientHash(
     setHash: string,
     clientHash: string,
     req: Request,
-  ): Observable<IValidSetForClient | null> {
-    const commentAuthorType = 'user';
-    const set$ = from(
+  ): Observable<number | null> {
+    return from(
       this.setsRepository
         .createQueryBuilder('set')
         .innerJoin('set.clientId', 'client')
@@ -523,11 +529,10 @@ export class SetsService {
         .andWhere('client.hash = :clientHash', { clientHash })
         .select(['set.id'])
         .getOne(),
-    );
-
-    return set$.pipe(
-      switchMap((set) => {
-        const isValid = !!set;
+    ).pipe(
+      map((set) => (set ? set.id : null)),
+      tap((setId) => {
+        const isValid = !!setId;
 
         this.clientLogsService.createClientEntry({
           success: isValid,
@@ -536,33 +541,34 @@ export class SetsService {
           ip_address: getClientIp(req),
           user_agent: req.headers['user-agent'] ?? null,
         });
+      }),
+    );
+  }
 
-        if (!isValid) return of(null);
+  getSetDataForClient(
+    setId: number,
+    commentAuthorType: TAuthorType,
+  ): Observable<IValidSetForClient> {
+    return from(this.markAsReadAtFirstLinkOpenByClient(setId)).pipe(
+      switchMap(() => {
+        const setDetails$ = from(this.getSet(setId, commentAuthorType));
+        const positions$ = this.positionsService.getPositions(
+          setId,
+          commentAuthorType,
+        );
 
-        const setId = set.id;
+        return forkJoin([setDetails$, positions$]).pipe(
+          map(([set, positions]) => {
+            const fullName = `${set.clientId.firstName} ${set.clientId.lastName}`;
 
-        return from(this.markAsReadAtFirstLinkOpenByClient(setId)).pipe(
-          switchMap(() => {
-            const setDetails$ = from(this.getSet(setId, commentAuthorType));
-            const positions$ = this.positionsService.getPositions(
-              setId,
-              commentAuthorType,
-            );
-
-            return forkJoin([setDetails$, positions$]).pipe(
-              map(([set, positions]) => {
-                const fullName = `${set.clientId.firstName} ${set.clientId.lastName}`;
-
-                return {
-                  valid: true,
-                  set: {
-                    ...set,
-                    fullName,
-                  },
-                  positions,
-                } as IValidSetForClient;
-              }),
-            );
+            return {
+              valid: true,
+              set: {
+                ...set,
+                fullName,
+              },
+              positions,
+            } as IValidSetForClient;
           }),
         );
       }),

@@ -59,10 +59,18 @@ export class ExternalController {
     return this.externalService.getCommentsForSet(setHash, clientHash, req);
   }
 
-  @Get(':positionId/getCommentsForPosition')
+  @Get(':setHash/:clientHash/:positionId/getCommentsForPosition')
   getCommentsForPosition(
+    @Param('setHash') setHash: string,
+    @Param('clientHash') clientHash: string,
     @Param('positionId') positionId: string,
-  ): Promise<IComment[]> {
-    return this.externalService.getCommentsForPosition(+positionId);
+    @Req() req: Request,
+  ): Observable<IComment[]> {
+    return this.externalService.getCommentsForPosition(
+      setHash,
+      clientHash,
+      +positionId,
+      req,
+    );
   }
 }

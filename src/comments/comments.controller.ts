@@ -34,13 +34,11 @@ export class CommentsController {
   }
 
   @Get(':setId/getCommentsForSet')
-  findBySetId(
-    @Param('setId') setId: string,
-  ): Promise<IComment[]> {
+  findBySetId(@Param('setId') setId: string): Promise<IComment[]> {
     return this.commentsService.findAllCommentsBySetId(+setId);
   }
 
-  @Post('addComment')
+  @Post(':setHash/addComment')
   addComment(
     @Body() createCommentDto: CreateCommentDto,
     @Req() req: Request,
@@ -48,7 +46,7 @@ export class CommentsController {
     return this.commentsService.addComment(createCommentDto, req);
   }
 
-  @Post('markAllAsSeen')
+  @Post(':setHash/markAllAsSeen')
   markAllCommentsAsSeen(@Body() body: IMarkAllAsSeen, @Req() req: Request) {
     return this.commentsService.markAllCommentsAsSeen(body, req);
   }

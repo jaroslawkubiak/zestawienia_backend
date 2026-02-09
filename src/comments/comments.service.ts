@@ -255,7 +255,6 @@ export class CommentsService {
         })
         .andWhere('seenAt IS NULL')
         .execute();
-
     } catch (err) {
       const newError: ErrorDto = {
         type: ErrorsType.sql,

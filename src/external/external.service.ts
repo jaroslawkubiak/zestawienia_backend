@@ -78,7 +78,22 @@ export class ExternalService {
       );
   }
 
-  async getCommentsForPosition(positionId: number) {
-    return this.commentsService.findAllCommentsByPositionId(positionId);
+  getCommentsForPosition(
+    setHash: string,
+    clientHash: string,
+    positionId: number,
+    req: Request,
+  ): Observable<IComment[] | null> {
+    return this.setsService
+      .validateSetHashAndClientHash(setHash, clientHash, req)
+      .pipe(
+        switchMap((setId) => {
+          if (!setId) {
+            return of(null);
+          }
+
+          return this.commentsService.findAllCommentsByPositionId(positionId);
+        }),
+      );
   }
 }

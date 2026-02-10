@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClientsModule } from '../clients/clients.module';
 import { EmailModule } from '../email/email.module';
 import { ErrorsModule } from '../errors/errors.module';
+import { NotificationTimerModule } from '../notification-timer/notification-timer.module';
 import { Position } from '../position/positions.entity';
 import { SetsModule } from '../sets/sets.module';
 import { SettingsModule } from '../settings/settings.module';
@@ -16,6 +17,7 @@ import { CommentsService } from './comments.service';
   imports: [
     TypeOrmModule.forFeature([Comment, User, Position]),
     ErrorsModule,
+    NotificationTimerModule,
     forwardRef(() => UserModule),
     forwardRef(() => SettingsModule),
     forwardRef(() => ClientsModule),

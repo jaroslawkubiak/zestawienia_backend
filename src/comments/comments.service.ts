@@ -3,6 +3,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+import { OnEvent } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
 import { DeepPartial, Repository } from 'typeorm';
@@ -11,6 +12,7 @@ import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
 import { ErrorsType } from '../errors/types/Errors';
 import { getFormatedDate } from '../helpers/getFormatedDate';
+import { NotificationTimerService } from '../notification-timer/notification-timer.service';
 import { Position } from '../position/positions.entity';
 import { Set } from '../sets/sets.entity';
 import { SettingsService } from '../settings/settings.service';
@@ -24,17 +26,13 @@ import { TAuthorType } from './types/authorType.type';
 
 @Injectable()
 export class CommentsService {
-  private clientTimers: Map<number, NodeJS.Timeout> = new Map();
-  private userTimers: Map<number, NodeJS.Timeout> = new Map();
-  private readonly TIMEOUT_DELAY =
-    Number(process.env.COMMENTS_NOTIFICATION_DELAY) || 600000; // 10 * 60 * 1000 = 600000 = 10min
-
   constructor(
     @InjectRepository(Comment)
     private readonly commentRepository: Repository<Comment>,
     private errorsService: ErrorsService,
     private emailService: EmailService,
     private settingService: SettingsService,
+    private notificationTimerService: NotificationTimerService,
   ) {}
 
   async findOne(id: number): Promise<IComment> {
@@ -378,51 +376,40 @@ export class CommentsService {
     };
   }
 
-  private async setTimersForNotification(setId, authorType) {
-    /** -----------------------------
-     *  TIMER 1: client → office
-     * ------------------------------ */
-    const emailAboutNewCommentsFromClient =
+  private async setTimersForNotification(
+    setId: number,
+    authorType: TAuthorType,
+  ) {
+    /** TIMER 1: client → office */
+    const emailFromClient =
       (
         await this.settingService.getSettingByName(
           'emailAboutNewCommentsFromClient',
         )
       ).value === 'true';
 
-    if (emailAboutNewCommentsFromClient && authorType === 'client') {
-      if (this.clientTimers.has(setId)) {
-        clearTimeout(this.clientTimers.get(setId));
-      }
-
-      const timer = setTimeout(async () => {
-        await this.sendNotificationEmail(setId, 'office');
-        this.clientTimers.delete(setId);
-      }, this.TIMEOUT_DELAY);
-
-      this.clientTimers.set(setId, timer);
+    if (emailFromClient && authorType === 'client') {
+      await this.notificationTimerService.startNotificationTimer(
+        setId,
+        'client_to_office',
+        'office',
+      );
     }
 
-    /** -----------------------------
-     *  TIMER 2: office → client
-     * ------------------------------ */
-    const emailAboutNewCommentsFromOffice =
+    /** TIMER 2: office → client */
+    const emailFromOffice =
       (
         await this.settingService.getSettingByName(
           'emailAboutNewCommentsFromOffice',
         )
       ).value === 'true';
 
-    if (emailAboutNewCommentsFromOffice && authorType === 'user') {
-      if (this.userTimers.has(setId)) {
-        clearTimeout(this.userTimers.get(setId));
-      }
-
-      const timer = setTimeout(async () => {
-        await this.sendNotificationEmail(setId, 'client');
-        this.userTimers.delete(setId);
-      }, this.TIMEOUT_DELAY);
-
-      this.userTimers.set(setId, timer);
+    if (emailFromOffice && authorType === 'user') {
+      await this.notificationTimerService.startNotificationTimer(
+        setId,
+        'office_to_client',
+        'client',
+      );
     }
   }
 
@@ -456,6 +443,15 @@ export class CommentsService {
         newComments,
       );
     }
+  }
+
+  @OnEvent('notification.timer.fired')
+  async handleNotificationTimerEvent(payload: {
+    setId: number;
+    recipient: 'client' | 'office';
+    direction: 'client_to_office' | 'office_to_client';
+  }) {
+    await this.sendNotificationEmail(payload.setId, payload.recipient);
   }
 
   private mapCommentToIComment(comment: Comment): IComment {

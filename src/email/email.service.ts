@@ -8,6 +8,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as nodemailer from 'nodemailer';
 import { firstValueFrom, from, map, Observable } from 'rxjs';
 import { Repository } from 'typeorm';
+import { CommentNotificationLogsService } from '../comment-notification-logs/comment-notification-logs.service';
+import { CommentNotificationDto } from '../comment-notification-logs/types/commentNotification.dto';
 import { TAuthorType } from '../comments/types/authorType.type';
 import { IComment } from '../comments/types/IComment';
 import { ErrorDto } from '../errors/dto/error.dto';
@@ -44,6 +46,7 @@ export class EmailService {
 
     @Inject(forwardRef(() => PositionsService))
     private readonly positionService: PositionsService,
+    private commentNotificationLogsService: CommentNotificationLogsService,
   ) {
     this.transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
@@ -180,7 +183,22 @@ export class EmailService {
       html,
     };
 
-    await this.transporter.sendMail(mailOptions);
+    const info = await this.transporter.sendMail(mailOptions);
+
+    if (info.response.includes('OK')) {
+      // log email in DB comment-nofitication-logs
+      const newEmailLog: CommentNotificationDto = {
+        ...mailOptions,
+        content: mailOptions.html,
+        sendAt: getFormatedDate(),
+        sendAtTimestamp: Number(Date.now()),
+        setId: { id: setId } as CreateIdDto,
+        clientId: set.clientId,
+        unreadComments: newComments.length,
+      };
+
+      await this.createCommentNotificationLog(newEmailLog);
+    }
   }
 
   async sendEmailAboutNewCommentsFromOffice(
@@ -233,6 +251,12 @@ export class EmailService {
   async createEmailLog(emailLog: LogEmailDto): Promise<Email> {
     const newLog = this.emailRepository.create(emailLog);
     return this.emailRepository.save(newLog);
+  }
+
+  async createCommentNotificationLog(
+    emailLog: CommentNotificationDto,
+  ): Promise<void> {
+    await this.commentNotificationLogsService.saveLog(emailLog);
   }
 
   findAllEmails(): Observable<ISendedEmailsFromDB[]> {

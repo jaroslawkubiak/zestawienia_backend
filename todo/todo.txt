@@ -57,14 +57,6 @@ SPRAWDZIĆ NA PROD:
 [x] brak miniatur PDF na iPhone
 [x] w widoku dużych ikon brak domyślnej ikony pdf
 
-Admin:
-[x] Logowania użytkowników
-[ ] ukryte menu admina
-[ ] lista logowań użytkowników
-[ ] lista "logowań" klientów
-[ ] lista "logowań" dostawców
-[ ] system logowania błędów
-[ ] lista błędów
 
 Po zalogowaniu:
 [x] Podsumowanie nowych - nieprzeczytanych komentarzy
@@ -262,8 +254,19 @@ backend:
 Doprecyzować:
 [ ] kolory statusów
 [ ] PDF - legenda w podsumowaniu?
-[ ] PDF - tryb: zapis, otwórz, FTP?
+[x] PDF - tryb: zapis, otwórz, FTP?
 [ ] Domyślne treści emaili: do klienta, do dostawcy, z podsumowaniem komentarzy
 
 
 [ ] wysysłam email z aplikacji nestjs. email zawiera obrazki które po otwarciu emaila nie są widoczne dopóki nie kliknę wczytaj zawartość. można to jakoś obejść?
+
+Admin:
+[x] Logowania użytkowników
+[ ] ukryte menu admina
+[ ] lista logowań użytkowników
+[ ] lista "logowań" klientów
+[ ] lista "logowań" dostawców
+[ ] system logowania błędów
+[ ] lista błędów
+[ ] zapisywanie wysłanych emaili z powiadomieniami o komentarzach
+[ ] zapisanie aktywnych timerów od powiadomień o komentarzach które wyjdą z platformy

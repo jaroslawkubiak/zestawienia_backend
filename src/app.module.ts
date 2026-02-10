@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as crypto from 'crypto';
@@ -13,6 +14,8 @@ import { ClientLogs } from './client-logs/client-logs.entity';
 import { ClientLogsModule } from './client-logs/client-logs.module';
 import { Client } from './clients/clients.entity';
 import { ClientsModule } from './clients/clients.module';
+import { CommentNotificationLogs } from './comment-notification-logs/comment-notification-logs.entity';
+import { CommentNotificationLogsModule } from './comment-notification-logs/comment-notification-logs.module';
 import { Comment } from './comments/comments.entity';
 import { CommentsModule } from './comments/comments.module';
 import { Email } from './email/email.entity';
@@ -27,6 +30,8 @@ import { HashModule } from './hash/hash.module';
 import { ImagesController } from './images/images.controller';
 import { ImagesModule } from './images/images.module';
 import { ImagesService } from './images/images.service';
+import { NotificationTimer } from './notification-timer/notification-timer.entity';
+import { NotificationTimerModule } from './notification-timer/notification-timer.module';
 import { Position } from './position/positions.entity';
 import { PositionsModule } from './position/positions.module';
 import { Set } from './sets/sets.entity';
@@ -88,6 +93,8 @@ if (!(global as any).crypto) {
             Supplier,
             UserLogs,
             User,
+            NotificationTimer,
+            CommentNotificationLogs,
           ],
           synchronize: config.get<string>('TYPEORM_SYNCHRONIZE') === 'true',
           extra: {
@@ -99,6 +106,7 @@ if (!(global as any).crypto) {
         };
       },
     }),
+    EventEmitterModule.forRoot(),
     AuthModule,
     SetsModule,
     SuppliersModule,
@@ -116,6 +124,8 @@ if (!(global as any).crypto) {
     SupplierLogsModule,
     HashModule,
     ExternalModule,
+    NotificationTimerModule,
+    CommentNotificationLogsModule,
   ],
   controllers: [AppController, ImagesController, FilesController],
   providers: [AppService, ImagesService],

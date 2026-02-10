@@ -11,6 +11,7 @@ import { Client } from '../clients/clients.entity';
 import { Comment } from '../comments/comments.entity';
 import { Email } from '../email/email.entity';
 import { Files } from '../files/files.entity';
+import { NotificationTimer } from '../notification-timer/notification-timer.entity';
 import { Position } from '../position/positions.entity';
 import { User } from '../user/user.entity';
 
@@ -88,4 +89,13 @@ export class Set {
 
   @OneToMany(() => Files, (file) => file.setId)
   files: Files[];
+
+  @OneToMany(
+    () => NotificationTimer,
+    (notificationTimer) => notificationTimer.setId,
+    {
+      onDelete: 'CASCADE',
+    },
+  )
+  notificationTimers: NotificationTimer[];
 }

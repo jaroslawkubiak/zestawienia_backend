@@ -6,7 +6,6 @@ export interface ISendEmailAboutNewComments {
   newComments: IComment[];
   needsAttentionComments: IComment[];
   headerText: string;
-  link: string;
   recipient: string;
   commentAuthorType: TAuthorType;
 }

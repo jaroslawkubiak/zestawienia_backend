@@ -30,6 +30,7 @@ import { IEmailDetails } from './types/IEmailDetails';
 import { IHTMLTemplateOptions } from './types/IHTMLTemplateOptions';
 import { ISendedEmailsFromDB } from './types/ISendedEmailsFromDB';
 import { ISendEmailAboutNewComments } from './types/ISendEmailAboutNewComments';
+import { EmailAudience } from './types/EmailAudience.type';
 
 @Injectable()
 export class EmailService {
@@ -134,7 +135,6 @@ export class EmailService {
       needsAttentionComments,
       headerText,
       recipient,
-      link,
       commentAuthorType,
     } = options;
     const set = await this.setsService.findOneSet(setId);
@@ -182,7 +182,7 @@ export class EmailService {
       header: HTMLheader,
       newCommentsList,
       needsAttentionCommentsList,
-      link,
+      link: this.createExternalLink('client', set.hash, set.clientId.hash),
       GDPRClause,
     };
 
@@ -228,14 +228,11 @@ export class EmailService {
     const set = await this.setsService.findOneSet(setId);
     const commentAuthorType: TAuthorType = 'user';
 
-    const link = `${this.APP_URL}/${set.id}/${set.hash}`;
-
     const options: ISendEmailAboutNewComments = {
       setId,
       newComments,
       needsAttentionComments,
       headerText: `Biuro Żurawicki Design zakończyło dodawanie`,
-      link,
       recipient: set.clientId.email,
       commentAuthorType,
     };
@@ -260,7 +257,6 @@ export class EmailService {
       newComments,
       needsAttentionComments,
       headerText: `Klient ${clientFullName} zakończył dodawanie`,
-      link: this.APP_URL,
       recipient: process.env.EMAIL_USER,
       commentAuthorType,
     };
@@ -412,5 +408,13 @@ export class EmailService {
         })),
       ),
     );
+  }
+
+  createExternalLink(
+    type: EmailAudience,
+    setHash: string,
+    hash: string,
+  ): string {
+    return `${this.APP_URL}/open-for-${type}/${setHash}/${hash}`;
   }
 }

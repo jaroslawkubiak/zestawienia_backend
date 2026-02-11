@@ -14,11 +14,8 @@ export class CommentNotificationLogs {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
 
-  @Column({ type: 'varchar', length: 100, nullable: false })
-  to: string;
-
   @Column({ type: 'varchar', length: 150, nullable: false })
-  subject: string;
+  to: string;
 
   @Column({
     type: 'enum',
@@ -29,7 +26,7 @@ export class CommentNotificationLogs {
   notificationDirection: ENotificationDirection;
 
   @Column({ type: 'text', nullable: false })
-  content: any;
+  content: string;
 
   @Column({ type: 'int', nullable: false })
   unreadComments: number;
@@ -37,22 +34,17 @@ export class CommentNotificationLogs {
   @Column({ type: 'int', nullable: false })
   needsAttentionComments: number;
 
-  @ManyToOne(() => Set, (set) => set.email, {
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn({ name: 'setId', referencedColumnName: 'id' })
-  setId: Set;
+  @Column({ type: 'varchar', length: 50, nullable: false })
+  sendAt: string;
 
-  @ManyToOne(() => Client, (client) => client.logEmail, {
-    onDelete: 'CASCADE',
-    nullable: true,
-  })
-  @JoinColumn({ name: 'clientId', referencedColumnName: 'id' })
-  clientId?: Client | null;
+  @Column({ type: 'bigint', nullable: false })
+  sendAtTimestamp: number;
 
-  @Column({ type: 'varchar', length: 50, nullable: true })
-  sendAt: string | null;
+  @ManyToOne(() => Set, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'setId' })
+  set: Set;
 
-  @Column({ type: 'bigint', nullable: true })
-  sendAtTimestamp: number | null;
+  @ManyToOne(() => Client, { onDelete: 'CASCADE', nullable: false })
+  @JoinColumn({ name: 'clientId' })
+  client: Client;
 }

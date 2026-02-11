@@ -1,31 +1,16 @@
-import { IsEnum, IsNumber, IsString } from 'class-validator';
+import { IClient } from '../../clients/types/IClient';
 import { ENotificationDirection } from '../../notification-timer/types/notification-direction.enum';
+import { ISet } from '../../sets/types/ISet';
 
-export class CommentNotificationDto {
-  @IsString()
+export interface ICommentNotificationLogs {
+  id: number;
   to: string;
-
-  @IsEnum(ENotificationDirection)
   notificationDirection: ENotificationDirection;
-
-  @IsString()
   content: string;
-
-  @IsNumber()
   unreadComments: number;
-
-  @IsNumber()
   needsAttentionComments: number;
-
-  @IsString()
   sendAt: string;
-
-  @IsNumber()
   sendAtTimestamp: number;
-
-  @IsNumber()
-  setId: number;
-
-  @IsNumber()
-  clientId: number;
+  setId: ISet;
+  clientId: IClient;
 }

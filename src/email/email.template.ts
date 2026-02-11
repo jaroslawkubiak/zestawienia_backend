@@ -14,6 +14,18 @@ export function createHTML(options: IHTMLTemplateOptions): string {
     needsAttentionCommentsList,
   } = { ...options };
 
+  const NEEDS_ATTENTION_COMMENTS =
+    needsAttentionCommentsList.length !== 0
+      ? `
+        <!-- NEEDS ATTENTION COMMENTS -->
+        <tr>
+          <td style="padding: 30px 0" colspan="2">
+            <p style="font-weight: bold">Komentarze oznaczone jako ważne:</p>
+            ${createCommentsTable(needsAttentionCommentsList)}
+          </td>
+        </tr>`
+      : '';
+
   return `
     ${HTMLheader()}
     <!-- TITLE -->
@@ -32,13 +44,7 @@ export function createHTML(options: IHTMLTemplateOptions): string {
       </td>
     </tr>
 
-    <!-- NEEDS ATTENTION COMMENTS -->
-    <tr>
-      <td style="padding: 30px 0" colspan="2">
-        <p style="font-weight: bold">Komentarze oznaczone jako ważne:</p>
-        ${createCommentsTable(needsAttentionCommentsList)}
-      </td>
-    </tr>
+    ${NEEDS_ATTENTION_COMMENTS}
 
     <!-- link do zestawienia -->
     <tr>

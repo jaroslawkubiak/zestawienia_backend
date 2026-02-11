@@ -205,15 +205,15 @@ export class EmailService {
     if (info.response.includes('OK')) {
       // log email in DB comment-nofitication-logs
       const newCommentNotificationLog: CommentNotificationDto = {
-        ...mailOptions,
+        to: mailOptions.to,
         notificationDirection: notificationDirection,
         content: mailOptions.html,
-        sendAt: getFormatedDate(),
-        sendAtTimestamp: Number(Date.now()),
-        setId: { id: setId } as CreateIdDto,
-        clientId: set.clientId,
         unreadComments: newComments.length,
         needsAttentionComments: needsAttentionCommentsList.length,
+        sendAt: getFormatedDate(),
+        sendAtTimestamp: Number(Date.now()),
+        setId: setId,
+        clientId: set.clientId.id,
       };
 
       await this.createCommentNotificationLog(newCommentNotificationLog);

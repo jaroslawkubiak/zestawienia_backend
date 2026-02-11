@@ -15,7 +15,9 @@ import { IComment } from '../comments/types/IComment';
 import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
 import { ErrorsType } from '../errors/types/Errors';
+import { extractBodyContent } from '../helpers/extractBodyContent';
 import { getFormatedDate } from '../helpers/getFormatedDate';
+import { minifyHtml } from '../helpers/minifyHtml';
 import { ENotificationDirection } from '../notification-timer/types/notification-direction.enum';
 import { PositionsService } from '../position/positions.service';
 import { SetsService } from '../sets/sets.service';
@@ -25,12 +27,12 @@ import { LogEmailDto } from './dto/logEmail.dto';
 import { Email } from './email.entity';
 import { createHTML } from './email.template';
 import { saveToSentFolder } from './emailSendCopy';
+import { EmailAudience } from './types/EmailAudience.type';
 import { ICommentList } from './types/ICommentList';
 import { IEmailDetails } from './types/IEmailDetails';
 import { IHTMLTemplateOptions } from './types/IHTMLTemplateOptions';
 import { ISendedEmailsFromDB } from './types/ISendedEmailsFromDB';
 import { ISendEmailAboutNewComments } from './types/ISendEmailAboutNewComments';
-import { EmailAudience } from './types/EmailAudience.type';
 
 @Injectable()
 export class EmailService {
@@ -265,7 +267,15 @@ export class EmailService {
   }
 
   async createEmailLog(emailLog: LogEmailDto): Promise<Email> {
-    const newLog = this.emailRepository.create(emailLog);
+    // clean html content - leave only inside <body>, remove tabs, new lines
+    const bodyOnly = extractBodyContent(emailLog.content);
+    const cleanedHtmlContent = minifyHtml(bodyOnly);
+
+    const newLog = this.emailRepository.create({
+      ...emailLog,
+      content: cleanedHtmlContent,
+    });
+
     return this.emailRepository.save(newLog);
   }
 
@@ -287,6 +297,7 @@ export class EmailService {
         'email.link',
         'email.sendAt',
         'email.sendAtTimestamp',
+        'email.content',
         'client.id',
         'client.company',
         'client.email',
@@ -311,6 +322,7 @@ export class EmailService {
           link: email.link,
           sendAt: email.sendAt,
           sendAtTimestamp: email.sendAtTimestamp,
+          content: email.content,
           set: {
             id: email.setId.id,
             name: email.setId.name,
@@ -379,6 +391,7 @@ export class EmailService {
           link: email.link,
           sendAt: email.sendAt,
           sendAtTimestamp: email.sendAtTimestamp,
+          content: email.content,
           client: email.clientId
             ? {
                 id: email.clientId.id,

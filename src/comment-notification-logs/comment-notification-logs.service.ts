@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { extractBodyContent } from '../helpers/extractBodyContent';
+import { minifyHtml } from '../helpers/minifyHtml';
 import { CommentNotificationLogs } from './comment-notification-logs.entity';
 import { CommentNotificationDto } from './types/commentNotification.dto';
 
@@ -13,8 +15,8 @@ export class CommentNotificationLogsService {
 
   async saveLog(commentNotificationDto: CommentNotificationDto): Promise<void> {
     // clean html content - leave only inside <body>, remove tabs, new lines
-    const bodyOnly = this.extractBodyContent(commentNotificationDto.content);
-    const cleanedHtmlContent = this.minifyHtml(bodyOnly);
+    const bodyOnly = extractBodyContent(commentNotificationDto.content);
+    const cleanedHtmlContent = minifyHtml(bodyOnly);
 
     const newLog = this.commentNotificationLogsRepository.create({
       ...commentNotificationDto,
@@ -51,21 +53,5 @@ export class CommentNotificationLogsService {
       .orderBy('comment.id', 'DESC');
 
     return query.getMany();
-  }
-
-  private extractBodyContent(html: string): string {
-    if (!html) return html;
-
-    const match = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
-    return match ? match[1].trim() : html;
-  }
-
-  private minifyHtml(html: string): string {
-    return html
-      .replace(/\t+/g, '')
-      .replace(/\n+/g, '')
-      .replace(/\r+/g, '')
-      .replace(/>\s+</g, '><')
-      .trim();
   }
 }

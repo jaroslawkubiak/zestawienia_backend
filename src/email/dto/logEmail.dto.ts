@@ -1,6 +1,5 @@
 import { Type } from 'class-transformer';
 import {
-  IsDefined,
   IsNumber,
   IsOptional,
   IsString,
@@ -11,14 +10,19 @@ import { CreateIdDto } from '../../shared/dto/createId.dto';
 export class LogEmailDto {
   @IsString()
   to: string;
+
   @IsString()
   subject: string;
-  @IsDefined()
-  content: any;
+
+  @IsString()
+  content: string;
+
   @IsString()
   link: string;
+
   @IsString()
   sendAt: string;
+
   @IsNumber()
   sendAtTimestamp: number;
 

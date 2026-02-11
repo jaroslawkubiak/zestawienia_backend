@@ -3,13 +3,14 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { NotificationTimer } from './notification-timer.entity';
+import { ENotificationDirection } from './types/notification-direction.enum';
 
 @Injectable()
 export class NotificationTimerService {
   private clientTimers: Map<number, NodeJS.Timeout> = new Map();
   private userTimers: Map<number, NodeJS.Timeout> = new Map();
   private readonly TIMEOUT_DELAY =
-    Number(process.env.COMMENTS_NOTIFICATION_DELAY) || 10000; // 10 min
+    Number(process.env.COMMENTS_NOTIFICATION_DELAY) || 10000; // 10 * 60 * 1000 = 600000 = 10min
 
   constructor(
     @InjectRepository(NotificationTimer)
@@ -19,7 +20,7 @@ export class NotificationTimerService {
 
   async startNotificationTimer(
     setId: number,
-    direction: 'client_to_office' | 'office_to_client',
+    notificationDirection: ENotificationDirection,
     recipient: 'office' | 'client',
   ) {
     const delayMs = this.TIMEOUT_DELAY;
@@ -30,7 +31,7 @@ export class NotificationTimerService {
     await this.notificationTimerRepository.update(
       {
         setId: { id: setId } as any,
-        direction,
+        notificationDirection,
         status: 'active',
       },
       {
@@ -41,7 +42,7 @@ export class NotificationTimerService {
 
     // 2. save new timer in DB
     let timerEntity = await this.notificationTimerRepository.findOne({
-      where: { setId: { id: setId }, direction, status: 'cancelled' },
+      where: { setId: { id: setId }, notificationDirection, status: 'cancelled' },
     });
 
     if (timerEntity) {
@@ -57,7 +58,7 @@ export class NotificationTimerService {
     } else {
       timerEntity = await this.notificationTimerRepository.save({
         setId: { id: setId } as any,
-        direction,
+        notificationDirection,
         status: 'active',
         delayMs,
         startedAt: now,
@@ -70,7 +71,7 @@ export class NotificationTimerService {
       this.eventEmitter.emit('notification.timer.fired', {
         setId,
         recipient,
-        direction,
+        notificationDirection,
       });
 
       await this.notificationTimerRepository.update(
@@ -81,19 +82,21 @@ export class NotificationTimerService {
         },
       );
 
-      this.clearRuntimeTimer(setId, direction);
+      this.clearRuntimeTimer(setId, notificationDirection);
     }, fireAt.getTime() - Date.now());
 
-    this.setRuntimeTimer(setId, direction, timeout);
+    this.setRuntimeTimer(setId, notificationDirection, timeout);
   }
 
   private setRuntimeTimer(
     setId: number,
-    direction: 'client_to_office' | 'office_to_client',
+    notificationDirection: ENotificationDirection,
     timer: NodeJS.Timeout,
   ) {
     const map =
-      direction === 'client_to_office' ? this.clientTimers : this.userTimers;
+      notificationDirection === ENotificationDirection.CLIENT_TO_OFFICE
+        ? this.clientTimers
+        : this.userTimers;
 
     if (map.has(setId)) {
       clearTimeout(map.get(setId));
@@ -102,12 +105,11 @@ export class NotificationTimerService {
     map.set(setId, timer);
   }
 
-  private clearRuntimeTimer(
-    setId: number,
-    direction: 'client_to_office' | 'office_to_client',
-  ) {
+  private clearRuntimeTimer(setId: number, notificationDirection: ENotificationDirection) {
     const map =
-      direction === 'client_to_office' ? this.clientTimers : this.userTimers;
+      notificationDirection === ENotificationDirection.CLIENT_TO_OFFICE
+        ? this.clientTimers
+        : this.userTimers;
 
     map.delete(setId);
   }

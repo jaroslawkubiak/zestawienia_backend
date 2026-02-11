@@ -4,11 +4,10 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  Index,
 } from 'typeorm';
 import { Set } from '../sets/sets.entity';
+import { ENotificationDirection } from './types/notification-direction.enum';
 
-export type TTimerDirection = 'client_to_office' | 'office_to_client';
 export type TTimerStatus = 'active' | 'fired' | 'cancelled';
 
 @Entity('notification-timer')
@@ -24,9 +23,11 @@ export class NotificationTimer {
 
   @Column({
     type: 'enum',
-    enum: ['client_to_office', 'office_to_client'],
+    enum: ENotificationDirection,
+    enumName: 'notification_direction_enum',
+    nullable: false,
   })
-  direction: TTimerDirection;
+  notificationDirection: ENotificationDirection;
 
   @Column({
     type: 'enum',

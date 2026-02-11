@@ -13,6 +13,7 @@ import { ErrorsService } from '../errors/errors.service';
 import { ErrorsType } from '../errors/types/Errors';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { NotificationTimerService } from '../notification-timer/notification-timer.service';
+import { ENotificationDirection } from '../notification-timer/types/notification-direction.enum';
 import { Position } from '../position/positions.entity';
 import { Set } from '../sets/sets.entity';
 import { SettingsService } from '../settings/settings.service';
@@ -380,7 +381,7 @@ export class CommentsService {
     setId: number,
     authorType: TAuthorType,
   ) {
-    /** TIMER 1: client → office */
+    /** TIMER 1: client_to_office */
     const emailFromClient =
       (
         await this.settingService.getSettingByName(
@@ -391,12 +392,12 @@ export class CommentsService {
     if (emailFromClient && authorType === 'client') {
       await this.notificationTimerService.startNotificationTimer(
         setId,
-        'client_to_office',
+        ENotificationDirection.CLIENT_TO_OFFICE,
         'office',
       );
     }
 
-    /** TIMER 2: office → client */
+    /** TIMER 2: office_to_client */
     const emailFromOffice =
       (
         await this.settingService.getSettingByName(
@@ -407,7 +408,7 @@ export class CommentsService {
     if (emailFromOffice && authorType === 'user') {
       await this.notificationTimerService.startNotificationTimer(
         setId,
-        'office_to_client',
+        ENotificationDirection.OFFICE_TO_CLIENT,
         'client',
       );
     }
@@ -418,29 +419,45 @@ export class CommentsService {
     receiver: 'client' | 'office',
   ) {
     const allComments = await this.findBySetId(setId);
-    let newComments;
+    let newComments: IComment[];
+    let needsAttentionComments: IComment[];
 
     if (receiver === 'office') {
-      // client → office
+      // client_to_office
       newComments = allComments
-        .filter((item) => item.authorType === 'client' && !item.needsAttention)
+        .filter((comment) => comment.authorType === 'client' && !comment.seenAt)
+        .sort((a, b) => b.createdAtTimestamp - a.createdAtTimestamp);
+
+      needsAttentionComments = allComments
+        .filter(
+          (comment) =>
+            comment.authorType === 'client' && comment.needsAttention,
+        )
         .sort((a, b) => b.createdAtTimestamp - a.createdAtTimestamp);
 
       await this.emailService.sendEmailAboutNewCommentsFromClient(
         setId,
         newComments,
+        needsAttentionComments,
       );
     }
 
     if (receiver === 'client') {
-      // office → client
+      // office_to_client
       newComments = allComments
-        .filter((item) => item.authorType === 'user' && !item.needsAttention)
+        .filter((comment) => comment.authorType === 'user' && !comment.seenAt)
+        .sort((a, b) => b.createdAtTimestamp - a.createdAtTimestamp);
+
+      needsAttentionComments = allComments
+        .filter(
+          (comment) => comment.authorType === 'user' && comment.needsAttention,
+        )
         .sort((a, b) => b.createdAtTimestamp - a.createdAtTimestamp);
 
       await this.emailService.sendEmailAboutNewCommentsFromOffice(
         setId,
         newComments,
+        needsAttentionComments,
       );
     }
   }
@@ -449,7 +466,7 @@ export class CommentsService {
   async handleNotificationTimerEvent(payload: {
     setId: number;
     recipient: 'client' | 'office';
-    direction: 'client_to_office' | 'office_to_client';
+    notificationDirection: ENotificationDirection;
   }) {
     await this.sendNotificationEmail(payload.setId, payload.recipient);
   }

@@ -4,6 +4,7 @@ import { IComment } from '../../comments/types/IComment';
 export interface ISendEmailAboutNewComments {
   setId: number;
   newComments: IComment[];
+  needsAttentionComments: IComment[];
   headerText: string;
   link: string;
   recipient: string;

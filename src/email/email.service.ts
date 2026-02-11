@@ -16,6 +16,7 @@ import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
 import { ErrorsType } from '../errors/types/Errors';
 import { getFormatedDate } from '../helpers/getFormatedDate';
+import { ENotificationDirection } from '../notification-timer/types/notification-direction.enum';
 import { PositionsService } from '../position/positions.service';
 import { SetsService } from '../sets/sets.service';
 import { SettingsService } from '../settings/settings.service';
@@ -130,12 +131,12 @@ export class EmailService {
     const {
       setId,
       newComments,
+      needsAttentionComments,
       headerText,
       recipient,
       link,
       commentAuthorType,
     } = options;
-
     const set = await this.setsService.findOneSet(setId);
     const GDPRClauseRequest =
       await this.settingsService.getSettingByName('GDPRClause');
@@ -145,7 +146,7 @@ export class EmailService {
       this.positionService.getPositions(setId, commentAuthorType),
     );
 
-    const commentsList: ICommentList[] = newComments.map((comment) => {
+    const newCommentsList: ICommentList[] = newComments.map((comment) => {
       if (!comment.positionId) return;
 
       const position = positions.find((item) => item.id === comment.positionId);
@@ -157,6 +158,21 @@ export class EmailService {
       };
     });
 
+    const needsAttentionCommentsList: ICommentList[] =
+      needsAttentionComments.map((comment) => {
+        if (!comment.positionId) return;
+
+        const position = positions.find(
+          (item) => item.id === comment.positionId,
+        );
+
+        return {
+          product: position?.produkt || '',
+          comment: comment.comment,
+          createdAt: comment.createdAt,
+        };
+      });
+
     const verbComments =
       newComments.length === 1 ? ' komentarza' : ' komentarzy';
 
@@ -164,46 +180,50 @@ export class EmailService {
 
     const HTMLoptions: IHTMLTemplateOptions = {
       header: HTMLheader,
-      message: commentsList,
+      newCommentsList,
+      needsAttentionCommentsList,
       link,
       GDPRClause,
     };
 
     const html = createHTML(HTMLoptions);
 
-    let sender = process.env.EMAIL_USER;
-    if (process.env.GMAIL_USE === 'true') {
-      sender = process.env.GMAIL_USER;
-    }
-
     const mailOptions = {
-      from: sender,
+      from: process.env.EMAIL_USER,
       to: recipient,
       subject: `Nowe komentarze w inwestycji: ${set.name}`,
       html,
     };
 
+    const notificationDirection: ENotificationDirection =
+      commentAuthorType === 'client'
+        ? ENotificationDirection.CLIENT_TO_OFFICE
+        : ENotificationDirection.OFFICE_TO_CLIENT;
+
     const info = await this.transporter.sendMail(mailOptions);
 
     if (info.response.includes('OK')) {
       // log email in DB comment-nofitication-logs
-      const newEmailLog: CommentNotificationDto = {
+      const newCommentNotificationLog: CommentNotificationDto = {
         ...mailOptions,
+        notificationDirection: notificationDirection,
         content: mailOptions.html,
         sendAt: getFormatedDate(),
         sendAtTimestamp: Number(Date.now()),
         setId: { id: setId } as CreateIdDto,
         clientId: set.clientId,
         unreadComments: newComments.length,
+        needsAttentionComments: needsAttentionCommentsList.length,
       };
 
-      await this.createCommentNotificationLog(newEmailLog);
+      await this.createCommentNotificationLog(newCommentNotificationLog);
     }
   }
 
   async sendEmailAboutNewCommentsFromOffice(
     setId: number,
     newComments: IComment[],
+    needsAttentionComments: IComment[],
   ) {
     const set = await this.setsService.findOneSet(setId);
     const commentAuthorType: TAuthorType = 'user';
@@ -213,6 +233,7 @@ export class EmailService {
     const options: ISendEmailAboutNewComments = {
       setId,
       newComments,
+      needsAttentionComments,
       headerText: `Biuro Żurawicki Design zakończyło dodawanie`,
       link,
       recipient: set.clientId.email,
@@ -225,6 +246,7 @@ export class EmailService {
   async sendEmailAboutNewCommentsFromClient(
     setId: number,
     newComments: IComment[],
+    needsAttentionComments: IComment[],
   ) {
     const set = await this.setsService.findOneSet(setId);
     const commentAuthorType: TAuthorType = 'client';
@@ -236,12 +258,10 @@ export class EmailService {
     const options: ISendEmailAboutNewComments = {
       setId,
       newComments,
+      needsAttentionComments,
       headerText: `Klient ${clientFullName} zakończył dodawanie`,
       link: this.APP_URL,
-      recipient:
-        process.env.GMAIL_USE === 'true'
-          ? process.env.GMAIL_USER
-          : process.env.EMAIL_USER,
+      recipient: process.env.EMAIL_USER,
       commentAuthorType,
     };
 
@@ -254,9 +274,9 @@ export class EmailService {
   }
 
   async createCommentNotificationLog(
-    emailLog: CommentNotificationDto,
+    commentNotificationLog: CommentNotificationDto,
   ): Promise<void> {
-    await this.commentNotificationLogsService.saveLog(emailLog);
+    await this.commentNotificationLogsService.saveLog(commentNotificationLog);
   }
 
   findAllEmails(): Observable<ISendedEmailsFromDB[]> {

@@ -6,29 +6,43 @@ const currentYear = new Date().getFullYear();
 const socialColor = 'accent'; // black or accent
 
 export function createHTML(options: IHTMLTemplateOptions): string {
-  const { GDPRClause, link, header, message } = { ...options };
+  const {
+    GDPRClause,
+    link,
+    header,
+    newCommentsList,
+    needsAttentionCommentsList,
+  } = { ...options };
 
   return `
-    ${HTMLheader}
+    ${HTMLheader()}
     <!-- TITLE -->
     <tr>
-      <td style="padding:10px 0; text-align:center;">
+      <td style="padding: 40px 0 20px 0; text-align:center;">
         <h2 style="margin:0; font-size:24px; font-weight:bold; color: #3bbfa1;">Nowe komentarze</h2>
       </td>
     </tr>
 
-    <!-- MESSAGE -->
+    <!-- NEW COMMENTS -->
     <tr>
-      <td style="padding: 0px" colspan="2">
+      <td style="padding: 10px 0;" colspan="2">
         <p>${header}</p>
-        <p style="font-weight: bold">Nieprzeczytane komentarze: </p>
-        ${createCommentsTable(message)}
+        <p style="font-weight: bold">Nieprzeczytane komentarze:</p>
+        ${createCommentsTable(newCommentsList)}
+      </td>
+    </tr>
+
+    <!-- NEEDS ATTENTION COMMENTS -->
+    <tr>
+      <td style="padding: 30px 0" colspan="2">
+        <p style="font-weight: bold">Komentarze oznaczone jako ważne:</p>
+        ${createCommentsTable(needsAttentionCommentsList)}
       </td>
     </tr>
 
     <!-- link do zestawienia -->
     <tr>
-      <td style="padding: 20px 0px 0px 0px" colspan="2">
+      <td style="padding: 20px 0" colspan="2">
         <a href="${link}" target="_blank" 
         style="color: #3bbfa1; font-size: 24px; font-weight: bold; text-decoration: none">Link do zestawienia</a>
         </p>
@@ -37,14 +51,14 @@ export function createHTML(options: IHTMLTemplateOptions): string {
 
     <!-- FOOTER MESSAGE + SOCIALS -->
     ${HTMLfooter(GDPRClause)}
-    
     </table>
   </body>
 </html>
 `;
 }
 
-const HTMLheader = `
+function HTMLheader() {
+  return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -68,6 +82,7 @@ const HTMLheader = `
       </td>
     </tr>
 `;
+}
 
 function HTMLfooter(GDPRClause: string): string {
   return `

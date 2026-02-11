@@ -11,8 +11,10 @@ export class CommentNotificationLogsService {
     private readonly commentNotificationLogsRepository: Repository<CommentNotificationLogs>,
   ) {}
 
-  async saveLog(emailLog: CommentNotificationDto): Promise<void> {
-    const newLog = this.commentNotificationLogsRepository.create(emailLog);
+  async saveLog(commentNofiticationLog: CommentNotificationDto): Promise<void> {
+    const newLog = this.commentNotificationLogsRepository.create(
+      commentNofiticationLog,
+    );
     this.commentNotificationLogsRepository.save(newLog);
   }
 }

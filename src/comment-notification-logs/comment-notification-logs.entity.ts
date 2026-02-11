@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Client } from '../clients/clients.entity';
+import { ENotificationDirection } from '../notification-timer/types/notification-direction.enum';
 import { Set } from '../sets/sets.entity';
 
 @Entity('comment-notification-logs')
@@ -19,11 +20,22 @@ export class CommentNotificationLogs {
   @Column({ type: 'varchar', length: 150, nullable: false })
   subject: string;
 
+  @Column({
+    type: 'enum',
+    enum: ENotificationDirection,
+    enumName: 'notification_direction_enum',
+    nullable: false,
+  })
+  notificationDirection: ENotificationDirection;
+
   @Column({ type: 'text', nullable: false })
   content: any;
 
   @Column({ type: 'int', nullable: false })
   unreadComments: number;
+
+  @Column({ type: 'int', nullable: false })
+  needsAttentionComments: number;
 
   @ManyToOne(() => Set, (set) => set.email, {
     onDelete: 'CASCADE',

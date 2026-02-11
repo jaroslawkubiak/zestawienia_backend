@@ -1,8 +1,9 @@
-import { ICommentList } from "./ICommentList";
+import { ICommentList } from './ICommentList';
 
 export interface IHTMLTemplateOptions {
   header: string;
-  message: ICommentList[];
+  newCommentsList: ICommentList[];
+  needsAttentionCommentsList: ICommentList[];
   link: string;
   GDPRClause: string;
 }

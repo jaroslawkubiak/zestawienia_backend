@@ -1,4 +1,4 @@
-import { Role } from '../../user/types/role';
+import { Role } from '../../user/types/role.type';
 
 export interface ILoggedUser {
   id: number;

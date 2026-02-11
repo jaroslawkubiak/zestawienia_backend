@@ -3,7 +3,7 @@ import { Email } from '../email/email.entity';
 import { Position } from '../position/positions.entity';
 import { Set } from '../sets/sets.entity';
 import { UserLogs } from '../user-logs/user-logs.entity';
-import { Role } from './types/role';
+import { Role } from './types/role.type';
 
 @Entity('user')
 export class User {

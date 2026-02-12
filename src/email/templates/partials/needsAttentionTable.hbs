@@ -1,0 +1,24 @@
+<p style='font-weight:bold; padding:32px 0px 8px 0px;'>
+  {{needsAttentionHeader}}
+</p>
+
+<table
+  align='center'
+  border='1'
+  style='width:100%; border-collapse:collapse; border:1px solid #212121;'
+>
+  <tr style='background:#3bbfa1; color:#fff;'>
+    <td style='width:30%; padding:8px;'>Produkt</td>
+    <td style='width:55%; padding:8px;'>Komentarz</td>
+    <td style='width:15%; padding:8px; text-align:center;'>Data</td>
+  </tr>
+
+  {{#each needsAttentionCommentsList}}
+    <tr>
+      <td style='padding:8px;'>{{product}}</td>
+      <td style='padding:8px;'>{{comment}}</td>
+      <td style='padding:8px; text-align:center;'>{{createdAt}}</td>
+    </tr>
+  {{/each}}
+
+</table>

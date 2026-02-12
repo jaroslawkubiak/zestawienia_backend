@@ -5,7 +5,10 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as fs from 'fs';
+import * as handlebars from 'handlebars';
 import * as nodemailer from 'nodemailer';
+import * as path from 'path';
 import { firstValueFrom, from, map, Observable } from 'rxjs';
 import { Repository } from 'typeorm';
 import { CommentNotificationLogsService } from '../comment-notification-logs/comment-notification-logs.service';
@@ -20,17 +23,16 @@ import { getFormatedDate } from '../helpers/getFormatedDate';
 import { minifyHtml } from '../helpers/minifyHtml';
 import { ENotificationDirection } from '../notification-timer/types/notification-direction.enum';
 import { PositionsService } from '../position/positions.service';
+import { IPosition } from '../position/types/IPosition';
 import { SetsService } from '../sets/sets.service';
 import { SettingsService } from '../settings/settings.service';
 import { CreateIdDto } from '../shared/dto/createId.dto';
 import { LogEmailDto } from './dto/logEmail.dto';
 import { Email } from './email.entity';
-import { createHTML } from './email.template';
 import { saveToSentFolder } from './emailSendCopy';
 import { EmailAudience } from './types/EmailAudience.type';
 import { ICommentList } from './types/ICommentList';
 import { IEmailDetails } from './types/IEmailDetails';
-import { IHTMLTemplateOptions } from './types/IHTMLTemplateOptions';
 import { ISendedEmailsFromDB } from './types/ISendedEmailsFromDB';
 import { ISendEmailAboutNewComments } from './types/ISendEmailAboutNewComments';
 
@@ -38,6 +40,13 @@ import { ISendEmailAboutNewComments } from './types/ISendEmailAboutNewComments';
 export class EmailService {
   private transporter;
   private APP_URL = 'https://zestawienia.zurawickidesign.pl';
+  private GDPRClause: string;
+  private ASSETS_URL = 'https://zestawienia.zurawickidesign.pl/assets/images';
+  private socialColor = 'accent'; // black or accent
+  private currentYear = new Date().getFullYear();
+  templatePath = path.join(__dirname, 'templates/main.hbs');
+  source = fs.readFileSync(this.templatePath, 'utf8');
+  template = handlebars.compile(this.source);
 
   constructor(
     @InjectRepository(Email)
@@ -52,6 +61,24 @@ export class EmailService {
     private readonly positionService: PositionsService,
     private commentNotificationLogsService: CommentNotificationLogsService,
   ) {
+    // handlebars setup
+    const templatesDir = path.join(__dirname, 'templates');
+    const partialsDir = path.join(templatesDir, 'partials');
+
+    const partialFiles = fs.readdirSync(partialsDir);
+
+    partialFiles.forEach((file) => {
+      const partialPath = path.join(partialsDir, file);
+      const partialName = file.replace('.hbs', '');
+      const partialContent = fs.readFileSync(partialPath, 'utf8');
+
+      handlebars.registerPartial(partialName, partialContent);
+    });
+
+    const mainPath = path.join(templatesDir, 'main.hbs');
+    const source = fs.readFileSync(mainPath, 'utf8');
+    this.template = handlebars.compile(source);
+
     this.transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
       port: Number(process.env.EMAIL_PORT),
@@ -67,6 +94,11 @@ export class EmailService {
     });
   }
 
+  async onModuleInit() {
+    const gdpr = await this.settingsService.getSettingByName('GDPRClause');
+    this.GDPRClause = gdpr.value;
+  }
+
   async sendEmail(emailDetails: IEmailDetails) {
     const { to, subject, content } = emailDetails;
     const mailOptions = {
@@ -77,6 +109,7 @@ export class EmailService {
     };
 
     try {
+      //TODO add handlebars
       const info = await this.transporter.sendMail(mailOptions);
 
       if (info.response.includes('OK')) {
@@ -139,56 +172,44 @@ export class EmailService {
       recipient,
       commentAuthorType,
     } = options;
+    // get set and positions
     const set = await this.setsService.findOneSet(setId);
-    const GDPRClauseRequest =
-      await this.settingsService.getSettingByName('GDPRClause');
-    const GDPRClause = GDPRClauseRequest.value;
-
     const positions = await firstValueFrom(
       this.positionService.getPositions(setId, commentAuthorType),
     );
 
-    const newCommentsList: ICommentList[] = newComments.map((comment) => {
-      if (!comment.positionId) return;
+    // match comments with positions
+    const newCommentsList = matchCommentToPosition(newComments, positions);
+    const needsAttentionCommentsList = matchCommentToPosition(
+      needsAttentionComments,
+      positions,
+    );
 
-      const position = positions.find((item) => item.id === comment.positionId);
+    const HTMLheader = 'Nowe komentarze';
+    const HTMLContent = `${headerText} ${newComments.length} ${newComments.length === 1 ? ' komentarza' : ' komentarzy'} do Twojej inwestycji: <strong>${set.name}</strong>`;
+    const needsAttentionHeader = `Masz także ${needsAttentionCommentsList.length} ${createHeaderNeedsAttentionComments(
+      needsAttentionCommentsList.length,
+    )}`;
+    const linkToSet = this.createExternalLink(
+      'client',
+      set.hash,
+      set.clientId.hash,
+    );
 
-      return {
-        product: position?.produkt || '',
-        comment: comment.comment,
-        createdAt: comment.createdAt,
-      };
-    });
+    const { ASSETS_URL, socialColor, currentYear, GDPRClause } = this;
 
-    const needsAttentionCommentsList: ICommentList[] =
-      needsAttentionComments.map((comment) => {
-        if (!comment.positionId) return;
-
-        const position = positions.find(
-          (item) => item.id === comment.positionId,
-        );
-
-        return {
-          product: position?.produkt || '',
-          comment: comment.comment,
-          createdAt: comment.createdAt,
-        };
-      });
-
-    const verbComments =
-      newComments.length === 1 ? ' komentarza' : ' komentarzy';
-
-    const HTMLheader = `${headerText} ${newComments.length} ${verbComments} do Twojej inwestycji: <strong>${set.name}</strong><br /><br />`;
-
-    const HTMLoptions: IHTMLTemplateOptions = {
-      header: HTMLheader,
+    const html = this.template({
+      ASSETS_URL,
+      HTMLheader,
+      HTMLContent,
       newCommentsList,
       needsAttentionCommentsList,
-      link: this.createExternalLink('client', set.hash, set.clientId.hash),
+      needsAttentionHeader,
+      linkToSet,
+      socialColor,
+      currentYear,
       GDPRClause,
-    };
-
-    const html = createHTML(HTMLoptions);
+    });
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
@@ -197,14 +218,14 @@ export class EmailService {
       html,
     };
 
-    const notificationDirection: ENotificationDirection =
-      commentAuthorType === 'client'
-        ? ENotificationDirection.CLIENT_TO_OFFICE
-        : ENotificationDirection.OFFICE_TO_CLIENT;
-
     const info = await this.transporter.sendMail(mailOptions);
 
     if (info.response.includes('OK')) {
+      const notificationDirection: ENotificationDirection =
+        commentAuthorType === 'client'
+          ? ENotificationDirection.CLIENT_TO_OFFICE
+          : ENotificationDirection.OFFICE_TO_CLIENT;
+
       // log email in DB comment-nofitication-logs
       const newCommentNotificationLog: CommentNotificationDto = {
         to: mailOptions.to,
@@ -430,4 +451,27 @@ export class EmailService {
   ): string {
     return `${this.APP_URL}/open-for-${type}/${setHash}/${hash}`;
   }
+}
+
+function createHeaderNeedsAttentionComments(count: number): string {
+  if (count === 1) return 'komentarz oznaczony jako ważny';
+  if (count >= 2 && count <= 4) return 'komentarze oznaczone jako ważne';
+  return 'komentarzy oznaczonych jako ważne';
+}
+
+function matchCommentToPosition(
+  newComments: IComment[],
+  positions: IPosition[],
+): ICommentList[] {
+  return newComments.map((comment) => {
+    if (!comment.positionId) return;
+
+    const position = positions.find((item) => item.id === comment.positionId);
+
+    return {
+      product: position?.produkt || '',
+      comment: comment.comment,
+      createdAt: comment.createdAt,
+    };
+  });
 }

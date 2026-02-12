@@ -10,7 +10,7 @@ export class NotificationTimerService {
   private clientTimers: Map<number, NodeJS.Timeout> = new Map();
   private userTimers: Map<number, NodeJS.Timeout> = new Map();
   private readonly TIMEOUT_DELAY =
-    Number(process.env.COMMENTS_NOTIFICATION_DELAY) || 10000; // 10 * 60 * 1000 = 600000 = 10min
+    Number(process.env.COMMENTS_NOTIFICATION_DELAY) || 1000; // 10 * 60 * 1000 = 600000 = 10min
 
   constructor(
     @InjectRepository(NotificationTimer)
@@ -30,7 +30,7 @@ export class NotificationTimerService {
     // 1. cancel previous timer
     await this.notificationTimerRepository.update(
       {
-        setId: { id: setId } as any,
+        setId: { id: setId },
         notificationDirection,
         status: 'active',
       },
@@ -57,7 +57,7 @@ export class NotificationTimerService {
       timerEntity = await this.notificationTimerRepository.save(timerEntity);
     } else {
       timerEntity = await this.notificationTimerRepository.save({
-        setId: { id: setId } as any,
+        setId: { id: setId },
         notificationDirection,
         status: 'active',
         delayMs,

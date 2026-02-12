@@ -31,8 +31,11 @@ import { LogEmailDto } from './dto/logEmail.dto';
 import { Email } from './email.entity';
 import { saveToSentFolder } from './emailSendCopy';
 import { EmailAudience } from './types/EmailAudience.type';
-import { ICommentList } from './types/ICommentList';
+import { ICommentForEmail } from './types/ICommentForEmail';
+import { IEmailCommentsNotificationPayload } from './types/IEmailCommentsNotificationPayload';
 import { IEmailDetails } from './types/IEmailDetails';
+import { IEmailPreviewDetails } from './types/IEmailPreviewDetails';
+import { IEmailPreviewFullPayload } from './types/IEmailPreviewFullPayload';
 import { ISendedEmailsFromDB } from './types/ISendedEmailsFromDB';
 import { ISendEmailAboutNewComments } from './types/ISendEmailAboutNewComments';
 
@@ -42,7 +45,7 @@ export class EmailService {
   private APP_URL = 'https://zestawienia.zurawickidesign.pl';
   private GDPRClause: string;
   private ASSETS_URL = 'https://zestawienia.zurawickidesign.pl/assets/images';
-  private socialColor = 'accent'; // black or accent
+  private socialColor: 'accent' | 'black' = 'accent';
   private currentYear = new Date().getFullYear();
   templatePath = path.join(__dirname, 'templates/main.hbs');
   source = fs.readFileSync(this.templatePath, 'utf8');
@@ -99,6 +102,36 @@ export class EmailService {
     this.GDPRClause = gdpr.value;
   }
 
+  renderPreview(body: IEmailPreviewDetails): { html: string } {
+    const { type, payload } = body;
+
+    const partialMap = {
+      clientWelcome: 'clientWelcomeContent',
+      clientInfo: 'clientInfoContent',
+      supplierOffer: 'supplierOfferContent',
+      supplierOrder: 'supplierOrderContent',
+    };
+
+    const contentPartial = partialMap[type];
+
+    if (!contentPartial) {
+      throw new Error('Unknown template type');
+    }
+
+    const fullPayload: IEmailPreviewFullPayload = {
+      ...payload,
+      contentPartial,
+      ASSETS_URL: this.ASSETS_URL,
+      socialColor: this.socialColor,
+      currentYear: new Date().getFullYear(),
+      GDPRClause: this.GDPRClause,
+    };
+
+    const html = this.template(fullPayload);
+
+    return { html };
+  }
+
   async sendEmail(emailDetails: IEmailDetails) {
     const { to, subject, content } = emailDetails;
     const mailOptions = {
@@ -109,7 +142,6 @@ export class EmailService {
     };
 
     try {
-      //TODO add handlebars
       const info = await this.transporter.sendMail(mailOptions);
 
       if (info.response.includes('OK')) {
@@ -198,18 +230,21 @@ export class EmailService {
 
     const { ASSETS_URL, socialColor, currentYear, GDPRClause } = this;
 
-    const html = this.template({
-      ASSETS_URL,
+    const fullPayload: IEmailCommentsNotificationPayload = {
       HTMLheader,
+      linkToSet,
       HTMLContent,
       newCommentsList,
       needsAttentionCommentsList,
       needsAttentionHeader,
-      linkToSet,
+      contentPartial: 'commentNotificationContent',
+      ASSETS_URL,
       socialColor,
       currentYear,
       GDPRClause,
-    });
+    };
+
+    const html = this.template(fullPayload);
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
@@ -462,7 +497,7 @@ function createHeaderNeedsAttentionComments(count: number): string {
 function matchCommentToPosition(
   newComments: IComment[],
   positions: IPosition[],
-): ICommentList[] {
+): ICommentForEmail[] {
   return newComments.map((comment) => {
     if (!comment.positionId) return;
 

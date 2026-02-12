@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { SendEmailDto } from './dto/email.dto';
 import { EmailService } from './email.service';
+import { IEmailPreviewDetails } from './types/IEmailPreviewDetails';
 import { ISendedEmailsFromDB } from './types/ISendedEmailsFromDB';
 
 @UseGuards(JwtAuthGuard)
@@ -25,5 +26,10 @@ export class EmailController {
     @Param('setId') setId: string,
   ): Observable<ISendedEmailsFromDB[]> {
     return this.emailService.findOneEmail(+setId);
+  }
+
+  @Post('preview')
+  renderPreview(@Body() body: IEmailPreviewDetails): { html: string } {
+    return this.emailService.renderPreview(body);
   }
 }

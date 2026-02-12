@@ -1,0 +1,20 @@
+<tr>
+  <td style="padding: 10px 0;" colspan="2">
+    <p style="padding: 0 0 30px 0;">{{{HTMLContent}}}</p>
+
+    {{> commentsTable}}
+
+    {{#if needsAttentionCommentsList.length}}
+    {{> needsAttentionTable}}
+    {{/if}}
+  </td>
+</tr>
+
+<tr>
+  <td style="padding:20px 0;" colspan="2">
+    <a href="{{linkToSet}}" target="_blank"
+      style="color:#3bbfa1; font-size:20px; font-weight:bold; text-decoration:none; cursor: pointer;">
+      Link do zestawienia
+    </a>
+  </td>
+</tr>

@@ -10,7 +10,7 @@ export class NotificationTimerService {
   private clientTimers: Map<number, NodeJS.Timeout> = new Map();
   private userTimers: Map<number, NodeJS.Timeout> = new Map();
   private readonly TIMEOUT_DELAY =
-    Number(process.env.COMMENTS_NOTIFICATION_DELAY) || 1000; // 10 * 60 * 1000 = 600000 = 10min
+    Number(process.env.COMMENTS_NOTIFICATION_DELAY) || 600000; // 10 * 60 * 1000 = 600000 = 10min
 
   constructor(
     @InjectRepository(NotificationTimer)
@@ -42,7 +42,11 @@ export class NotificationTimerService {
 
     // 2. save new timer in DB
     let timerEntity = await this.notificationTimerRepository.findOne({
-      where: { setId: { id: setId }, notificationDirection, status: 'cancelled' },
+      where: {
+        setId: { id: setId },
+        notificationDirection,
+        status: 'cancelled',
+      },
     });
 
     if (timerEntity) {
@@ -105,7 +109,10 @@ export class NotificationTimerService {
     map.set(setId, timer);
   }
 
-  private clearRuntimeTimer(setId: number, notificationDirection: ENotificationDirection) {
+  private clearRuntimeTimer(
+    setId: number,
+    notificationDirection: ENotificationDirection,
+  ) {
     const map =
       notificationDirection === ENotificationDirection.CLIENT_TO_OFFICE
         ? this.clientTimers

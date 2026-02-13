@@ -34,7 +34,6 @@ Nowe do poprawy
 [x] guzik zapisz na wysokości bookmarks po prawej
 [x] nie odświeża badge po usunięciu pliku
 [x] dodać setHash do każdego endpointu w comment component
-[ ] gdy jest 0 komentarzy przy pozycji i doda się nowy, to nie zmienia się badge przy pozycji, ale gdy jest np 1 kom, to ilość zmienia się na 2.
 
 MOBILE VIEW:
 [x] notification jest lekko ucięta z lewej strony
@@ -200,7 +199,7 @@ załączniki:
 [x] widok listy z sortowaniem
 [x] osobny folder: robocze - niewidoczny dla klienta
 [x] załączniki: pobierz wszystkie, najlepiej w zip
-[ ] konwersja heic na jpg?
+[x] konwersja heic na jpg?
 [x] gdy wrzucasz nowy załącznik z poziomu zestawienia nie odświeża się ilość w badge
 
 DB:

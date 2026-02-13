@@ -25,6 +25,7 @@ import { IFileFullDetails } from './types/IFileFullDetails';
 import { IProcessFile } from './types/IProcessFile';
 import * as iconv from 'iconv-lite';
 import { IDeletedFileResponse } from './types/IDeletedFileResponse';
+import convert from 'heic-convert';
 
 @Controller('files')
 export class FilesController {
@@ -98,7 +99,33 @@ export class FilesController {
         };
 
         try {
-          const fileType = file['type'].toUpperCase();
+          let fileType = file['type'].toUpperCase();
+          let fullFilePath = file.path;
+
+          if (fileType === 'HEIC') {
+            const convert = require('heic-convert');
+            const inputBuffer = await fs.promises.readFile(fullFilePath);
+
+            const outputBuffer = await convert({
+              buffer: inputBuffer,
+              format: 'JPEG',
+              quality: 0.9,
+            });
+
+            const newPath = fullFilePath.replace(/\.heic$/i, '.jpg');
+            await fs.promises.writeFile(newPath, outputBuffer);
+            await fs.promises.unlink(fullFilePath);
+
+            file.filename = file.filename.replace(/\.heic$/i, '.jpg');
+            file['sanitizedOriginalName'] = file[
+              'sanitizedOriginalName'
+            ].replace(/\.heic$/i, '.jpg');
+            file['type'] = 'JPG';
+
+            fullFilePath = newPath;
+            fileType = 'JPG';
+          }
+
           const fileBuffer = await fs.promises.readFile(fullFilePath);
 
           if (fileType === 'PDF') {
@@ -109,7 +136,7 @@ export class FilesController {
             fileDetails = this.filesService.processImage(fileBuffer);
           }
         } catch (error) {
-          let message = `Nie udało się przetworzyć pliku PDF "${file.originalname}". Sprawdź nazwę pliku i spróbuj ponownie.`;
+          let message = `Nie udało się przetworzyć pliku "${file.originalname}" \nSprawdź nazwę pliku i spróbuj ponownie.`;
 
           // chceck if PDF is encrypted
           if (/is encrypted/i.test(error.message)) {

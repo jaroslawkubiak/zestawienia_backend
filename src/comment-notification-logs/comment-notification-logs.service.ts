@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { extractBodyContent } from '../helpers/extractBodyContent';
 import { minifyHtml } from '../helpers/minifyHtml';
 import { CommentNotificationLogs } from './comment-notification-logs.entity';
 import { CommentNotificationDto } from './types/commentNotification.dto';
@@ -14,9 +13,7 @@ export class CommentNotificationLogsService {
   ) {}
 
   async saveLog(commentNotificationDto: CommentNotificationDto): Promise<void> {
-    // clean html content - leave only inside <body>, remove tabs, new lines
-    const bodyOnly = extractBodyContent(commentNotificationDto.content);
-    const cleanedHtmlContent = minifyHtml(bodyOnly);
+    const cleanedHtmlContent = minifyHtml(commentNotificationDto.content);
 
     const newLog = this.commentNotificationLogsRepository.create({
       ...commentNotificationDto,

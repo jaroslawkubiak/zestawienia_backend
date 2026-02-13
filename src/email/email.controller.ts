@@ -22,10 +22,10 @@ export class EmailController {
   }
 
   @Get(':setId/getEmailListForSet')
-  findOneEmail(
+  getEmailListForSet(
     @Param('setId') setId: string,
   ): Observable<ISendedEmailsFromDB[]> {
-    return this.emailService.findOneEmail(+setId);
+    return this.emailService.getEmailListForSet(+setId);
   }
 
   @Post('preview')

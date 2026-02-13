@@ -34,6 +34,7 @@ Nowe do poprawy
 [x] guzik zapisz na wysokości bookmarks po prawej
 [x] nie odświeża badge po usunięciu pliku
 [x] dodać setHash do każdego endpointu w comment component
+[ ] gdy jest 0 komentarzy przy pozycji i doda się nowy, to nie zmienia się badge przy pozycji, ale gdy jest np 1 kom, to ilość zmienia się na 2.
 
 MOBILE VIEW:
 [x] notification jest lekko ucięta z lewej strony
@@ -142,6 +143,7 @@ Emails:
 Tytuł zamówienie
 message: Proszę o realizację zamówienia zgodnie z przesłanym zestawieniem. Prosimy o wystawienie proformy na dane klienta. (wkleić tu dane klienta)
 [x] logo w emailu na lewo, sociale na lewo. dodać rodo
+[x] zebrać template z frontu i backendu w jedno miejsce: stopka, header z logo itp. handlebars na backendzie
 
 Klienci:
 [x] dodawanie nowych klientów

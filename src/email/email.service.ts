@@ -18,7 +18,6 @@ import { IComment } from '../comments/types/IComment';
 import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
 import { ErrorsType } from '../errors/types/Errors';
-import { extractBodyContent } from '../helpers/extractBodyContent';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { minifyHtml } from '../helpers/minifyHtml';
 import { ENotificationDirection } from '../notification-timer/types/notification-direction.enum';
@@ -323,9 +322,7 @@ export class EmailService {
   }
 
   async createEmailLog(emailLog: LogEmailDto): Promise<Email> {
-    // clean html content - leave only inside <body>, remove tabs, new lines
-    const bodyOnly = extractBodyContent(emailLog.content);
-    const cleanedHtmlContent = minifyHtml(bodyOnly);
+    const cleanedHtmlContent = minifyHtml(emailLog.content);
 
     const newLog = this.emailRepository.create({
       ...emailLog,
@@ -342,7 +339,25 @@ export class EmailService {
   }
 
   findAllEmails(): Observable<ISendedEmailsFromDB[]> {
-    const query = this.emailRepository
+    const query = this.baseEmailQuery().orderBy('email.id', 'DESC');
+
+    return from(query.getMany()).pipe(
+      map((emails) => emails.map(this.mapEmailToDto)),
+    );
+  }
+
+  getEmailListForSet(setId: number): Observable<ISendedEmailsFromDB[]> {
+    const query = this.baseEmailQuery()
+      .where('email.setId.id = :setId', { setId })
+      .orderBy('email.id', 'DESC');
+
+    return from(query.getMany()).pipe(
+      map((emails) => emails.map(this.mapEmailToDto)),
+    );
+  }
+
+  private baseEmailQuery() {
+    return this.emailRepository
       .createQueryBuilder('email')
       .leftJoinAndSelect('email.clientId', 'client')
       .leftJoinAndSelect('email.supplierId', 'supplier')
@@ -354,6 +369,7 @@ export class EmailService {
         'email.sendAt',
         'email.sendAtTimestamp',
         'email.content',
+        'email.subject',
         'client.id',
         'client.company',
         'client.email',
@@ -368,115 +384,48 @@ export class EmailService {
         'user.name',
         'set.id',
         'set.name',
-      ])
-      .orderBy('email.id', 'DESC');
-
-    return from(query.getMany()).pipe(
-      map((emails) =>
-        emails.map((email) => ({
-          id: email.id,
-          link: email.link,
-          sendAt: email.sendAt,
-          sendAtTimestamp: email.sendAtTimestamp,
-          content: email.content,
-          set: {
-            id: email.setId.id,
-            name: email.setId.name,
-          },
-          client: email.clientId
-            ? {
-                id: email.clientId.id,
-                company: email.clientId.company,
-                email: email.clientId.email,
-                firstName: email.clientId.firstName,
-                lastName: email.clientId.lastName,
-              }
-            : undefined,
-          supplier: email.supplierId
-            ? {
-                id: email.supplierId.id,
-                company: email.supplierId.company,
-                firstName: email.supplierId.firstName,
-                lastName: email.supplierId.lastName,
-                email: email.supplierId.email,
-              }
-            : undefined,
-          sendBy: {
-            id: email.sendBy.id,
-            name: email.sendBy.name,
-          },
-        })),
-      ),
-    );
+      ]);
   }
 
-  findOneEmail(setId: number): Observable<ISendedEmailsFromDB[]> {
-    const query = this.emailRepository
-      .createQueryBuilder('email')
-      .leftJoinAndSelect('email.clientId', 'client')
-      .leftJoinAndSelect('email.supplierId', 'supplier')
-      .leftJoinAndSelect('email.sendBy', 'user')
-      .leftJoinAndSelect('email.setId', 'set')
-      .select([
-        'email.id',
-        'email.link',
-        'email.sendAt',
-        'email.sendAtTimestamp',
-        'client.id',
-        'client.company',
-        'client.email',
-        'client.firstName',
-        'client.lastName',
-        'supplier.id',
-        'supplier.company',
-        'supplier.email',
-        'supplier.firstName',
-        'supplier.lastName',
-        'user.id',
-        'user.name',
-        'set.id',
-        'set.name',
-      ])
-      .where('email.setId.id = :setId', { setId: setId })
-      .orderBy('email.id', 'DESC');
-
-    return from(query.getMany()).pipe(
-      map((emails) =>
-        emails.map((email) => ({
-          id: email.id,
-          link: email.link,
-          sendAt: email.sendAt,
-          sendAtTimestamp: email.sendAtTimestamp,
-          content: email.content,
-          client: email.clientId
-            ? {
-                id: email.clientId.id,
-                company: email.clientId.company,
-                firstName: email.clientId.firstName,
-                lastName: email.clientId.lastName,
-                email: email.clientId.email,
-              }
-            : undefined,
-          supplier: email.supplierId
-            ? {
-                id: email.supplierId.id,
-                company: email.supplierId.company,
-                firstName: email.supplierId.firstName,
-                lastName: email.supplierId.lastName,
-                email: email.supplierId.email,
-              }
-            : undefined,
-          set: {
+  private mapEmailToDto(email: Email): ISendedEmailsFromDB {
+    return {
+      id: email.id,
+      link: email.link,
+      sendAt: email.sendAt,
+      sendAtTimestamp: email.sendAtTimestamp,
+      content: email.content,
+      subject: email.subject,
+      set: email.setId
+        ? {
             id: email.setId.id,
             name: email.setId.name,
-          },
-          sendBy: {
+          }
+        : undefined,
+      client: email.clientId
+        ? {
+            id: email.clientId.id,
+            company: email.clientId.company,
+            email: email.clientId.email,
+            firstName: email.clientId.firstName,
+            lastName: email.clientId.lastName,
+          }
+        : undefined,
+      supplier: email.supplierId
+        ? {
+            id: email.supplierId.id,
+            company: email.supplierId.company,
+            email: email.supplierId.email,
+            firstName: email.supplierId.firstName,
+            lastName: email.supplierId.lastName,
+          }
+        : undefined,
+      sendBy: email.sendBy
+        ? {
             id: email.sendBy.id,
             name: email.sendBy.name,
-          },
-        })),
-      ),
-    );
+          }
+        : undefined,
+    };
   }
 
   createExternalLink(

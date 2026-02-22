@@ -23,7 +23,6 @@ import { DeepPartial, Repository } from 'typeorm';
 import { Bookmark } from '../bookmarks/bookmarks.entity';
 import { ClientLogsService } from '../client-logs/client-logs.service';
 import { Client } from '../clients/clients.entity';
-import { ClientsService } from '../clients/clients.service';
 import { CommentsService } from '../comments/comments.service';
 import { TAuthorType } from '../comments/types/authorType.type';
 import { IUnreadComments } from '../comments/types/IUnreadComments';
@@ -65,9 +64,6 @@ export class SetsService {
 
     @InjectRepository(Position)
     private readonly positionRepository: Repository<Position>,
-
-    @Inject(forwardRef(() => ClientsService))
-    private readonly clientsService: ClientsService,
 
     @Inject(forwardRef(() => ImagesService))
     private readonly imagesService: ImagesService,
@@ -142,7 +138,7 @@ export class SetsService {
     return this.mapSetToDto(set, newCommentsCount);
   }
 
-  async findAllSets(): Promise<ISet[]> {
+  async getSets(): Promise<ISet[]> {
     const sets = await this.setsRepository
       .createQueryBuilder('set')
       .leftJoin('set.clientId', 'client')
@@ -227,18 +223,6 @@ export class SetsService {
     );
   }
 
-  async getSetsCountByClientId(clientId: number): Promise<number> {
-    const query = await this.setsRepository
-      .createQueryBuilder('set')
-      .select('COUNT(set.id)', 'setCount')
-      .where('set.clientId = :clientId', { clientId })
-      .getRawOne();
-
-    const setCount = parseInt(query.setCount, 10);
-
-    return setCount;
-  }
-
   async createSet(createSet: NewSetDto, req: Request): Promise<ISavedSet> {
     const bookmarks = createSet.bookmarks;
     const minBookmarkId = Math.min(...bookmarks.map((b) => b.id));
@@ -265,15 +249,6 @@ export class SetsService {
         ...response,
         clientId: response.clientId.id,
       };
-
-      // update clients set count
-      const clientId = createSet.clientId;
-      const setCount = await this.getSetsCountByClientId(clientId);
-      const updateClient = {
-        setCount,
-      };
-
-      this.clientsService.update(clientId, updateClient);
 
       return savedSet;
     } catch (err) {
@@ -359,18 +334,7 @@ export class SetsService {
   }
 
   async removeSet(id: number): Promise<void> {
-    const set = await this.findOneSet(id);
-
     await this.setsRepository.delete(id);
-
-    // update clients set count
-    const clientId = set.clientId.id;
-    const setCount = await this.getSetsCountByClientId(clientId);
-    const updateClient = {
-      setCount,
-    };
-
-    await this.clientsService.update(clientId, updateClient);
 
     // delete all dir with files
     const innerPath = `/sets/${id}`;

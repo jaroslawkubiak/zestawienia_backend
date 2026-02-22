@@ -19,8 +19,8 @@ export class ClientsController {
   constructor(private clientsService: ClientsService) {}
 
   @Get('getClients')
-  findAll() {
-    return this.clientsService.findAll();
+  getClients() {
+    return this.clientsService.getClients();
   }
 
   @Patch(':id/saveClient')

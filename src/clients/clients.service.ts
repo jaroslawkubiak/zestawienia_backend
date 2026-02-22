@@ -15,12 +15,19 @@ export class ClientsService {
     private readonly clientsRepo: Repository<Client>,
   ) {}
 
-  findAll(): Promise<IClient[]> {
-    return this.clientsRepo.find({
-      order: {
-        id: 'DESC',
-      },
-    });
+  async getClients() {
+    const clients = await this.clientsRepo
+      .createQueryBuilder('client')
+      .leftJoin('client.set', 'set')
+      .addSelect('COUNT(set.id)', 'setCount')
+      .groupBy('client.id')
+      .orderBy('client.id', 'DESC')
+      .getRawAndEntities();
+
+    return clients.entities.map((client, index) => ({
+      ...client,
+      setCount: Number(clients.raw[index].setCount),
+    }));
   }
 
   findOne(id: number): Promise<IClient> {

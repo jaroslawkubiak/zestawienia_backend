@@ -23,9 +23,6 @@ export class Client {
   @Column({ type: 'varchar', length: 50, nullable: true })
   telephone: string;
 
-  @Column({ nullable: true })
-  setCount: number;
-
   @OneToMany(() => Set, (set) => set.clientId)
   set: Set[];
 

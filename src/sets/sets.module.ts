@@ -1,7 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClientLogsModule } from '../client-logs/client-logs.module';
-import { ClientsModule } from '../clients/clients.module';
 import { Comment } from '../comments/comments.entity';
 import { CommentsModule } from '../comments/comments.module';
 import { EmailModule } from '../email/email.module';
@@ -29,7 +28,6 @@ import { SetsService } from './sets.service';
     forwardRef(() => ImagesModule),
     forwardRef(() => CommentsModule),
     forwardRef(() => PositionsModule),
-    forwardRef(() => ClientsModule),
     forwardRef(() => EmailModule),
   ],
   controllers: [SetsController],

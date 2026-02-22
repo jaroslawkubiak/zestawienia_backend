@@ -4,7 +4,6 @@ import { CommentsModule } from '../comments/comments.module';
 import { ErrorsModule } from '../errors/errors.module';
 import { HashModule } from '../hash/hash.module';
 import { Position } from '../position/positions.entity';
-import { SetsModule } from '../sets/sets.module';
 import { ClientsController } from './clients.controller';
 import { Client } from './clients.entity';
 import { ClientsService } from './clients.service';
@@ -14,7 +13,6 @@ import { ClientsService } from './clients.service';
     TypeOrmModule.forFeature([Client, Position]),
     ErrorsModule,
     HashModule,
-    forwardRef(() => SetsModule),
     forwardRef(() => CommentsModule),
   ],
   controllers: [ClientsController],

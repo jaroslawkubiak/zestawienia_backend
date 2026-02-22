@@ -25,8 +25,8 @@ export class SetsController {
   constructor(private setsService: SetsService) {}
 
   @Get('getSets')
-  findAllSets() {
-    return this.setsService.findAllSets();
+  getSets() {
+    return this.setsService.getSets();
   }
 
   @Post('addNew')

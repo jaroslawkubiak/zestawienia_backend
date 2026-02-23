@@ -1,6 +1,10 @@
-import { IEmailPreviewPayload } from './IEmailPreviewPayload';
+import { IClient } from '../../clients/types/IClient';
+import { TEmailAudience } from './EmailAudience.type';
+import { EmailTemplateName } from './EmailTemplateName.type';
 
 export interface IEmailPreviewDetails {
-  type: string;
-  payload: IEmailPreviewPayload;
+  type: EmailTemplateName;
+  setId: number;
+  client: IClient;
+  audienceType: TEmailAudience;
 }

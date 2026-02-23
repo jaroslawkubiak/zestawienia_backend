@@ -1,1 +1,1 @@
-export type EmailAudience = 'client' | 'supplier';
+export type TEmailAudience = 'client' | 'supplier';

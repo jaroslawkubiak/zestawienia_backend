@@ -28,27 +28,30 @@ import { SettingsService } from '../settings/settings.service';
 import { CreateIdDto } from '../shared/dto/createId.dto';
 import { LogEmailDto } from './dto/logEmail.dto';
 import { Email } from './email.entity';
+import { EmailTemplateDetailsList } from './EmailTemplateDetailsList';
 import { saveToSentFolder } from './emailSendCopy';
-import { EmailAudience } from './types/EmailAudience.type';
+import { TEmailAudience } from './types/EmailAudience.type';
 import { ICommentForEmail } from './types/ICommentForEmail';
 import { IEmailCommentsNotificationPayload } from './types/IEmailCommentsNotificationPayload';
-import { IEmailDetails } from './types/IEmailDetails';
+import { IEmailPreview } from './types/IEmailPreview';
 import { IEmailPreviewDetails } from './types/IEmailPreviewDetails';
 import { IEmailPreviewFullPayload } from './types/IEmailPreviewFullPayload';
+import { IEmailTemplateList } from './types/IEmailTemplateList';
 import { ISendedEmailsFromDB } from './types/ISendedEmailsFromDB';
 import { ISendEmailAboutNewComments } from './types/ISendEmailAboutNewComments';
+import { ISendEmailDetails } from './types/ISendEmailDetails';
 
 @Injectable()
 export class EmailService {
   private transporter;
   private APP_URL = 'https://zestawienia.zurawickidesign.pl';
-  private GDPRClause: string;
   private ASSETS_URL = 'https://zestawienia.zurawickidesign.pl/assets/images';
   private socialColor: 'accent' | 'black' = 'accent';
   private currentYear = new Date().getFullYear();
-  templatePath = path.join(__dirname, 'templates/main.hbs');
-  source = fs.readFileSync(this.templatePath, 'utf8');
-  template = handlebars.compile(this.source);
+  private GDPRClause: string;
+  private headerTemplate: handlebars.TemplateDelegate;
+  private footerTemplate: handlebars.TemplateDelegate;
+  private contentTemplates: Record<string, handlebars.TemplateDelegate> = {};
 
   constructor(
     @InjectRepository(Email)
@@ -63,7 +66,16 @@ export class EmailService {
     private readonly positionService: PositionsService,
     private commentNotificationLogsService: CommentNotificationLogsService,
   ) {
-    // handlebars setup
+    this.initializeTemplates();
+    this.initializeTransporter();
+  }
+
+  async onModuleInit() {
+    const gdpr = await this.settingsService.getSettingByName('GDPRClause');
+    this.GDPRClause = gdpr.value;
+  }
+
+  private initializeTemplates() {
     const templatesDir = path.join(__dirname, 'templates');
     const partialsDir = path.join(templatesDir, 'partials');
 
@@ -77,61 +89,78 @@ export class EmailService {
       handlebars.registerPartial(partialName, partialContent);
     });
 
-    const mainPath = path.join(templatesDir, 'main.hbs');
-    const source = fs.readFileSync(mainPath, 'utf8');
-    this.template = handlebars.compile(source);
+    const templateFiles = fs
+      .readdirSync(templatesDir)
+      .filter((file) => file.endsWith('.hbs'));
 
-    this.transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: Number(process.env.EMAIL_PORT),
-      secure: false,
-      requireTLS: true,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-      tls: {
-        rejectUnauthorized: false,
-      },
+    templateFiles.forEach((file) => {
+      const templatePath = path.join(templatesDir, file);
+      const templateName = file.replace('.hbs', '');
+      const templateSource = fs.readFileSync(templatePath, 'utf8');
+
+      this.contentTemplates[templateName] = handlebars.compile(templateSource);
     });
+
+    const headerSource = fs.readFileSync(
+      path.join(partialsDir, 'header.hbs'),
+      'utf8',
+    );
+
+    const footerSource = fs.readFileSync(
+      path.join(partialsDir, 'footer.hbs'),
+      'utf8',
+    );
+
+    this.headerTemplate = handlebars.compile(headerSource);
+    this.footerTemplate = handlebars.compile(footerSource);
   }
 
-  async onModuleInit() {
-    const gdpr = await this.settingsService.getSettingByName('GDPRClause');
-    this.GDPRClause = gdpr.value;
-  }
+  async getEmailPreview(body: IEmailPreviewDetails): Promise<IEmailPreview> {
+    const { type, setId, audienceType, client } = body;
 
-  renderPreview(body: IEmailPreviewDetails): { html: string } {
-    const { type, payload } = body;
+    const set = await this.setsService.findOneSet(setId);
+    const setName = set.name;
+    const createdAt = set.createdAt;
+    const setHash = set.hash;
+    const audienceHash = audienceType === 'client' ? set.clientId.hash : '';
+    const linkToSet = this.createExternalLink(
+      audienceType,
+      setHash,
+      audienceHash,
+    );
 
-    const partialMap = {
-      clientWelcome: 'clientWelcomeContent',
-      clientInfo: 'clientInfoContent',
-      supplierOffer: 'supplierOfferContent',
-      supplierOrder: 'supplierOrderContent',
-    };
+    const emailDetails = EmailTemplateDetailsList[type];
 
-    const contentPartial = partialMap[type];
+    const emailSubject = emailDetails.emailSubject(setName, createdAt);
+    const content = emailDetails.message({ client });
 
-    if (!contentPartial) {
-      throw new Error('Unknown template type');
+    if (!emailDetails) {
+      throw new Error(`Unknown email template type: ${type}`);
     }
 
     const fullPayload: IEmailPreviewFullPayload = {
-      ...payload,
-      contentPartial,
+      HTMLContent: content.replace(/\n/g, '<br/>'),
       ASSETS_URL: this.ASSETS_URL,
+      linkToSet,
+      HTMLheader: emailDetails.HTMLHeader,
       socialColor: this.socialColor,
-      currentYear: new Date().getFullYear(),
+      currentYear: this.currentYear,
       GDPRClause: this.GDPRClause,
     };
 
-    const html = this.template(fullPayload);
+    const header = this.headerTemplate(fullPayload);
+    const footer = this.footerTemplate(fullPayload);
 
-    return { html };
+    return {
+      header,
+      content,
+      emailSubject,
+      linkToSet,
+      footer,
+    };
   }
 
-  async sendEmail(emailDetails: IEmailDetails) {
+  async sendEmail(emailDetails: ISendEmailDetails) {
     const { to, subject, content } = emailDetails;
     const mailOptions = {
       from: process.env.EMAIL_USER,
@@ -236,14 +265,17 @@ export class EmailService {
       newCommentsList,
       needsAttentionCommentsList,
       needsAttentionHeader,
-      contentPartial: 'commentNotificationContent',
       ASSETS_URL,
       socialColor,
       currentYear,
       GDPRClause,
     };
+    const mainTemplate = this.contentTemplates['main'];
 
-    const html = this.template(fullPayload);
+    const html = mainTemplate({
+      ...fullPayload,
+      contentPartial: 'commentNotificationContent',
+    });
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
@@ -429,11 +461,35 @@ export class EmailService {
   }
 
   createExternalLink(
-    type: EmailAudience,
+    type: TEmailAudience,
     setHash: string,
-    hash: string,
+    audienceHash: string,
   ): string {
-    return `${this.APP_URL}/open-for-${type}/${setHash}/${hash}`;
+    return `${this.APP_URL}/open-for-${type}/${setHash}/${audienceHash}`;
+  }
+
+  private initializeTransporter() {
+    this.transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_HOST,
+      port: Number(process.env.EMAIL_PORT),
+      secure: false,
+      requireTLS: true,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+      tls: {
+        rejectUnauthorized: false,
+      },
+    });
+  }
+
+  getEmailTemplatesList(): IEmailTemplateList[] {
+    return Object.values(EmailTemplateDetailsList).map((template) => ({
+      templateName: template.templateName,
+      HTMLHeader: template.HTMLHeader,
+      audience: template.audience,
+    }));
   }
 }
 

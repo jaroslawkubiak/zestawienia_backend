@@ -1,24 +1,37 @@
-<p style='font-weight:bold; padding:32px 0px 8px 0px;'>
-  {{needsAttentionHeader}}
-</p>
-
 <table
   align='center'
-  border='1'
-  style='width:100%; border-collapse:collapse; border:1px solid #212121;'
+  width='800px'
+  border='0'
+  cellspacing='0'
+  cellpadding='0'
+  style='padding:10px 0;'
 >
-  <tr style='background:#3bbfa1; color:#fff;'>
-    <td style='width:30%; padding:8px;'>Produkt</td>
-    <td style='width:55%; padding:8px;'>Komentarz</td>
-    <td style='width:15%; padding:8px; text-align:center;'>Data</td>
-  </tr>
+  <p style='font-size: 16px; font-weight:bold; padding:32px 0px 8px 0px;'>
+    {{needsAttentionHeader}}
+  </p>
 
-  {{#each needsAttentionCommentsList}}
-    <tr>
-      <td style='padding:8px;'>{{product}}</td>
-      <td style='padding:8px;'>{{comment}}</td>
-      <td style='padding:8px; text-align:center;'>{{createdAt}}</td>
+  <table
+    align='center'
+    border='0'
+    style='width:100%; border-collapse:collapse; border:1px solid #212121;'
+  >
+    <tr style='background:#3bbfa1; color:#fff;'>
+      <td style='width:30%; padding:8px; font-size: 16px;'>Produkt</td>
+      <td style='width:55%; padding:8px; font-size: 16px;'>Komentarz</td>
+      <td
+        style='width:15%; padding:8px; text-align:center; font-size: 16px;'
+      >Data</td>
     </tr>
-  {{/each}}
 
+    {{#each needsAttentionCommentsList}}
+      <tr>
+        <td style='padding:8px; font-size: 16px;'>{{product}}</td>
+        <td style='padding:8px; font-size: 16px;'>{{comment}}</td>
+        <td
+          style='padding:8px; text-align:center; font-size: 16px;'
+        >{{createdAt}}</td>
+      </tr>
+    {{/each}}
+
+  </table>
 </table>

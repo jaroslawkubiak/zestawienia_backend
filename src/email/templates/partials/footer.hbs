@@ -1,58 +1,145 @@
-<!-- FOOTER MESSAGE + SOCIALS -->
-<tr>
-  <td>
-    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="padding:10px 0;">
-      <tr>
-        <td valign="top">
-          <p style="margin:0 0 10px 0; padding:0;">Pozdrawiamy,</p>
-          <p style="margin:0 0 10px 0; padding:0;">Zespół Żurawicki Design</p>
-          <p style="margin:0 0 20px 0; padding:0;">Jakub Żurawicki, Joanna Kubiak</p>
-          <p style="margin:0 0 10px 0; padding:0;">ul. Czerkaska 10/7, 85-641 Bydgoszcz</p>
-          <p style="margin:0 0 20px 0; padding:0;">E-mail:
-            <a href="mailto:kontakt@zurawickidesign.pl" style="color:#212121; text-decoration:none; font-weight:bold;">
-              kontakt@zurawickidesign.pl
+<table
+  width='800px'
+  align='center'
+  border='0'
+  cellspacing='0'
+  cellpadding='0'
+  style='padding:0;'
+>
+  <tr>
+    <td>
+      <!-- LINK TO SET -->
+      <table
+        width='100%'
+        border='0'
+        cellspacing='0'
+        cellpadding='0'
+        style='padding:10px 0;'
+      >
+        <tr>
+          <td>
+            <p style='margin-top:20px;'>
+              <a
+                href='{{linkToSet}}'
+                target='_blank'
+                style='color:#3bbfa1; font-size:20px; text-decoration:none; font-weight:bold; cursor: pointer;'
+              >
+                Zestawienie
+              </a>
+            </p>
+          </td>
+        </tr>
+      </table>
+
+      <!-- FOOTER MESSAGE -->
+      <table
+        width='100%'
+        border='0'
+        cellspacing='0'
+        cellpadding='0'
+        style='padding:10px 0;'
+      >
+        <tr>
+          <td valign='top'>
+            <p
+              style='margin:0 0 10px 0; padding:0; font-size:14px;'
+            >Pozdrawiamy,</p>
+            <p style='margin:0 0 10px 0; padding:0; font-size:14px;'>Zespół
+              Żurawicki Design</p>
+            <p style='margin:0 0 20px 0; padding:0; font-size:14px;'>Jakub
+              Żurawicki, Joanna Kubiak</p>
+            <p style='margin:0 0 10px 0; padding:0; font-size:14px;'>ul.
+              Czerkaska 10/7, 85-641 Bydgoszcz</p>
+            <p style='margin:0 0 20px 0; padding:0; font-size:14px;'>E-mail:
+              <a
+                href='mailto:kontakt@zurawickidesign.pl'
+                style='color:#212121; text-decoration:none; font-weight:bold; font-size:14px;'
+              >
+                kontakt@zurawickidesign.pl
+              </a>
+            </p>
+          </td>
+        </tr>
+      </table>
+
+      <!--  SOCIALS -->
+      <table
+        width='100%'
+        border='0'
+        cellspacing='0'
+        cellpadding='0'
+        style='padding:0; display:inline-block;'
+      >
+        <tr>
+          <!-- IG -->
+          <td>
+            <a
+              href='https://www.instagram.com/zurawicki.design/'
+              target='_blank'
+            >
+              <img
+                alt='Instagram'
+                title='Instagram'
+                src='{{ASSETS_URL}}/social-{{socialColor}}/ig.png'
+                width='32'
+                height='32'
+                style='cursor: pointer;'
+              />
             </a>
-          </p>
-        </td>
-      </tr>
-    </table>
-    <table border="0" style="display:inline-block;">
-      <tr>
-        <!-- IG -->
-        <td>
-          <a href="https://www.instagram.com/zurawicki.design/" target="_blank">
-            <img alt="Instagram" title="Instagram" src="{{ASSETS_URL}}/social-{{socialColor}}/ig.png" width="32"
-              height="32" style="cursor: pointer;">
-          </a>
-        </td>
-        <!-- FB -->
-        <td style="padding-left:20px;">
-          <a href="https://www.facebook.com/zurawicki.design/?locale=pl_PL" target="_blank">
-            <img alt="Facebook" title="Facebook" src="{{ASSETS_URL}}/social-{{socialColor}}/fb.png" width="32"
-              height="32" style="cursor: pointer;">
-          </a>
-        </td>
-        <!-- WWW -->
-        <td style="padding-left:20px;">
-          <a href="https://zurawickidesign.pl/" target="_blank">
-            <img alt="Website" title="Website" src="{{ASSETS_URL}}/social-{{socialColor}}/www.png" width="32"
-              height="32" style="cursor: pointer;" />
-          </a>
-        </td>
-      </tr>
-    </table>
-  </td>
-</tr>
-<!-- COPYRIGHT -->
-<tr>
-  <td style="padding:20px 0 0 0; text-align:center;">
-    <p style="font-size:14px;">&copy; {{currentYear}} Żurawicki Design</p>
-  </td>
-</tr>
-</tr>
-<!-- GDPRClause -->
-<tr>
-  <td style="padding:20px 0; text-align:justify;">
-    <p style="font-size:10px; margin:0; padding:0; font-size:10px;">{{GDPRClause}}</p>
-  </td>
-</tr>
+          </td>
+          <!-- FB -->
+          <td style='padding-left:20px;'>
+            <a
+              href='https://www.facebook.com/zurawicki.design/?locale=pl_PL'
+              target='_blank'
+            >
+              <img
+                alt='Facebook'
+                title='Facebook'
+                src='{{ASSETS_URL}}/social-{{socialColor}}/fb.png'
+                width='32'
+                height='32'
+                style='cursor: pointer;'
+              />
+            </a>
+          </td>
+          <!-- WWW -->
+          <td style='padding-left:20px;'>
+            <a href='https://zurawickidesign.pl/' target='_blank'>
+              <img
+                alt='Website'
+                title='Website'
+                src='{{ASSETS_URL}}/social-{{socialColor}}/www.png'
+                width='32'
+                height='32'
+                style='cursor: pointer;'
+              />
+            </a>
+          </td>
+        </tr>
+      </table>
+
+      <!-- COPYRIGHT + GDPRClause-->
+      <table
+        width='100%'
+        border='0'
+        cellspacing='0'
+        cellpadding='0'
+        style='padding:10px 0;'
+      >
+        <tr>
+          <td style='padding:20px 0 0 0; text-align:center;'>
+            <p style='font-size:14px;'>&copy;
+              {{currentYear}}
+              Żurawicki Design</p>
+          </td>
+        </tr>
+        <tr>
+          <td style='padding:20px 0; text-align:justify;'>
+            <p style='font-size:10px; margin:0; padding:0;'>{{GDPRClause}}</p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>

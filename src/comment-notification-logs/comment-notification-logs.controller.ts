@@ -1,7 +1,7 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CommentNotificationLogsService } from './comment-notification-logs.service';
-import { ICommentNotificationLogs } from './types/ICommentNotificationLogs';
+import { ICommentNotificationWithTimers } from './types/ICommentNotificationWithTimers';
 
 @UseGuards(JwtAuthGuard)
 @Controller('comment-notification')
@@ -11,7 +11,7 @@ export class CommentNotificationLogsController {
   ) {}
 
   @Get('getAllCommentNotificationLogs')
-  getAllCommentNotificationLogs(): Promise<ICommentNotificationLogs[]> {
+  getAllCommentNotificationLogs(): Promise<ICommentNotificationWithTimers> {
     return this.commentNotificationLogsService.getAllCommentNotificationLogs();
   }
 }

@@ -7,8 +7,8 @@ import {
 } from 'typeorm';
 import { Set } from '../sets/sets.entity';
 import { ENotificationDirection } from './types/notification-direction.enum';
+import { TTimerStatus } from './types/TimerStatus.type';
 
-export type TTimerStatus = 'active' | 'fired' | 'cancelled';
 
 @Entity('notification-timer')
 export class NotificationTimer {

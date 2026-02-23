@@ -1,6 +1,6 @@
-import { IClient } from '../../clients/types/IClient';
+import { IClientLight } from '../../clients/types/IClientLight';
 import { ENotificationDirection } from '../../notification-timer/types/notification-direction.enum';
-import { ISet } from '../../sets/types/ISet';
+import { ISetLight } from '../../sets/types/ISetLight';
 
 export interface ICommentNotificationLogs {
   id: number;
@@ -11,6 +11,6 @@ export interface ICommentNotificationLogs {
   needsAttentionComments: number;
   sendAt: string;
   sendAtTimestamp: number;
-  setId: ISet;
-  clientId: IClient;
+  set: ISetLight;
+  client: IClientLight;
 }

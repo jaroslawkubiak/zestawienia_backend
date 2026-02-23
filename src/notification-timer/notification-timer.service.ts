@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { NotificationTimer } from './notification-timer.entity';
 import { ENotificationDirection } from './types/notification-direction.enum';
+import { INotificationTimer } from './types/INotificationTimer';
 
 @Injectable()
 export class NotificationTimerService {
@@ -119,5 +120,42 @@ export class NotificationTimerService {
         : this.userTimers;
 
     map.delete(setId);
+  }
+
+  async getAllActiveTimers(): Promise<INotificationTimer[]> {
+    const result = await this.notificationTimerRepository
+      .createQueryBuilder('notification-timer')
+      .leftJoinAndSelect('notification-timer.setId', 'set')
+      .select([
+        'notification-timer.id',
+        'notification-timer.status',
+        'notification-timer.notificationDirection',
+        'notification-timer.delayMs',
+        'notification-timer.startedAt',
+        'notification-timer.fireAt',
+
+        'set.id',
+        'set.name',
+      ])
+      .where('notification-timer.status = :status', { status: 'active' })
+      .orderBy('notification-timer.id', 'DESC')
+      .getMany();
+
+    return result.map((timer) => this.mapToType(timer));
+  }
+
+  private mapToType(notificationTimer: NotificationTimer): INotificationTimer {
+    return {
+      id: notificationTimer.id,
+      status: notificationTimer.status,
+      notificationDirection: notificationTimer.notificationDirection,
+      delayMs: notificationTimer.delayMs,
+      startedAt: notificationTimer.startedAt,
+      fireAt: notificationTimer.fireAt,
+      set: {
+        id: notificationTimer.setId.id,
+        name: notificationTimer.setId.name,
+      },
+    };
   }
 }

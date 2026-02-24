@@ -370,7 +370,7 @@ export class PositionsService {
       positionCount,
     };
 
-    await this.suppliersService.update(supplierId, updateSupplier);
+    await this.suppliersService.updateSupplier(supplierId, updateSupplier);
   }
 }
 

@@ -19,32 +19,29 @@ export class SuppliersController {
   constructor(private suppliersService: SuppliersService) {}
 
   @Get('/getSuppliers')
-  findAll(): Promise<ISupplier[]> {
-    return this.suppliersService.findAll();
+  getSuppliers(): Promise<ISupplier[]> {
+    return this.suppliersService.getSuppliers();
   }
 
   @Patch(':id/saveSupplier')
-  update(
+  updateSupplier(
     @Param('id') id: string,
     @Body() updateSupplierDto: UpdateSupplierDto,
   ): Promise<ISupplier> {
-    return this.suppliersService.update(+id, updateSupplierDto);
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string): Promise<ISupplier> {
-    return this.suppliersService.findOne(+id);
+    return this.suppliersService.updateSupplier(+id, updateSupplierDto);
   }
 
   @Post('addSupplier')
-  create(@Body() createSupplierDto: CreateSupplierDto): Promise<ISupplier> {
-    return this.suppliersService.create(createSupplierDto);
+  addSupplier(
+    @Body() createSupplierDto: CreateSupplierDto,
+  ): Promise<ISupplier> {
+    return this.suppliersService.addSupplier(createSupplierDto);
   }
 
   @Delete('deleteSupplier')
-  remove(@Body() body: { ids: number[] }) {
+  deleteSupplier(@Body() body: { ids: number[] }) {
     body.ids.forEach((id) => {
-      return this.suppliersService.remove(+id);
+      return this.suppliersService.deleteSupplier(+id);
     });
   }
 }

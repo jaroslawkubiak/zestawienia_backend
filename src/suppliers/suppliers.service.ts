@@ -15,7 +15,7 @@ export class SuppliersService {
     private readonly suppliersRepo: Repository<Supplier>,
   ) {}
 
-  findAll(): Promise<ISupplier[]> {
+  getSuppliers(): Promise<ISupplier[]> {
     return this.suppliersRepo.find({
       order: {
         id: 'DESC',
@@ -31,7 +31,7 @@ export class SuppliersService {
     return this.suppliersRepo.findOneBy({ hash });
   }
 
-  async create(createSupplierDto: CreateSupplierDto): Promise<ISupplier> {
+  async addSupplier(createSupplierDto: CreateSupplierDto): Promise<ISupplier> {
     const newSupplier = {
       ...createSupplierDto,
       hash: await this.hashService.generateUniqueHash(),
@@ -40,7 +40,7 @@ export class SuppliersService {
     return this.suppliersRepo.save(res);
   }
 
-  async update(
+  async updateSupplier(
     id: number,
     updateSupplierDto: UpdateSupplierDto,
   ): Promise<ISupplier> {
@@ -48,7 +48,7 @@ export class SuppliersService {
     return this.findOne(id);
   }
 
-  async remove(id: number): Promise<void> {
+  async deleteSupplier(id: number): Promise<void> {
     await this.suppliersRepo.delete(id);
   }
 }

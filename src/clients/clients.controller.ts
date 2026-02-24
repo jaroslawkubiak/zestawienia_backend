@@ -24,27 +24,22 @@ export class ClientsController {
   }
 
   @Patch(':id/saveClient')
-  update(
+  updateClient(
     @Param('id') id: string,
     @Body() updateClientDto: UpdateClientDto,
   ): Promise<IClient> {
-    return this.clientsService.update(+id, updateClientDto);
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string): Promise<IClient> {
-    return this.clientsService.findOne(+id);
+    return this.clientsService.updateClient(+id, updateClientDto);
   }
 
   @Post('addClient')
-  create(@Body() createClientDto: CreateClientDto): Promise<IClient> {
-    return this.clientsService.create(createClientDto);
+  addClient(@Body() createClientDto: CreateClientDto): Promise<IClient> {
+    return this.clientsService.addClient(createClientDto);
   }
 
   @Delete('deleteClient')
-  remove(@Body() body: { ids: number[] }) {
+  deleteClient(@Body() body: { ids: number[] }) {
     body.ids.forEach((id) => {
-      return this.clientsService.remove(+id);
+      return this.clientsService.deleteClient(+id);
     });
   }
 }

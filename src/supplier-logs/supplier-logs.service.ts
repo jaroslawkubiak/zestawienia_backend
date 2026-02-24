@@ -32,7 +32,7 @@ export class SupplierLogsService {
 
     const clientId = set?.clientId?.id;
     const client = clientId
-      ? await this.clientsService.findOne(clientId)
+      ? await this.clientsService.findOneClient(clientId)
       : null;
 
     const client_name = set

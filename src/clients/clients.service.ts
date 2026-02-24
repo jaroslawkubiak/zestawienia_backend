@@ -30,15 +30,20 @@ export class ClientsService {
     }));
   }
 
-  findOne(id: number): Promise<IClient> {
-    return this.clientsRepo.findOneBy({ id });
+  async findOneClient(id: number): Promise<IClient> {
+    const result = await this.clientsRepo
+      .createQueryBuilder('client')
+      .loadRelationCountAndMap('client.setCount', 'client.set')
+      .where('client.id = :id', { id })
+      .getOne();
+    return result;
   }
 
   findOneByHash(hash: string): Promise<IClient | null> {
     return this.clientsRepo.findOneBy({ hash });
   }
 
-  async create(createClientDto: CreateClientDto): Promise<IClient> {
+  async addClient(createClientDto: CreateClientDto): Promise<IClient> {
     const newClient = {
       ...createClientDto,
       hash: await this.hashService.generateUniqueHash(),
@@ -48,12 +53,16 @@ export class ClientsService {
     return this.clientsRepo.save(newClient);
   }
 
-  async update(id: number, updateClientDto: UpdateClientDto): Promise<IClient> {
+  async updateClient(
+    id: number,
+    updateClientDto: UpdateClientDto,
+  ): Promise<IClient> {
     await this.clientsRepo.update(id, updateClientDto);
-    return this.findOne(id);
+
+    return this.findOneClient(id);
   }
 
-  async remove(id: number): Promise<void> {
+  async deleteClient(id: number): Promise<void> {
     await this.clientsRepo.delete(id);
   }
 }

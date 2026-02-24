@@ -362,12 +362,14 @@ export class CommentsService {
 
   async unreadComments(): Promise<IUnreadComments> {
     const result = await this.commentRepository
-      .createQueryBuilder('c')
+      .createQueryBuilder('comment')
+      .leftJoin('comment.setId', 'set')
       .select([
-        `SUM(CASE WHEN c.seenAt IS NULL THEN 1 ELSE 0 END) AS unread`,
-        `SUM(CASE WHEN c.needsAttention = true THEN 1 ELSE 0 END) AS needsAttention`,
+        `SUM(CASE WHEN comment.seenAt IS NULL THEN 1 ELSE 0 END) AS unread`,
+        `SUM(CASE WHEN comment.needsAttention = true THEN 1 ELSE 0 END) AS needsAttention`,
       ])
-      .where('c.authorType = :authorType', { authorType: 'client' })
+      .where('comment.authorType = :authorType', { authorType: 'client' })
+      .andWhere('set.status != :closedStatus', { closedStatus: 'Zamknięte' })
       .getRawOne();
 
     return {

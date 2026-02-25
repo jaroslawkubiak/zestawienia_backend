@@ -18,7 +18,7 @@ import * as fs from 'fs';
 import * as iconv from 'iconv-lite';
 import { diskStorage } from 'multer';
 import * as path from 'path';
-import { convertHeicToJpg } from 'src/helpers/convertHeicToJpg';
+import { convertHeicToJpg } from '../helpers/convertHeicToJpg';
 import { createImageThumbnail } from '../helpers/createImageThumbnail';
 import { getFormatedDateForFileName } from '../helpers/getFormatedDateForFileName';
 import { safeFileName } from '../helpers/safeFileName';

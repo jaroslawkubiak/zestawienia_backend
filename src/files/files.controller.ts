@@ -18,6 +18,7 @@ import * as fs from 'fs';
 import * as iconv from 'iconv-lite';
 import { diskStorage } from 'multer';
 import * as path from 'path';
+import { convertHeicToJpg } from 'src/helpers/convertHeicToJpg';
 import { createImageThumbnail } from '../helpers/createImageThumbnail';
 import { getFormatedDateForFileName } from '../helpers/getFormatedDateForFileName';
 import { safeFileName } from '../helpers/safeFileName';
@@ -34,7 +35,7 @@ export class FilesController {
   // save sended files to set id dir
   @Post('upload/:setId/:setHash/:dir')
   @UseInterceptors(
-    FilesInterceptor('files', 20, {
+    FilesInterceptor('files', 30, {
       storage: diskStorage({
         destination: (req, file, cb) => {
           const setId = req.params.setId;
@@ -90,48 +91,28 @@ export class FilesController {
 
     const fileDetailsList: IFileDetails[] = await Promise.all(
       files.map(async (file) => {
-        const fullFilePath = file.path;
-
         let fileDetails: IProcessFile = {
           dimensions: { width: 0, height: 0 },
           thumbnailFileName: '',
         };
+        file['type'] = file['type'].toUpperCase();
 
         try {
-          let fileType = file['type'].toUpperCase();
-          let fullFilePath = file.path;
+          if (file['type'] === 'HEIC') {
+            const converted = await convertHeicToJpg(file);
 
-          if (fileType === 'HEIC') {
-            const convert = require('heic-convert');
-            const inputBuffer = await fs.promises.readFile(fullFilePath);
-
-            const outputBuffer = await convert({
-              buffer: inputBuffer,
-              format: 'JPEG',
-              quality: 0.9,
-            });
-
-            const newPath = fullFilePath.replace(/\.heic$/i, '.jpg');
-            await fs.promises.writeFile(newPath, outputBuffer);
-            await fs.promises.unlink(fullFilePath);
-
-            file.filename = file.filename.replace(/\.heic$/i, '.jpg');
-            file['sanitizedOriginalName'] = file[
-              'sanitizedOriginalName'
-            ].replace(/\.heic$/i, '.jpg');
-            file['type'] = 'JPG';
-
-            fullFilePath = newPath;
-            fileType = 'JPG';
+            file.path = converted.path;
+            file.filename = converted.filename;
+            file['sanitizedOriginalName'] = converted.newSanitizedName;
+            file['type'] = converted.type;
           }
 
-          const fileBuffer = await fs.promises.readFile(fullFilePath);
-
-          if (fileType === 'PDF') {
+          if (file['type'] === 'PDF') {
+            const fileBuffer = await fs.promises.readFile(file.path);
             fileDetails = await this.filesService.processPdf(fileBuffer, file);
           }
 
-          if (['JPG', 'JPEG', 'PNG'].includes(fileType)) {
+          if (['JPG', 'JPEG', 'PNG'].includes(file['type'])) {
             fileDetails = await createImageThumbnail(
               file,
               file['sanitizedOriginalName'],
@@ -139,6 +120,7 @@ export class FilesController {
             );
           }
         } catch (error) {
+          //TODO log error in DB
           let message = `Nie udało się przetworzyć pliku "${file.originalname}" \nSprawdź nazwę pliku i spróbuj ponownie.`;
 
           // chceck if PDF is encrypted
@@ -146,8 +128,8 @@ export class FilesController {
             message = `Plik PDF "${file.originalname}" jest zaszyfrowany.`;
           }
 
-          if (fullFilePath && fs.existsSync(fullFilePath)) {
-            await fs.promises.unlink(fullFilePath);
+          if (file.path && fs.existsSync(file.path)) {
+            await fs.promises.unlink(file.path);
           }
 
           throw new BadRequestException(message);

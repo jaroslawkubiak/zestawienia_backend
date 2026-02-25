@@ -3,12 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as archiver from 'archiver';
 import * as fss from 'fs';
 import { promises as fs } from 'fs';
-import { imageSize } from 'image-size';
 import * as path from 'path';
 import { PDFDocument } from 'pdf-lib';
 import { Repository } from 'typeorm';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { Files } from './files.entity';
+import { generateThumbnailPdf } from './generateThumbnailPdf';
 import { IDeletedFileResponse } from './types/IDeletedFileResponse';
 import { IFileDetails } from './types/IFileDetails';
 import { IFileFullDetails } from './types/IFileFullDetails';
@@ -87,12 +87,18 @@ export class FilesService {
       fileToDelete.fileName,
     );
 
+    const fileThumbnailPath = path.join(
+      this.baseUploadPath,
+      fileToDelete.path,
+      fileToDelete.thumbnail,
+    );
+
     // security check to prevent path travelsal attacks
     if (!filePath.startsWith(this.baseUploadPath)) {
       throw new Error('Access denied');
     }
 
-    // check if file exists before deleting
+    // check if main file exists
     try {
       await fs.access(filePath);
     } catch (err) {
@@ -105,7 +111,14 @@ export class FilesService {
 
     // try to delete file
     try {
+      // delete main file
       await fs.unlink(filePath);
+
+      // delete thumbnail only if it exists
+      try {
+        await fs.access(fileThumbnailPath);
+        await fs.unlink(fileThumbnailPath);
+      } catch {}
 
       await this.removeFromDB(id);
 
@@ -115,6 +128,7 @@ export class FilesService {
         fileName: fileToDelete.fileName,
       };
     } catch (err) {
+      //TODO log error in DB
       return {
         severity: 'error',
         message: 'Błąd usuwania pliku. Plik Nie został usunięty!',
@@ -160,24 +174,6 @@ export class FilesService {
     return `Pomyślnie przesłano ${filesCount} ${fileWord} do katalogu "${dir}"`;
   }
 
-  processImage(fileBuffer: Buffer<ArrayBufferLike>): IProcessFile {
-    const fileDetails: IProcessFile = {
-      dimensions: { width: 0, height: 0 },
-      thumbnailPath: '',
-      thumbnailFileName: '',
-    };
-
-    const size = imageSize(fileBuffer);
-    if (size.width && size.height) {
-      fileDetails.dimensions = {
-        width: size.width,
-        height: size.height,
-      };
-
-      return fileDetails;
-    }
-  }
-
   async processPdf(
     fileBuffer: Buffer<ArrayBufferLike>,
     file: Express.Multer.File,
@@ -187,8 +183,8 @@ export class FilesService {
       thumbnailPath: '',
       thumbnailFileName: '',
     };
-    const outputDir = (file as any).absoluteUploadPath + '\\thumbnail';
 
+    // get PDF dimension
     const pdfDoc = await PDFDocument.load(fileBuffer);
     const size = pdfDoc.getPage(0).getSize();
 
@@ -198,18 +194,23 @@ export class FilesService {
       height: Math.floor(size.height * PT_TO_MM),
     };
 
-    // TODO - add this for iPhone users
-    // generate thumbnail
-    // const fileNameWithoutExt = path.parse(file['sanitizedOriginalName']).name;
+    // try to generate thumbnail
+    const fileNameWithoutExt = path.parse(file['sanitizedOriginalName']).name;
 
-    // fileDetails.thumbnailFileName = await generateThumbnailPdf(
-    //   file.path,
-    //   fileNameWithoutExt,
-    // );
-
-    fileDetails.thumbnailPath = path
-      .relative(process.cwd(), fileDetails.thumbnailFileName)
-      .replace(/\\/g, '/');
+    try {
+      const thumbFileName = await generateThumbnailPdf(
+        file.path,
+        fileNameWithoutExt,
+      );
+      fileDetails.thumbnailFileName = thumbFileName;
+      fileDetails.thumbnailPath = path
+        .relative(process.cwd(), thumbFileName)
+        .replace(/\\/g, '/');
+    } catch (err) {
+      //TODO log error in db
+      fileDetails.thumbnailFileName = '';
+      fileDetails.thumbnailPath = '';
+    }
 
     return fileDetails;
   }

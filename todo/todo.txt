@@ -19,8 +19,6 @@ Poprawić:
 [x] przy pobieraniu position policzyć ilość nowych komentarzy i zwrócić jako nowe property w positions. a gdy otwieram okno z komentarzami to robić request po nowe kom do tej pozycji
 [x] sumowanie jak status pusty
 [x] zerowanie statusów przy restarcie nesta
-
-Nowe do poprawy
 [x] wszystkie kolumny pozycji - tekst wyśrodkowany
 [x] pozycja link klikalny
 [x] nowa kolumna - uwagi textarea - jako ostatania w kolejności
@@ -34,6 +32,11 @@ Nowe do poprawy
 [x] guzik zapisz na wysokości bookmarks po prawej
 [x] nie odświeża badge po usunięciu pliku
 [x] dodać setHash do każdego endpointu w comment component
+[x] w safari nie jest na środku ekran logowania
+[x] jak edytujesz klienta to na chwilę pojawia się możliwość usunięcia go
+[ ] w widoku wszystkich komentarzy nie scroluje na doł
+[x] miniatury każdego pliku do view files, a przy otwieraniu podglądu na full screen ściągać oryginał
+[ ] zamienić id na uuid?
 
 MOBILE VIEW:
 [x] notification jest lekko ucięta z lewej strony
@@ -269,5 +272,5 @@ Admin:
 [ ] lista "logowań" dostawców
 [ ] system logowania błędów
 [ ] lista błędów
-[ ] zapisywanie wysłanych emaili z powiadomieniami o komentarzach
+[x] zapisywanie wysłanych emaili z powiadomieniami o komentarzach
 [ ] zapisanie aktywnych timerów od powiadomień o komentarzach które wyjdą z platformy

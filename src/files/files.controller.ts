@@ -4,6 +4,7 @@ import {
   Controller,
   Delete,
   Get,
+  Headers,
   NotFoundException,
   Param,
   Post,
@@ -18,11 +19,13 @@ import * as fs from 'fs';
 import * as iconv from 'iconv-lite';
 import { diskStorage } from 'multer';
 import * as path from 'path';
+import { FilesErrorsService } from '../files-erros/files-erros.service';
 import { convertHeicToJpg } from '../helpers/convertHeicToJpg';
 import { createImageThumbnail } from '../helpers/createImageThumbnail';
 import { getFormatedDateForFileName } from '../helpers/getFormatedDateForFileName';
 import { safeFileName } from '../helpers/safeFileName';
 import { FilesService } from './files.service';
+import { IDataForLogErrors } from './types/IDataForLogErrors';
 import { IDeletedFileResponse } from './types/IDeletedFileResponse';
 import { IFileDetails } from './types/IFileDetails';
 import { IFileFullDetails } from './types/IFileFullDetails';
@@ -30,7 +33,10 @@ import { IProcessFile } from './types/IProcessFile';
 
 @Controller('files')
 export class FilesController {
-  constructor(private readonly filesService: FilesService) {}
+  constructor(
+    private readonly filesService: FilesService,
+    private readonly filesErrorsService: FilesErrorsService,
+  ) {}
 
   // save sended files to set id dir
   @Post('upload/:setId/:setHash/:dir')
@@ -38,6 +44,7 @@ export class FilesController {
     FilesInterceptor('files', 30, {
       storage: diskStorage({
         destination: (req, file, cb) => {
+          const userId = req.headers['x-user-id'] as string | undefined;
           const setId = req.params.setId;
           const setHash = req.params.setHash;
           const directory = req.params.dir;
@@ -60,6 +67,7 @@ export class FilesController {
           file['uploadPath'] = path.join('sets', setId, setHash, directory);
           file['setId'] = setId;
           file['dir'] = directory;
+          file['userId'] = userId;
 
           cb(null, uploadPath);
         },
@@ -97,6 +105,11 @@ export class FilesController {
         };
         file['type'] = file['type'].toUpperCase();
 
+        const forLogError: IDataForLogErrors = {
+          user_id: file['userId'],
+          set_id: file['setId'],
+        };
+
         try {
           if (file['type'] === 'HEIC') {
             const converted = await convertHeicToJpg(file);
@@ -109,7 +122,11 @@ export class FilesController {
 
           if (file['type'] === 'PDF') {
             const fileBuffer = await fs.promises.readFile(file.path);
-            fileDetails = await this.filesService.processPdf(fileBuffer, file);
+            fileDetails = await this.filesService.processPdf(
+              fileBuffer,
+              file,
+              forLogError,
+            );
           }
 
           if (['JPG', 'JPEG', 'PNG'].includes(file['type'])) {
@@ -120,7 +137,15 @@ export class FilesController {
             );
           }
         } catch (error) {
-          //TODO log error in DB
+          await this.filesErrorsService.logError({
+            fileName: file.originalname,
+            error,
+            source_file_name: 'files.controller.ts',
+            source_file_function: 'uploadFiles',
+            source_uuid: '8f14e45f-ea7d-4b2b-9c9f-6d5f9f3b0c21',
+            ...forLogError,
+          });
+
           let message = `Nie udało się przetworzyć pliku "${file.originalname}" \nSprawdź nazwę pliku i spróbuj ponownie.`;
 
           // chceck if PDF is encrypted
@@ -170,15 +195,23 @@ export class FilesController {
 
   // delete files from set id dir
   @Delete(':id/deleteFile')
-  deleteFile(@Param('id') id: string): Promise<IDeletedFileResponse> {
-    return this.filesService.deleteFile(+id);
+  deleteFile(
+    @Param('id') id: string,
+    @Headers('x-user-id') user_id: string,
+  ): Promise<IDeletedFileResponse> {
+    const forLogError: IDataForLogErrors = { user_id, set_id: '' };
+    return this.filesService.deleteFile(+id, forLogError);
   }
 
   // batch delete files from set id dir
   @Delete('/deleteSomeFiles')
-  batchRemove(@Body() body: { ids: number[] }) {
+  batchRemove(
+    @Body() body: { ids: number[] },
+    @Headers('x-user-id') user_id: string,
+  ) {
+    const forLogError: IDataForLogErrors = { user_id, set_id: '' };
     body.ids.forEach((id) => {
-      return this.filesService.deleteFile(+id);
+      return this.filesService.deleteFile(+id, forLogError);
     });
   }
 

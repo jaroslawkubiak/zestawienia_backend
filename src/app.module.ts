@@ -23,6 +23,8 @@ import { EmailModule } from './email/email.module';
 import { Errors } from './errors/errors.entity';
 import { ErrorsModule } from './errors/errors.module';
 import { ExternalModule } from './external/external.module';
+import { FileErrors } from './files-erros/files-errors.entity';
+import { FilesErrorsModule } from './files-erros/files-erros.module';
 import { FilesController } from './files/files.controller';
 import { Files } from './files/files.entity';
 import { FilesModule } from './files/files.module';
@@ -86,6 +88,7 @@ if (!(global as any).crypto) {
             Email,
             Errors,
             Files,
+            FileErrors,
             Position,
             Set,
             Setting,
@@ -126,6 +129,7 @@ if (!(global as any).crypto) {
     ExternalModule,
     NotificationTimerModule,
     CommentNotificationLogsModule,
+    FilesErrorsModule,
   ],
   controllers: [AppController, ImagesController, FilesController],
   providers: [AppService, ImagesService],

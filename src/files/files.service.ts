@@ -6,14 +6,16 @@ import { promises as fs } from 'fs';
 import * as path from 'path';
 import { PDFDocument } from 'pdf-lib';
 import { Repository } from 'typeorm';
+import { FilesErrorsService } from '../files-erros/files-erros.service';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { Files } from './files.entity';
 import { generateThumbnailPdf } from './generateThumbnailPdf';
+import { EFileDirectoryList } from './types/file-directory-list.enum';
+import { IDataForLogErrors } from './types/IDataForLogErrors';
 import { IDeletedFileResponse } from './types/IDeletedFileResponse';
 import { IFileDetails } from './types/IFileDetails';
 import { IFileFullDetails } from './types/IFileFullDetails';
 import { IProcessFile } from './types/IProcessFile';
-import { EFileDirectoryList } from './types/file-directory-list.enum';
 
 @Injectable()
 export class FilesService {
@@ -22,6 +24,7 @@ export class FilesService {
   constructor(
     @InjectRepository(Files)
     private readonly filesRepository: Repository<Files>,
+    private readonly filesErrorsService: FilesErrorsService,
   ) {}
 
   async findOneFile(id: number): Promise<IFileFullDetails> {
@@ -79,7 +82,10 @@ export class FilesService {
   }
 
   // delete file from set
-  async deleteFile(id: number): Promise<IDeletedFileResponse> {
+  async deleteFile(
+    id: number,
+    forLogError: IDataForLogErrors,
+  ): Promise<IDeletedFileResponse> {
     const fileToDelete = await this.findOneFile(id);
     const filePath = path.join(
       this.baseUploadPath,
@@ -92,6 +98,7 @@ export class FilesService {
       fileToDelete.path,
       fileToDelete.thumbnail,
     );
+    forLogError.set_id = fileToDelete.setId.toString();
 
     // security check to prevent path travelsal attacks
     if (!filePath.startsWith(this.baseUploadPath)) {
@@ -127,8 +134,16 @@ export class FilesService {
         message: `Plik ${fileToDelete.fileName} został usunięty`,
         fileName: fileToDelete.fileName,
       };
-    } catch (err) {
-      //TODO log error in DB
+    } catch (error) {
+      await this.filesErrorsService.logError({
+        fileName: fileToDelete.originalName,
+        error,
+        source_file_name: 'files.service.ts',
+        source_file_function: 'deleteFile',
+        source_uuid: 'c9f0f895-6f7a-4a1d-8b3a-1f0e9c7d2a44',
+        ...forLogError,
+      });
+
       return {
         severity: 'error',
         message: 'Błąd usuwania pliku. Plik Nie został usunięty!',
@@ -177,6 +192,7 @@ export class FilesService {
   async processPdf(
     fileBuffer: Buffer<ArrayBufferLike>,
     file: Express.Multer.File,
+    forLogError: IDataForLogErrors,
   ): Promise<IProcessFile> {
     const fileDetails: IProcessFile = {
       dimensions: { width: 0, height: 0 },
@@ -206,8 +222,16 @@ export class FilesService {
       fileDetails.thumbnailPath = path
         .relative(process.cwd(), thumbFileName)
         .replace(/\\/g, '/');
-    } catch (err) {
-      //TODO log error in db
+    } catch (error) {
+      await this.filesErrorsService.logError({
+        fileName: file.originalname,
+        error,
+        source_file_name: 'files.service.ts',
+        source_file_function: 'processPdf',
+        source_uuid: '45c48cce-2e2d-4b6f-9e0a-7d3f1b2c8a55',
+        ...forLogError,
+      });
+
       fileDetails.thumbnailFileName = '';
       fileDetails.thumbnailPath = '';
     }

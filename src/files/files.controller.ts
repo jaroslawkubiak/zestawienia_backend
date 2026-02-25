@@ -15,17 +15,17 @@ import {
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import * as fs from 'fs';
+import * as iconv from 'iconv-lite';
 import { diskStorage } from 'multer';
 import * as path from 'path';
+import { createImageThumbnail } from '../helpers/createImageThumbnail';
 import { getFormatedDateForFileName } from '../helpers/getFormatedDateForFileName';
 import { safeFileName } from '../helpers/safeFileName';
 import { FilesService } from './files.service';
+import { IDeletedFileResponse } from './types/IDeletedFileResponse';
 import { IFileDetails } from './types/IFileDetails';
 import { IFileFullDetails } from './types/IFileFullDetails';
 import { IProcessFile } from './types/IProcessFile';
-import * as iconv from 'iconv-lite';
-import { IDeletedFileResponse } from './types/IDeletedFileResponse';
-import convert from 'heic-convert';
 
 @Controller('files')
 export class FilesController {
@@ -94,7 +94,6 @@ export class FilesController {
 
         let fileDetails: IProcessFile = {
           dimensions: { width: 0, height: 0 },
-          thumbnailPath: '',
           thumbnailFileName: '',
         };
 
@@ -133,7 +132,11 @@ export class FilesController {
           }
 
           if (['JPG', 'JPEG', 'PNG'].includes(fileType)) {
-            fileDetails = this.filesService.processImage(fileBuffer);
+            fileDetails = await createImageThumbnail(
+              file,
+              file['sanitizedOriginalName'],
+              file['absoluteUploadPath'],
+            );
           }
         } catch (error) {
           let message = `Nie udało się przetworzyć pliku "${file.originalname}" \nSprawdź nazwę pliku i spróbuj ponownie.`;

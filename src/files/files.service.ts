@@ -8,15 +8,16 @@ import { PDFDocument } from 'pdf-lib';
 import { Repository } from 'typeorm';
 import { FilesErrorsService } from '../files-erros/files-erros.service';
 import { getFormatedDate } from '../helpers/getFormatedDate';
+import { DownloadZipDto } from './dto/downloadZip.dto';
 import { Files } from './files.entity';
 import { generateThumbnailPdf } from './generateThumbnailPdf';
+import { ThumbnailError } from './ThumbnailError';
 import { EFileDirectory } from './types/file-directory-list.enum';
 import { IDataForLogErrors } from './types/IDataForLogErrors';
 import { IDeletedFileResponse } from './types/IDeletedFileResponse';
 import { IFileDetails } from './types/IFileDetails';
 import { IFileFullDetails } from './types/IFileFullDetails';
 import { IProcessFile } from './types/IProcessFile';
-import { DownloadZipDto } from './dto/downloadZip.dto';
 
 @Injectable()
 export class FilesService {
@@ -219,19 +220,31 @@ export class FilesService {
         file.path,
         fileNameWithoutExt,
       );
+
       fileDetails.thumbnailFileName = thumbFileName;
       fileDetails.thumbnailPath = path
         .relative(process.cwd(), thumbFileName)
         .replace(/\\/g, '/');
     } catch (error) {
-      await this.filesErrorsService.logError({
-        fileName: file.originalname,
-        error,
-        source_file_name: 'files.service.ts',
-        source_file_function: 'processPdf',
-        source_uuid: '45c48cce-2e2d-4b6f-9e0a-7d3f1b2c8a55',
-        ...forLogError,
-      });
+      if (error instanceof ThumbnailError) {
+        await this.filesErrorsService.logError({
+          fileName: file.originalname,
+          error: error.originalError,
+          source_file_name: 'generateThumbnailPdf.ts',
+          source_file_function: 'generateThumbnailPdf',
+          source_uuid: error.source_uuid,
+          ...forLogError,
+        });
+      } else {
+        await this.filesErrorsService.logError({
+          fileName: file.originalname,
+          error,
+          source_file_name: 'files.service.ts',
+          source_file_function: 'processPdf',
+          source_uuid: '45c48cce-2e2d-4b6f-9e0a-7d3f1b2c8a55',
+          ...forLogError,
+        });
+      }
 
       fileDetails.thumbnailFileName = '';
       fileDetails.thumbnailPath = '';

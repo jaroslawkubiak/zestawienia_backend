@@ -1,10 +1,11 @@
 import { createCanvas } from 'canvas';
 import * as fs from 'fs';
 import * as os from 'os';
-import { getDocument } from 'pdfjs-dist';
-import { safeFileName } from '../helpers/safeFileName';
-import { v4 as uuidv4 } from 'uuid';
 import * as path from 'path';
+import { getDocument } from 'pdfjs-dist';
+import { v4 as uuidv4 } from 'uuid';
+import { safeFileName } from '../helpers/safeFileName';
+import { ThumbnailError } from './ThumbnailError';
 
 export async function generateThumbnailPdf(
   pdfPath: string,
@@ -52,7 +53,7 @@ export async function generateThumbnailPdf(
     await fs.promises.unlink(tempPdfPath);
 
     return `${safeFileNameForThumb}.jpg`;
-  } catch (err) {
-    //TODO log error in DB
+  } catch (error) {
+    throw new ThumbnailError(error, 'd3d94468-9a6f-4c11-8a21-2f3e4d5c6b77');
   }
 }

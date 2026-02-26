@@ -1,5 +1,6 @@
 import * as path from 'path';
 import * as sharp from 'sharp';
+import { ThumbnailError } from '../files/ThumbnailError';
 import { IProcessFile } from '../files/types/IProcessFile';
 
 sharp.cache(false);
@@ -22,7 +23,9 @@ export async function createImageThumbnail(
   };
 
   try {
-    const input = file.buffer ?? file.path;
+    const input: Buffer | string = file.buffer
+      ? Buffer.from(file.buffer)
+      : file.path;
 
     if (!input) {
       throw new Error('Brak źródła obrazu (buffer/path)');
@@ -46,22 +49,30 @@ export async function createImageThumbnail(
     const nameWithoutExt = path.basename(originalFileName, ext);
     const thumbnailFileName = `${nameWithoutExt}_mini${ext}`;
     const miniPath = path.join(uploadPath, thumbnailFileName);
-
-    // save thumbnail
-    await sharp(input)
-      .resize({
-        width: MINI_DIMENSION,
-        height: MINI_DIMENSION,
-        fit: 'inside',
-        withoutEnlargement: true,
-      })
-      .toFile(miniPath);
+    try {
+      // save thumbnail
+      await Promise.race([
+        sharp(input)
+          .resize({
+            width: MINI_DIMENSION,
+            height: MINI_DIMENSION,
+            fit: 'inside',
+            withoutEnlargement: true,
+          })
+          .toFile(miniPath),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Sharp timeout')), 10000),
+        ),
+      ]);
+    } catch (error) {
+      throw error;
+    }
 
     processFile.thumbnailFileName = thumbnailFileName || '';
     processFile.thumbnailPath = miniPath || '';
 
     return processFile;
   } catch (error) {
-    throw new Error(error);
+    throw new ThumbnailError(error, '6512bd43-d9ca-4f98-8c7a-3b2e1f4d9a88');
   }
 }

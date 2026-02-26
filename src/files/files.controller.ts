@@ -26,6 +26,7 @@ import { getFormatedDateForFileName } from '../helpers/getFormatedDateForFileNam
 import { safeFileName } from '../helpers/safeFileName';
 import { DownloadZipDto } from './dto/downloadZip.dto';
 import { FilesService } from './files.service';
+import { ThumbnailError } from './ThumbnailError';
 import { IDataForLogErrors } from './types/IDataForLogErrors';
 import { IDeletedFileResponse } from './types/IDeletedFileResponse';
 import { IFileDetails } from './types/IFileDetails';
@@ -51,33 +52,30 @@ export class FilesController {
           const directory = req.params.dir;
           const baseUploadPath = process.env.UPLOAD_PATH;
 
-          const uploadPath = path.resolve(
-            baseUploadPath,
+          //relative path on server
+          const relativePath = path.join(
             'sets',
             setId,
             setHash,
             'files',
             directory,
           );
+
+          //absolute path to file on device
+          const absolutePath = path.resolve(baseUploadPath, relativePath);
 
           // create dir if not exists
-          if (!fs.existsSync(uploadPath)) {
-            fs.mkdirSync(uploadPath, { recursive: true });
+          if (!fs.existsSync(absolutePath)) {
+            fs.mkdirSync(absolutePath, { recursive: true });
           }
 
-          file['absoluteUploadPath'] = uploadPath;
-          file['uploadPath'] = path.join(
-            'sets',
-            setId,
-            setHash,
-            'files',
-            directory,
-          );
+          file['absoluteUploadPath'] = absolutePath;
+          file['uploadPath'] = relativePath;
           file['setId'] = setId;
           file['dir'] = directory;
           file['userId'] = userId;
 
-          cb(null, uploadPath);
+          cb(null, absolutePath);
         },
         filename: (req, file, cb) => {
           const originalNameUtf8 = iconv.decode(
@@ -145,14 +143,25 @@ export class FilesController {
             );
           }
         } catch (error) {
-          await this.filesErrorsService.logError({
-            fileName: file.originalname,
-            error,
-            source_file_name: 'files.controller.ts',
-            source_file_function: 'uploadFiles',
-            source_uuid: '8f14e45f-ea7d-4b2b-9c9f-6d5f9f3b0c21',
-            ...forLogError,
-          });
+          if (error instanceof ThumbnailError) {
+            await this.filesErrorsService.logError({
+              fileName: file.originalname,
+              error: error.originalError,
+              source_file_name: 'createImageThumbnail.ts',
+              source_file_function: 'createImageThumbnail',
+              source_uuid: error.source_uuid,
+              ...forLogError,
+            });
+          } else {
+            await this.filesErrorsService.logError({
+              fileName: file.originalname,
+              error,
+              source_file_name: 'files.controller.ts',
+              source_file_function: 'uploadFiles',
+              source_uuid: '8f14e45f-ea7d-4b2b-9c9f-6d5f9f3b0c21',
+              ...forLogError,
+            });
+          }
 
           let message = `Nie udało się przetworzyć pliku "${file.originalname}" \nSprawdź nazwę pliku i spróbuj ponownie.`;
 

@@ -24,6 +24,7 @@ import { convertHeicToJpg } from '../helpers/convertHeicToJpg';
 import { createImageThumbnail } from '../helpers/createImageThumbnail';
 import { getFormatedDateForFileName } from '../helpers/getFormatedDateForFileName';
 import { safeFileName } from '../helpers/safeFileName';
+import { DownloadZipDto } from './dto/downloadZip.dto';
 import { FilesService } from './files.service';
 import { IDataForLogErrors } from './types/IDataForLogErrors';
 import { IDeletedFileResponse } from './types/IDeletedFileResponse';
@@ -55,6 +56,7 @@ export class FilesController {
             'sets',
             setId,
             setHash,
+            'files',
             directory,
           );
 
@@ -64,7 +66,13 @@ export class FilesController {
           }
 
           file['absoluteUploadPath'] = uploadPath;
-          file['uploadPath'] = path.join('sets', setId, setHash, directory);
+          file['uploadPath'] = path.join(
+            'sets',
+            setId,
+            setHash,
+            'files',
+            directory,
+          );
           file['setId'] = setId;
           file['dir'] = directory;
           file['userId'] = userId;
@@ -181,13 +189,9 @@ export class FilesController {
       fileDetailsList.map((file) => this.filesService.createFileEntry(file)),
     );
 
-    const returnMessage = this.filesService.returnUploadMessage(
-      addedFiles.length,
-      files[0]['dir'],
-    );
-
     return {
-      message: returnMessage,
+      filesCount: files.length,
+      dir: files[0]['dir'],
       files: addedFiles,
       fileNames: files?.map((file) => file.filename),
     };
@@ -216,8 +220,8 @@ export class FilesController {
   }
 
   @Post('download-zip')
-  async downloadZip(@Body('ids') ids: number[], @Res() res: Response) {
-    const archive = await this.filesService.downloadByIds(ids);
+  async downloadZip(@Body() body: DownloadZipDto, @Res() res: Response) {
+    const archive = await this.filesService.downloadByIds(body);
 
     res.set({
       'Content-Type': 'application/zip',

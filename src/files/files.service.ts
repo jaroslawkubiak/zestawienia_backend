@@ -10,12 +10,13 @@ import { FilesErrorsService } from '../files-erros/files-erros.service';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { Files } from './files.entity';
 import { generateThumbnailPdf } from './generateThumbnailPdf';
-import { EFileDirectoryList } from './types/file-directory-list.enum';
+import { EFileDirectory } from './types/file-directory-list.enum';
 import { IDataForLogErrors } from './types/IDataForLogErrors';
 import { IDeletedFileResponse } from './types/IDeletedFileResponse';
 import { IFileDetails } from './types/IFileDetails';
 import { IFileFullDetails } from './types/IFileFullDetails';
 import { IProcessFile } from './types/IProcessFile';
+import { DownloadZipDto } from './dto/downloadZip.dto';
 
 @Injectable()
 export class FilesService {
@@ -67,7 +68,7 @@ export class FilesService {
       fileName: response.fileName,
       type: response.type,
       path: response.path,
-      dir: response.dir as EFileDirectoryList,
+      dir: response.dir as EFileDirectory,
       originalName: response.originalName,
       size: response.size,
       width: response.width,
@@ -160,33 +161,33 @@ export class FilesService {
     await this.filesRepository.delete({ setId: { id: setId } });
   }
 
-  async downloadByIds(ids: number[]): Promise<archiver.Archiver> {
+  async downloadByIds(body: DownloadZipDto): Promise<archiver.Archiver> {
+    const { ids, directories } = body;
+
+    const dirMap: Record<string, string> = {};
+    directories.forEach((d) => {
+      dirMap[d.dir] = d.dirLabel;
+    });
+
     const archive = archiver('zip', { zlib: { level: 9 } });
 
     for (const id of ids) {
       const file: IFileFullDetails = await this.findOneFile(id);
-      if (!file) {
-        return;
-      }
+      if (!file) continue;
 
       const filePath = path.join(this.baseUploadPath, file.path, file.fileName);
       const absolutePath = path.join(__dirname, '..', '..', filePath);
       const fileName = file.fileName;
 
       if (fss.existsSync(absolutePath)) {
-        archive.file(absolutePath, { name: path.join(file.dir, fileName) });
+        const zipDir = dirMap[file.dir] || file.dir;
+        archive.file(absolutePath, { name: path.join(zipDir, fileName) });
       }
     }
 
     archive.finalize();
 
     return archive;
-  }
-
-  returnUploadMessage(filesCount: number, dir: string): string {
-    const fileWord =
-      filesCount === 1 ? 'plik' : filesCount < 5 ? 'pliki' : 'plików';
-    return `Pomyślnie przesłano ${filesCount} ${fileWord} do katalogu "${dir}"`;
   }
 
   async processPdf(

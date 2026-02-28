@@ -19,6 +19,7 @@ export interface IPosition {
   link: string;
   uwagi: string;
   image: string;
+  thumbnail: string;
   status: IPositionStatus;
   newCommentsCount?: IUnreadComments;
   createdAt: string;

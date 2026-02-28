@@ -57,6 +57,9 @@ export class Position {
   @Column({ type: 'varchar', length: 200, nullable: true })
   image: string;
 
+  @Column({ type: 'varchar', length: 200, nullable: true })
+  thumbnail: string;
+
   @Column({ type: 'json', nullable: false })
   status: IPositionStatus;
 

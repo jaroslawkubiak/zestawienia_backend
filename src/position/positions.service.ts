@@ -15,6 +15,7 @@ import { TAuthorType } from '../comments/types/authorType.type';
 import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
 import { ErrorsType } from '../errors/types/Errors';
+import { IProcessFile } from '../files/types/IProcessFile';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { SetsService } from '../sets/sets.service';
 import { SuppliersService } from '../suppliers/suppliers.service';
@@ -210,6 +211,7 @@ export class PositionsService {
     setHash: string,
     positionId: number,
     filename: string,
+    thumbnail: string,
   ) {
     try {
       const updatedByUser = { id: userId } as DeepPartial<User>;
@@ -222,6 +224,7 @@ export class PositionsService {
           .update(Position)
           .set({
             image: filename,
+            thumbnail,
             updatedAt: getFormatedDate(),
             updatedAtTimestamp: Number(Date.now()),
             updatedBy: updatedByUser,

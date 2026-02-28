@@ -9,6 +9,7 @@ import * as path from 'path';
 import { createImageThumbnail } from '../helpers/createImageThumbnail';
 import { PositionsService } from '../position/positions.service';
 import { ISavedFiles } from './types/ISavedFiles';
+import { IProcessFile } from 'src/files/types/IProcessFile';
 
 @Injectable()
 export class ImagesService {
@@ -39,12 +40,15 @@ export class ImagesService {
 
       let filename = `${positionId}--${Date.now()}--${file.originalname}`;
       const filePath = path.join(uploadPath, filename);
-
       // save original file
       fs.writeFileSync(filePath, file.buffer);
 
       // generating thumbnail
-      await createImageThumbnail(file, filename, uploadPath);
+      const processFile: IProcessFile = await createImageThumbnail(
+        file,
+        filename,
+        uploadPath,
+      );
 
       // save filename (org or mini) in db
       const res = await this.positionsService.updateImage(
@@ -53,6 +57,7 @@ export class ImagesService {
         setHash,
         positionId,
         filename,
+        processFile.thumbnailFileName,
       );
 
       return { message: res, filename };

@@ -131,7 +131,7 @@ export class EmailService {
 
     const emailDetails = EmailTemplateDetailsList[type];
 
-    const emailSubject = emailDetails.emailSubject(setName, createdAt);
+    const emailSubject = emailDetails.emailSubject(setName);
     const content = emailDetails.message({ client });
 
     if (!emailDetails) {

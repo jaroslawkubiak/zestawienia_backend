@@ -4,9 +4,8 @@ export const EmailTemplateDetailsList = {
   clientWelcome: {
     audience: 'client',
     templateName: 'clientWelcome',
-    HTMLHeader: 'Inwestycja',
-    emailSubject: (setName: string, createdAt: string) =>
-      `Inwestycja: ${setName} utworzona w dniu ${createdAt}`,
+    HTMLHeader: 'Projekt aranżacji wnętrza',
+    emailSubject: (setName: string) => `Projekt aranżacji wnętrza: ${setName}`,
     message: () => 'Przesyłamy link do inwestycji',
   },
 
@@ -14,8 +13,7 @@ export const EmailTemplateDetailsList = {
     audience: 'client',
     templateName: 'clientInfo',
     HTMLHeader: 'Informacja',
-    emailSubject: (setName: string, createdAt: string) =>
-      `Informacja: ${setName} utworzona w dniu ${createdAt}`,
+    emailSubject: (setName: string) => `Informacja: ${setName} `,
     message: () => 'Przesyłamy nowe informacje o inwestycji',
   },
 
@@ -23,7 +21,7 @@ export const EmailTemplateDetailsList = {
     audience: 'supplier',
     templateName: 'supplierOffer',
     HTMLHeader: 'Oferta',
-    emailSubject: () => `Oferta`,
+    emailSubject: (setName: string) => `Oferta: ${setName} `,
     message: () =>
       'Prosimy o przygotowanie oferty, poniżej załączamy link do zestawienia',
   },
@@ -32,7 +30,7 @@ export const EmailTemplateDetailsList = {
     audience: 'supplier',
     templateName: 'supplierOrder',
     HTMLHeader: 'Zamówienie',
-    emailSubject: () => `Zamówienie`,
+    emailSubject: (setName: string) => `Zamówienie: ${setName} `,
     message: ({
       client,
     }) => `Proszę o realizację zamówienia zgodnie z przesłanym zestawieniem.

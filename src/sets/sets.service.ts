@@ -191,6 +191,7 @@ export class SetsService {
           'client.id',
           'client.company',
           'client.email',
+          'client.secondEmail',
           'client.firstName',
           'client.lastName',
           'client.hash',

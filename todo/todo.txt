@@ -37,6 +37,15 @@ Poprawić:
 [ ] w widoku wszystkich komentarzy nie scroluje na doł
 [x] miniatury każdego pliku do view files, a przy otwieraniu podglądu na full screen ściągać oryginał
 [ ] zamienić id na uuid?
+[ ] footer w pdf tylko na koniec danej zakładki.
+
+NOWE:
+[ ] drugi email dla klienta - wwysyłanie wszsytkich powiadomień na oba adresy
+[ ] nie pobiera się pdf z plików
+[ ] oznaczanie nowych plików - podobnie jak komentarze
+[ ] kolumny LP zmienić na L.P.
+[ ] mini wersje obrazów pozycji w widoku klienta
+[ ] gdy tworzysz pdf niech guzik znika - wyszarza się
 
 MOBILE VIEW:
 [x] notification jest lekko ucięta z lewej strony

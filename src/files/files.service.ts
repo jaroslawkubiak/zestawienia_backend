@@ -1,12 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as archiver from 'archiver';
+import { Request } from 'express';
 import * as fss from 'fs';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import { PDFDocument } from 'pdf-lib';
 import { Repository } from 'typeorm';
+import { ErrorDto } from '../errors/dto/error.dto';
+import { ErrorsService } from '../errors/errors.service';
+import { ErrorsType } from '../errors/types/Errors';
 import { FilesErrorsService } from '../files-erros/files-erros.service';
+import { formatDateToString } from '../helpers/formatDateToString';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { DownloadZipDto } from './dto/downloadZip.dto';
 import { Files } from './files.entity';
@@ -27,7 +32,36 @@ export class FilesService {
     @InjectRepository(Files)
     private readonly filesRepository: Repository<Files>,
     private readonly filesErrorsService: FilesErrorsService,
+    private errorsService: ErrorsService,
   ) {}
+
+  // when client see new files - mark them as seenAt
+  async markFilesAsSeen(ids: number[], req?: Request): Promise<void> {
+    if (!ids || ids.length === 0) return;
+
+    try {
+      await this.filesRepository
+        .createQueryBuilder()
+        .update(Files)
+        .set({ seenAt: () => 'CURRENT_TIMESTAMP' })
+        .where('id IN (:...ids)', { ids })
+        .andWhere('seenAt IS NULL')
+        .execute();
+    } catch (err) {
+      const newError: ErrorDto = {
+        type: ErrorsType.sql,
+        message: 'Files: markFilesAsSeen()',
+        url: req?.originalUrl || '',
+        error: JSON.stringify(err?.message) || 'null',
+        query: JSON.stringify(err?.query) || 'null',
+        parameters: JSON.stringify(err?.parameters) || 'null',
+        sql: JSON.stringify(err?.driverError?.sql) || 'null',
+        createdAt: getFormatedDate() || new Date().toISOString(),
+        createdAtTimestamp: Number(Date.now()),
+      };
+      await this.errorsService.prepareError(newError);
+    }
+  }
 
   async findOneFile(id: number): Promise<IFileFullDetails> {
     const oneFile = await this.filesRepository.findOne({
@@ -37,6 +71,7 @@ export class FilesService {
 
     const returnedFile: IFileFullDetails = {
       ...oneFile,
+      seenAt: formatDateToString(oneFile.seenAt),
       createdAtTimestamp: +oneFile.createdAtTimestamp!,
       setId: oneFile.setId?.id ?? null,
     };
@@ -69,6 +104,7 @@ export class FilesService {
       fileName: response.fileName,
       type: response.type,
       path: response.path,
+      seenAt: null,
       dir: response.dir as EFileDirectory,
       originalName: response.originalName,
       size: response.size,

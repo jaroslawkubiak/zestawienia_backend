@@ -31,6 +31,7 @@ import { ErrorsService } from '../errors/errors.service';
 import { ErrorsType } from '../errors/types/Errors';
 import { FilesService } from '../files/files.service';
 import { HashService } from '../hash/hash.service';
+import { formatDateToString } from '../helpers/formatDateToString';
 import { getClientIp } from '../helpers/getClientIp';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { ImagesService } from '../images/images.service';
@@ -708,6 +709,7 @@ export class SetsService {
         id: file.id,
         fileName: file.fileName,
         type: file.type,
+        seenAt: formatDateToString(file.seenAt),
         path: file.path,
         dir: file.dir,
         thumbnail: file.thumbnail,

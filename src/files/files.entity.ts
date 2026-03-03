@@ -21,6 +21,9 @@ export class Files {
   @Column({ type: 'varchar', length: 5, nullable: false })
   type: string;
 
+  @Column({ type: 'timestamp', nullable: true })
+  seenAt: Date | null;
+
   @Column({ type: 'varchar', length: 30, nullable: false })
   dir: string;
 

@@ -8,13 +8,14 @@ import {
   NotFoundException,
   Param,
   Post,
+  Req,
   Res,
   StreamableFile,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import * as fs from 'fs';
 import * as iconv from 'iconv-lite';
 import { diskStorage } from 'multer';
@@ -238,6 +239,11 @@ export class FilesController {
     });
 
     archive.pipe(res);
+  }
+
+  @Post('markFilesAsSeen')
+  async markFilesAsSeen(@Body() body: number[], @Req() req: Request) {
+    this.filesService.markFilesAsSeen(body, req);
   }
 
   //download one file

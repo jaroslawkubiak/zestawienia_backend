@@ -21,6 +21,10 @@ export class CreateClientDto {
   @IsNotEmpty()
   email: string;
 
+  @IsString()
+  @IsOptional()
+  secondEmail?: string;
+
   @IsNumber()
   @IsOptional()
   setCount?: number;
@@ -46,6 +50,10 @@ export class UpdateClientDto {
   @IsString()
   @IsOptional()
   email?: string;
+
+  @IsString()
+  @IsOptional()
+  secondEmail?: string;
 
   @IsNumber()
   @IsOptional()

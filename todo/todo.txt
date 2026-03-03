@@ -40,12 +40,12 @@ Poprawić:
 [ ] footer w pdf tylko na koniec danej zakładki.
 
 NOWE:
-[ ] drugi email dla klienta - wwysyłanie wszsytkich powiadomień na oba adresy
-[ ] nie pobiera się pdf z plików
+[x] drugi email dla klienta - wwysyłanie wszsytkich powiadomień na oba adresy
+[x] nie pobiera się pdf z plików
 [ ] oznaczanie nowych plików - podobnie jak komentarze
-[ ] kolumny LP zmienić na L.P.
+[x] kolumny LP zmienić na L.P.
 [ ] mini wersje obrazów pozycji w widoku klienta
-[ ] gdy tworzysz pdf niech guzik znika - wyszarza się
+[x] gdy tworzysz pdf niech guzik znika - wyszarza się
 
 MOBILE VIEW:
 [x] notification jest lekko ucięta z lewej strony

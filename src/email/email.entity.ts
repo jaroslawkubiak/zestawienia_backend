@@ -18,6 +18,9 @@ export class Email {
   @Column({ type: 'varchar', length: 100, nullable: false })
   to: string;
 
+  @Column({ type: 'varchar', length: 100, nullable: false })
+  secondEmail: string;
+
   @Column({ type: 'varchar', length: 150, nullable: false })
   subject: string;
 

@@ -5,7 +5,7 @@ import {
   Validate,
   ValidationArguments,
   ValidatorConstraint,
-  ValidatorConstraintInterface
+  ValidatorConstraintInterface,
 } from 'class-validator';
 
 // Custom validator : one of clientId or supplierId has to be present
@@ -26,6 +26,9 @@ export class ClientOrSupplierConstraint
 export class SendEmailDto {
   @IsString()
   to: string;
+
+  @IsOptional()
+  secondEmail: string;
 
   @IsString()
   subject: string;
@@ -49,7 +52,7 @@ export class SendEmailDto {
 
   @IsString()
   link: string;
-  
+
   @Validate(ClientOrSupplierConstraint)
   validateClientOrSupplier: boolean;
 }

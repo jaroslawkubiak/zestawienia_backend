@@ -161,10 +161,12 @@ export class EmailService {
   }
 
   async sendEmail(emailDetails: ISendEmailDetails) {
-    const { to, subject, content } = emailDetails;
+    const { to, subject, content, secondEmail } = emailDetails;
+
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to,
+      cc: secondEmail ? secondEmail : undefined,
       subject,
       html: content,
     };
@@ -405,6 +407,7 @@ export class EmailService {
         'client.id',
         'client.company',
         'client.email',
+        'client.secondEmail',
         'client.firstName',
         'client.lastName',
         'supplier.id',
@@ -438,6 +441,7 @@ export class EmailService {
             id: email.clientId.id,
             company: email.clientId.company,
             email: email.clientId.email,
+            secondEmail: email.clientId.secondEmail,
             firstName: email.clientId.firstName,
             lastName: email.clientId.lastName,
           }

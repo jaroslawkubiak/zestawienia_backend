@@ -11,6 +11,7 @@ export interface ISendedEmailsFromDB {
     firstName: string;
     lastName: string;
     email: string;
+    secondEmail: string;
   };
   supplier?: {
     id: number;

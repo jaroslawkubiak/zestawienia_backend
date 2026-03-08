@@ -42,10 +42,12 @@ Poprawić:
 NOWE:
 [x] drugi email dla klienta - wwysyłanie wszsytkich powiadomień na oba adresy
 [x] nie pobiera się pdf z plików
-[ ] oznaczanie nowych plików - podobnie jak komentarze
+[x] oznaczanie nowych plików - podobnie jak komentarze
 [x] kolumny LP zmienić na L.P.
-[ ] mini wersje obrazów pozycji w widoku klienta
+[x] mini wersje obrazów pozycji w widoku klienta
+[ ] powiększanie zdjęć pozycji w widoku klienta?
 [x] gdy tworzysz pdf niech guzik znika - wyszarza się
+[x] checkbox do zaznaczania tylko plików z danego katalogu
 
 MOBILE VIEW:
 [x] notification jest lekko ucięta z lewej strony

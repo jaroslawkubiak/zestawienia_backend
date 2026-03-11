@@ -28,6 +28,7 @@ import { safeFileName } from '../helpers/safeFileName';
 import { DownloadZipDto } from './dto/downloadZip.dto';
 import { FilesService } from './files.service';
 import { ThumbnailError } from './ThumbnailError';
+import { IAvatarList } from './types/IAvatarList';
 import { IDataForLogErrors } from './types/IDataForLogErrors';
 import { IDeletedFileResponse } from './types/IDeletedFileResponse';
 import { IFileDetails } from './types/IFileDetails';
@@ -394,7 +395,7 @@ export class FilesController {
   }
 
   @Get('getAvatars')
-  async getAvatars(): Promise<string[]> {
+  async getAvatars(): Promise<IAvatarList[]> {
     return this.filesService.getAvatars();
   }
 

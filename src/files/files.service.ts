@@ -19,6 +19,7 @@ import { Files } from './files.entity';
 import { generateThumbnailPdf } from './generateThumbnailPdf';
 import { ThumbnailError } from './ThumbnailError';
 import { EFileDirectory } from './types/file-directory-list.enum';
+import { IAvatarList } from './types/IAvatarList';
 import { IDataForLogErrors } from './types/IDataForLogErrors';
 import { IDeletedFileResponse } from './types/IDeletedFileResponse';
 import { IFileDetails } from './types/IFileDetails';
@@ -64,20 +65,25 @@ export class FilesService {
     }
   }
 
-  async getAvatars(): Promise<string[]> {
+  async getAvatars(): Promise<IAvatarList[]> {
+    const blockToDeleteList = ['default.png'];
     const avatarsPath = path.join(this.baseUploadPath, 'avatars', 'clients');
 
     const entries = await readdir(avatarsPath, { withFileTypes: true });
-
     const imageExtensions = ['.jpg', '.jpeg', '.png'];
-
+    
     return entries
       .filter((entry) => entry.isFile())
       .filter((entry) => !entry.name.startsWith('.'))
       .filter((entry) =>
         imageExtensions.includes(path.extname(entry.name).toLowerCase()),
       )
-      .map((entry) => entry.name);
+      .map((entry) => {
+        return {
+          fileName: entry.name,
+          canDelete: !blockToDeleteList.includes(entry.name),
+        };
+      });
   }
 
   async findOneFile(id: number): Promise<IFileFullDetails> {
@@ -211,7 +217,12 @@ export class FilesService {
     fileName: string,
     forLogError: IDataForLogErrors,
   ): Promise<IDeletedFileResponse> {
-    const filePath = path.join(this.baseUploadPath, 'avatars', 'clients', fileName);
+    const filePath = path.join(
+      this.baseUploadPath,
+      'avatars',
+      'clients',
+      fileName,
+    );
 
     // security check to prevent path travelsal attacks
     if (!filePath.startsWith(this.baseUploadPath)) {

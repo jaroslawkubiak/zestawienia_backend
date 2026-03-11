@@ -79,7 +79,7 @@ export class FilesService {
       )
       .map((entry) => entry.name);
   }
-  
+
   async findOneFile(id: number): Promise<IFileFullDetails> {
     const oneFile = await this.filesRepository.findOne({
       where: { id },
@@ -203,6 +203,56 @@ export class FilesService {
         severity: 'error',
         message: 'Błąd usuwania pliku. Plik Nie został usunięty!',
         fileName: fileToDelete.fileName,
+      };
+    }
+  }
+
+  async deleteAvatar(
+    fileName: string,
+    forLogError: IDataForLogErrors,
+  ): Promise<IDeletedFileResponse> {
+    const filePath = path.join(this.baseUploadPath, 'avatars', 'clients', fileName);
+
+    // security check to prevent path travelsal attacks
+    if (!filePath.startsWith(this.baseUploadPath)) {
+      throw new Error('Access denied');
+    }
+
+    // check if main file exists
+    try {
+      await fs.access(filePath);
+    } catch (err) {
+      return {
+        severity: 'warn',
+        message: 'Plik nie istnieje',
+        fileName,
+      };
+    }
+
+    // try to delete file
+    try {
+      // delete main file
+      await fs.unlink(filePath);
+
+      return {
+        severity: 'success',
+        message: `Plik ${fileName} został usunięty`,
+        fileName,
+      };
+    } catch (error) {
+      await this.filesErrorsService.logError({
+        fileName,
+        error,
+        source_file_name: 'files.service.ts',
+        source_file_function: 'deleteFile',
+        source_uuid: 'a3e1c7b9-4f6d-4a2c-9e1b-7d5f0a8c3b21',
+        ...forLogError,
+      });
+
+      return {
+        severity: 'error',
+        message: 'Błąd usuwania pliku. Plik Nie został usunięty!',
+        fileName,
       };
     }
   }

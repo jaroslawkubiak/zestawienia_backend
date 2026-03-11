@@ -306,7 +306,7 @@ export class FilesController {
               error,
               source_file_name: 'files.controller.ts',
               source_file_function: 'uploadAvatarFiles',
-              source_uuid: '8f14e45f-ea7d-4b2b-9c9f-6d5f9f3b0c21',
+              source_uuid: '7b2d4f9a-8c1e-4d6a-b3f7-2a9c5e1d8f44',
               ...forLogError,
             });
           }
@@ -353,6 +353,15 @@ export class FilesController {
   ): Promise<IDeletedFileResponse> {
     const forLogError: IDataForLogErrors = { user_id, set_id: '' };
     return this.filesService.deleteFile(+id, forLogError);
+  }
+
+  @Delete(':fileName/deleteAvatar')
+  deleteAvatar(
+    @Param('fileName') fileName: string,
+    @Headers('x-user-id') user_id: string,
+  ): Promise<IDeletedFileResponse> {
+    const forLogError: IDataForLogErrors = { user_id, set_id: '' };
+    return this.filesService.deleteAvatar(fileName, forLogError);
   }
 
   // batch delete files from set id dir

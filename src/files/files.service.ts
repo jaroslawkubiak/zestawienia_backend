@@ -8,6 +8,7 @@ import { readdir } from 'fs/promises';
 import * as path from 'path';
 import { PDFDocument } from 'pdf-lib';
 import { Repository } from 'typeorm';
+import { ClientsService } from '../clients/clients.service';
 import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
 import { ErrorsType } from '../errors/types/Errors';
@@ -35,6 +36,7 @@ export class FilesService {
     private readonly filesRepository: Repository<Files>,
     private readonly filesErrorsService: FilesErrorsService,
     private errorsService: ErrorsService,
+    private clientsService: ClientsService,
   ) {}
 
   // when client see new files - mark them as seenAt
@@ -66,12 +68,14 @@ export class FilesService {
   }
 
   async getAvatars(): Promise<IAvatarList[]> {
-    const blockToDeleteList = ['default.png'];
+    const clientAvatars = await this.clientsService.getClientsAvatarList();
+
+    const cannotDeleteAvatarList = ['default.png', ...clientAvatars];
     const avatarsPath = path.join(this.baseUploadPath, 'avatars', 'clients');
 
     const entries = await readdir(avatarsPath, { withFileTypes: true });
     const imageExtensions = ['.jpg', '.jpeg', '.png'];
-    
+
     return entries
       .filter((entry) => entry.isFile())
       .filter((entry) => !entry.name.startsWith('.'))
@@ -81,7 +85,7 @@ export class FilesService {
       .map((entry) => {
         return {
           fileName: entry.name,
-          canDelete: !blockToDeleteList.includes(entry.name),
+          canDelete: !cannotDeleteAvatarList.includes(entry.name),
         };
       });
   }

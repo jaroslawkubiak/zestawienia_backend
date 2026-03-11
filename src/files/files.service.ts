@@ -4,6 +4,7 @@ import * as archiver from 'archiver';
 import { Request } from 'express';
 import * as fss from 'fs';
 import { promises as fs } from 'fs';
+import { readdir } from 'fs/promises';
 import * as path from 'path';
 import { PDFDocument } from 'pdf-lib';
 import { Repository } from 'typeorm';
@@ -63,6 +64,22 @@ export class FilesService {
     }
   }
 
+  async getAvatars(): Promise<string[]> {
+    const avatarsPath = path.join(this.baseUploadPath, 'avatars', 'clients');
+
+    const entries = await readdir(avatarsPath, { withFileTypes: true });
+
+    const imageExtensions = ['.jpg', '.jpeg', '.png'];
+
+    return entries
+      .filter((entry) => entry.isFile())
+      .filter((entry) => !entry.name.startsWith('.'))
+      .filter((entry) =>
+        imageExtensions.includes(path.extname(entry.name).toLowerCase()),
+      )
+      .map((entry) => entry.name);
+  }
+  
   async findOneFile(id: number): Promise<IFileFullDetails> {
     const oneFile = await this.filesRepository.findOne({
       where: { id },

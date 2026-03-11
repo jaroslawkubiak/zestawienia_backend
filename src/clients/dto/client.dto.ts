@@ -14,6 +14,10 @@ export class CreateClientDto {
   lastName: string;
 
   @IsString()
+  @IsNotEmpty()
+  avatar: string;
+
+  @IsString()
   @IsOptional()
   telephone?: string;
 
@@ -42,6 +46,10 @@ export class UpdateClientDto {
   @IsString()
   @IsOptional()
   lastName?: string;
+
+  @IsString()
+  @IsOptional()
+  avatar?: string;
 
   @IsString()
   @IsOptional()

@@ -17,6 +17,9 @@ export class Client {
   @Column({ type: 'varchar', length: 50, nullable: false })
   lastName: string;
 
+  @Column({ type: 'varchar', length: 100, nullable: false })
+  avatar: string;
+
   @Column({ type: 'varchar', length: 150, nullable: false, unique: true })
   email: string;
 

@@ -393,7 +393,7 @@ export class FilesController {
     this.filesService.markFilesAsSeen(body, req);
   }
 
-  @Get('avatars')
+  @Get('getAvatars')
   async getAvatars(): Promise<string[]> {
     return this.filesService.getAvatars();
   }

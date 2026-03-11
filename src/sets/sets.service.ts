@@ -194,6 +194,7 @@ export class SetsService {
           'client.secondEmail',
           'client.firstName',
           'client.lastName',
+          'client.avatar',
           'client.hash',
         ])
         .leftJoin('set.createdBy', 'createdBy')

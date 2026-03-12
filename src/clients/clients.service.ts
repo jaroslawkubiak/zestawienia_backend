@@ -30,6 +30,15 @@ export class ClientsService {
     }));
   }
 
+  async getClientsAvatarList(): Promise<string[]> {
+    const avatars = await this.clientsRepo
+      .createQueryBuilder('client')
+      .select('client.avatar', 'avatar')
+      .getRawMany();
+
+    return avatars.map((a) => a.avatar);
+  }
+
   async findOneClient(id: number): Promise<IClient> {
     const result = await this.clientsRepo
       .createQueryBuilder('client')

@@ -26,6 +26,7 @@ export interface ISet {
     id: number;
     lastName: string;
     firstName: string;
+    avatar: string;
     email: string;
     secondEmail?: string;
     company: string;

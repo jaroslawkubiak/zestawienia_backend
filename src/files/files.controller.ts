@@ -28,6 +28,7 @@ import { safeFileName } from '../helpers/safeFileName';
 import { DownloadZipDto } from './dto/downloadZip.dto';
 import { FilesService } from './files.service';
 import { ThumbnailError } from './ThumbnailError';
+import { IAvatarList } from './types/IAvatarList';
 import { IDataForLogErrors } from './types/IDataForLogErrors';
 import { IDeletedFileResponse } from './types/IDeletedFileResponse';
 import { IFileDetails } from './types/IFileDetails';
@@ -207,6 +208,144 @@ export class FilesController {
     };
   }
 
+  @Post('upload/avatars')
+  @UseInterceptors(
+    FilesInterceptor('files', 30, {
+      storage: diskStorage({
+        destination: (req, file, cb) => {
+          const userId = req.headers['x-user-id'] as string | undefined;
+          const baseUploadPath = process.env.UPLOAD_PATH;
+          //relative path on server
+          const relativePath = path.join('avatars', 'clients');
+
+          //absolute path to file on device
+          const absolutePath = path.resolve(baseUploadPath, relativePath);
+
+          // create dir if not exists
+          if (!fs.existsSync(absolutePath)) {
+            fs.mkdirSync(absolutePath, { recursive: true });
+          }
+
+          file['absoluteUploadPath'] = absolutePath;
+          file['uploadPath'] = relativePath;
+          file['userId'] = userId;
+
+          cb(null, absolutePath);
+        },
+        filename: (req, file, cb) => {
+          const originalNameUtf8 = iconv.decode(
+            Buffer.from(file.originalname, 'binary'),
+            'utf8',
+          );
+          const parsed = path.parse(originalNameUtf8);
+          const safeName =
+            safeFileName(parsed.name) +
+            '-' +
+            getFormatedDateForFileName() +
+            parsed.ext.toLowerCase();
+
+          file['sanitizedOriginalName'] = safeName;
+          file['originalNameUtf8'] = originalNameUtf8;
+          file['type'] = parsed.ext.replace('.', '').toUpperCase();
+
+          cb(null, safeName);
+        },
+      }),
+    }),
+  )
+  async uploadAvatarFiles(@UploadedFiles() files: Express.Multer.File[]) {
+    if (!files || files.length === 0) {
+      throw new BadRequestException('Nie przesłano żadnych plików');
+    }
+
+    const isAvatar = true;
+
+    const fileDetailsList: IFileDetails[] = await Promise.all(
+      files.map(async (file) => {
+        let fileDetails: IProcessFile = {
+          dimensions: { width: 0, height: 0 },
+          thumbnailFileName: '',
+        };
+        file['type'] = file['type'].toUpperCase();
+
+        const forLogError: IDataForLogErrors = {
+          user_id: file['userId'],
+          set_id: file['setId'],
+        };
+
+        try {
+          if (file['type'] === 'HEIC') {
+            const converted = await convertHeicToJpg(file);
+
+            file.path = converted.path;
+            file.filename = converted.filename;
+            file['sanitizedOriginalName'] = converted.newSanitizedName;
+            file['type'] = converted.type;
+          }
+
+          if (['JPG', 'JPEG', 'PNG'].includes(file['type'])) {
+            fileDetails = await createImageThumbnail(
+              file,
+              file['sanitizedOriginalName'],
+              file['absoluteUploadPath'],
+              isAvatar,
+            );
+          }
+        } catch (error) {
+          if (error instanceof ThumbnailError) {
+            await this.filesErrorsService.logError({
+              fileName: file.originalname,
+              error: error.originalError,
+              source_file_name: 'createImageThumbnail.ts',
+              source_file_function: 'createImageThumbnail',
+              source_uuid: error.source_uuid,
+              ...forLogError,
+            });
+          } else {
+            await this.filesErrorsService.logError({
+              fileName: file.originalname,
+              error,
+              source_file_name: 'files.controller.ts',
+              source_file_function: 'uploadAvatarFiles',
+              source_uuid: '7b2d4f9a-8c1e-4d6a-b3f7-2a9c5e1d8f44',
+              ...forLogError,
+            });
+          }
+
+          let message = `Nie udało się przetworzyć pliku "${file.originalname}" \nSprawdź nazwę pliku i spróbuj ponownie.`;
+
+          if (file.path && fs.existsSync(file.path)) {
+            await fs.promises.unlink(file.path);
+          }
+
+          throw new BadRequestException(message);
+        }
+
+        return {
+          fileName: file['sanitizedOriginalName'],
+          type: file['type'],
+          path: path
+            .relative(process.cwd(), file['uploadPath'])
+            .replace(/\\/g, '/'),
+          dir: file['dir'],
+          originalName: file['originalNameUtf8'],
+          setId: file['setId'],
+          size: file['size'],
+          width: fileDetails.dimensions.width,
+          height: fileDetails.dimensions.height,
+          thumbnail: fileDetails.thumbnailFileName,
+        };
+      }),
+    );
+
+    return {
+      filesCount: files.length,
+      dir: files[0]['dir'],
+      files: fileDetailsList,
+      fileNames: files?.map((file) => file.filename),
+    };
+  }
+
   // delete files from set id dir
   @Delete(':id/deleteFile')
   deleteFile(
@@ -215,6 +354,15 @@ export class FilesController {
   ): Promise<IDeletedFileResponse> {
     const forLogError: IDataForLogErrors = { user_id, set_id: '' };
     return this.filesService.deleteFile(+id, forLogError);
+  }
+
+  @Delete(':fileName/deleteAvatar')
+  deleteAvatar(
+    @Param('fileName') fileName: string,
+    @Headers('x-user-id') user_id: string,
+  ): Promise<IDeletedFileResponse> {
+    const forLogError: IDataForLogErrors = { user_id, set_id: '' };
+    return this.filesService.deleteAvatar(fileName, forLogError);
   }
 
   // batch delete files from set id dir
@@ -244,6 +392,11 @@ export class FilesController {
   @Post('markFilesAsSeen')
   async markFilesAsSeen(@Body() body: number[], @Req() req: Request) {
     this.filesService.markFilesAsSeen(body, req);
+  }
+
+  @Get('getAvatars')
+  async getAvatars(): Promise<IAvatarList[]> {
+    return this.filesService.getAvatars();
   }
 
   //download one file

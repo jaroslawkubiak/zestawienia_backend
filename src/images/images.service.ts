@@ -6,10 +6,10 @@ import {
 } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
+import { IProcessFile } from '../files/types/IProcessFile';
 import { createImageThumbnail } from '../helpers/createImageThumbnail';
 import { PositionsService } from '../position/positions.service';
 import { ISavedFiles } from './types/ISavedFiles';
-import { IProcessFile } from 'src/files/types/IProcessFile';
 
 @Injectable()
 export class ImagesService {

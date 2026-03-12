@@ -1,5 +1,7 @@
 import * as path from 'path';
 import * as sharp from 'sharp';
+import * as fs from 'fs';
+
 import { ThumbnailError } from '../files/ThumbnailError';
 import { IProcessFile } from '../files/types/IProcessFile';
 
@@ -9,9 +11,11 @@ export async function createImageThumbnail(
   file: Express.Multer.File,
   originalFileName: string,
   uploadPath: string,
+  isAvatar = false,
 ): Promise<IProcessFile> {
   const MAX_DIMENSION = 1000;
   const MINI_DIMENSION = 400;
+  const AVATAR_DIMENSION = 512;
 
   const processFile: IProcessFile = {
     dimensions: {
@@ -38,6 +42,7 @@ export async function createImageThumbnail(
 
     // if image is small - don't generate thumbnail
     if (
+      !isAvatar &&
       (metadata.width ?? 0) < MAX_DIMENSION &&
       (metadata.height ?? 0) < MAX_DIMENSION
     ) {
@@ -48,28 +53,42 @@ export async function createImageThumbnail(
     const ext = path.extname(originalFileName);
     const nameWithoutExt = path.basename(originalFileName, ext);
     const thumbnailFileName = `${nameWithoutExt}_mini${ext}`;
-    const miniPath = path.join(uploadPath, thumbnailFileName);
+    const outputPath = isAvatar
+      ? file.path + '.tmp'
+      : path.join(uploadPath, thumbnailFileName);
+
+    const resizeOptions: sharp.ResizeOptions = isAvatar
+      ? {
+          width: AVATAR_DIMENSION,
+          height: AVATAR_DIMENSION,
+          fit: sharp.fit.cover,
+          position: sharp.strategy.attention,
+        }
+      : {
+          width: MINI_DIMENSION,
+          height: MINI_DIMENSION,
+          fit: sharp.fit.inside,
+          withoutEnlargement: true,
+        };
+
     try {
       // save thumbnail
       await Promise.race([
-        sharp(input)
-          .resize({
-            width: MINI_DIMENSION,
-            height: MINI_DIMENSION,
-            fit: 'inside',
-            withoutEnlargement: true,
-          })
-          .toFile(miniPath),
+        sharp(input).resize(resizeOptions).toFile(outputPath),
         new Promise((_, reject) =>
           setTimeout(() => reject(new Error('Sharp timeout')), 10000),
         ),
       ]);
+
+      if (isAvatar) {
+        await fs.promises.rename(outputPath, file.path);
+      }
     } catch (error) {
       throw error;
     }
 
     processFile.thumbnailFileName = thumbnailFileName || '';
-    processFile.thumbnailPath = miniPath || '';
+    processFile.thumbnailPath = outputPath || '';
 
     return processFile;
   } catch (error) {

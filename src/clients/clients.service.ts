@@ -3,7 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { HashService } from '../hash/hash.service';
 import { Client } from './clients.entity';
-import { CreateClientDto, UpdateClientDto } from './dto/client.dto';
+import { CreateClientDto } from './dto/client.dto';
+import { UpdateClientDto } from './dto/updateClient.dto';
 import { IClient } from './types/IClient';
 
 @Injectable()
@@ -30,15 +31,6 @@ export class ClientsService {
     }));
   }
 
-  async getClientsAvatarList(): Promise<string[]> {
-    const avatars = await this.clientsRepo
-      .createQueryBuilder('client')
-      .select('client.avatar', 'avatar')
-      .getRawMany();
-
-    return avatars.map((a) => a.avatar);
-  }
-
   async findOneClient(id: number): Promise<IClient> {
     const result = await this.clientsRepo
       .createQueryBuilder('client')
@@ -53,12 +45,12 @@ export class ClientsService {
   }
 
   async addClient(createClientDto: CreateClientDto): Promise<IClient> {
-    const newClient = {
+    const newClient = this.clientsRepo.create({
       ...createClientDto,
+      avatar: { id: createClientDto.avatarId },
       hash: await this.hashService.generateUniqueHash(),
-    };
+    });
 
-    this.clientsRepo.create(createClientDto);
     return this.clientsRepo.save(newClient);
   }
 
@@ -66,7 +58,14 @@ export class ClientsService {
     id: number,
     updateClientDto: UpdateClientDto,
   ): Promise<IClient> {
-    await this.clientsRepo.update(id, updateClientDto);
+    const updateData = {
+      ...updateClientDto,
+      avatar: updateClientDto.avatarId
+        ? { id: updateClientDto.avatarId }
+        : undefined,
+    };
+
+    await this.clientsRepo.update(id, updateData);
 
     return this.findOneClient(id);
   }

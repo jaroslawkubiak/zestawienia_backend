@@ -8,6 +8,10 @@ import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { AvatarController } from './avatar/avatar.controller';
+import { Avatar } from './avatar/avatar.entity';
+import { AvatarModule } from './avatar/avatar.module';
+import { AvatarService } from './avatar/avatar.service';
 import { Bookmark } from './bookmarks/bookmarks.entity';
 import { BookmarksModule } from './bookmarks/bookmarks.module';
 import { ClientLogs } from './client-logs/client-logs.entity';
@@ -81,6 +85,7 @@ if (!(global as any).crypto) {
           password: config.get<string>('APP_DB_PASSWORD'),
           database: config.get<string>('APP_DB_NAME'),
           entities: [
+            Avatar,
             Bookmark,
             ClientLogs,
             Client,
@@ -111,6 +116,7 @@ if (!(global as any).crypto) {
     }),
     EventEmitterModule.forRoot(),
     AuthModule,
+    AvatarModule,
     SetsModule,
     SuppliersModule,
     ClientsModule,

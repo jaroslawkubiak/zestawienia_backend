@@ -13,9 +13,9 @@ export class CreateClientDto {
   @IsNotEmpty()
   lastName: string;
 
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
-  avatar: string;
+  avatarId: number;
 
   @IsString()
   @IsOptional()
@@ -28,42 +28,4 @@ export class CreateClientDto {
   @IsString()
   @IsOptional()
   secondEmail?: string;
-
-  @IsNumber()
-  @IsOptional()
-  setCount?: number;
-}
-
-export class UpdateClientDto {
-  @IsString()
-  @IsOptional()
-  company?: string;
-
-  @IsString()
-  @IsOptional()
-  firstName?: string;
-
-  @IsString()
-  @IsOptional()
-  lastName?: string;
-
-  @IsString()
-  @IsOptional()
-  avatar?: string;
-
-  @IsString()
-  @IsOptional()
-  telephone?: string;
-
-  @IsString()
-  @IsOptional()
-  email?: string;
-
-  @IsString()
-  @IsOptional()
-  secondEmail?: string;
-
-  @IsNumber()
-  @IsOptional()
-  setCount?: number;
 }

@@ -1,7 +1,15 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Avatar } from '../avatar/avatar.entity';
+import { ClientLogs } from '../client-logs/client-logs.entity';
 import { Email } from '../email/email.entity';
 import { Set } from '../sets/sets.entity';
-import { ClientLogs } from '../client-logs/client-logs.entity';
 
 @Entity('client')
 export class Client {
@@ -17,9 +25,6 @@ export class Client {
   @Column({ type: 'varchar', length: 50, nullable: false })
   lastName: string;
 
-  @Column({ type: 'varchar', length: 100, nullable: false })
-  avatar: string;
-
   @Column({ type: 'varchar', length: 150, nullable: false, unique: true })
   email: string;
 
@@ -33,11 +38,15 @@ export class Client {
   set: Set[];
 
   @OneToMany(() => Email, (email) => email.clientId)
-  logEmail: Email;
+  logEmail: Email[];
 
   @Column({ type: 'varchar', length: 30, nullable: false })
   hash: string;
 
   @OneToMany(() => ClientLogs, (log) => log.client)
   clientLogs: ClientLogs[];
+
+  @ManyToOne(() => Avatar, { nullable: true })
+  @JoinColumn({ name: 'avatarId' })
+  avatar: Avatar;
 }

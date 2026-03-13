@@ -10,7 +10,8 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ClientsService } from './clients.service';
-import { CreateClientDto, UpdateClientDto } from './dto/client.dto';
+import { CreateClientDto } from './dto/client.dto';
+import { UpdateClientDto } from './dto/updateClient.dto';
 import { IClient } from './types/IClient';
 
 @UseGuards(JwtAuthGuard)

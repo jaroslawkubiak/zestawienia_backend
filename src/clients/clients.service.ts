@@ -16,25 +16,29 @@ export class ClientsService {
     private readonly clientsRepo: Repository<Client>,
   ) {}
 
-  async getClients() {
+  async getClients(): Promise<IClient[]> {
     const clients = await this.clientsRepo
       .createQueryBuilder('client')
       .leftJoin('client.set', 'set')
       .addSelect('COUNT(set.id)', 'setCount')
+      .leftJoin('client.avatar', 'avatar')
+      .addSelect(['avatar.id', 'avatar.fileName', 'avatar.path', 'avatar.type'])
       .groupBy('client.id')
       .orderBy('client.id', 'DESC')
       .getRawAndEntities();
 
-    return clients.entities.map((client, index) => ({
-      ...client,
-      setCount: Number(clients.raw[index].setCount),
-    }));
+    return clients.entities.map((client, index) => {
+      const setCount = Number(clients.raw[index].setCount);
+      return this.mapToClient(client, setCount);
+    });
   }
 
   async findOneClient(id: number): Promise<IClient> {
     const result = await this.clientsRepo
       .createQueryBuilder('client')
       .loadRelationCountAndMap('client.setCount', 'client.set')
+      .leftJoin('client.avatar', 'avatar')
+      .addSelect(['avatar.id', 'avatar.fileName', 'avatar.path', 'avatar.type'])
       .where('client.id = :id', { id })
       .getOne();
     return result;
@@ -47,11 +51,12 @@ export class ClientsService {
   async addClient(createClientDto: CreateClientDto): Promise<IClient> {
     const newClient = this.clientsRepo.create({
       ...createClientDto,
-      avatar: { id: createClientDto.avatarId },
+      avatar: { id: createClientDto.avatar.id },
       hash: await this.hashService.generateUniqueHash(),
     });
+    const savedClient = await this.clientsRepo.save(newClient);
 
-    return this.clientsRepo.save(newClient);
+    return await this.findOneClient(savedClient.id);
   }
 
   async updateClient(
@@ -60,9 +65,9 @@ export class ClientsService {
   ): Promise<IClient> {
     const updateData = {
       ...updateClientDto,
-      avatar: updateClientDto.avatarId
-        ? { id: updateClientDto.avatarId }
-        : undefined,
+      avatar: updateClientDto.avatar
+        ? { id: updateClientDto.avatar.id }
+        : null,
     };
 
     await this.clientsRepo.update(id, updateData);
@@ -72,5 +77,20 @@ export class ClientsService {
 
   async deleteClient(id: number): Promise<void> {
     await this.clientsRepo.delete(id);
+  }
+
+  private mapToClient(client: Client, setCount: number): IClient {
+    return {
+      id: client.id,
+      company: client.company,
+      firstName: client.firstName,
+      lastName: client.lastName,
+      email: client.email,
+      secondEmail: client.secondEmail,
+      hash: client.hash,
+      telephone: client.telephone,
+      setCount: setCount,
+      avatar: client.avatar,
+    };
   }
 }

@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IAvatarFullDetails } from '../../avatar/types/IAvatarFullDetails';
 
 export class CreateClientDto {
   @IsString()
@@ -13,9 +14,8 @@ export class CreateClientDto {
   @IsNotEmpty()
   lastName: string;
 
-  @IsNumber()
   @IsNotEmpty()
-  avatarId: number;
+  avatar: IAvatarFullDetails;
 
   @IsString()
   @IsOptional()

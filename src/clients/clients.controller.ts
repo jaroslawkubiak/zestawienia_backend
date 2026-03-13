@@ -20,7 +20,7 @@ export class ClientsController {
   constructor(private clientsService: ClientsService) {}
 
   @Get('getClients')
-  getClients() {
+  getClients(): Promise<IClient[]> {
     return this.clientsService.getClients();
   }
 

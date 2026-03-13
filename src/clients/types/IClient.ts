@@ -5,7 +5,7 @@ export interface IClient {
   company: string;
   firstName: string;
   lastName: string;
-  avatar: IAvatarFullDetails;
+  avatar?: IAvatarFullDetails;
   email: string;
   secondEmail: string;
   hash: string;

@@ -4,11 +4,9 @@ import * as archiver from 'archiver';
 import { Request } from 'express';
 import * as fss from 'fs';
 import { promises as fs } from 'fs';
-import { readdir } from 'fs/promises';
 import * as path from 'path';
 import { PDFDocument } from 'pdf-lib';
 import { Repository } from 'typeorm';
-import { ClientsService } from '../clients/clients.service';
 import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
 import { ErrorsType } from '../errors/types/Errors';
@@ -20,7 +18,6 @@ import { Files } from './files.entity';
 import { generateThumbnailPdf } from './generateThumbnailPdf';
 import { ThumbnailError } from './ThumbnailError';
 import { EFileDirectory } from './types/file-directory-list.enum';
-import { IAvatarList } from './types/IAvatarList';
 import { IDataForLogErrors } from './types/IDataForLogErrors';
 import { IDeletedFileResponse } from './types/IDeletedFileResponse';
 import { IFileDetails } from './types/IFileDetails';
@@ -36,7 +33,6 @@ export class FilesService {
     private readonly filesRepository: Repository<Files>,
     private readonly filesErrorsService: FilesErrorsService,
     private errorsService: ErrorsService,
-    private clientsService: ClientsService,
   ) {}
 
   // when client see new files - mark them as seenAt
@@ -65,29 +61,6 @@ export class FilesService {
       };
       await this.errorsService.prepareError(newError);
     }
-  }
-
-  async getAvatars(): Promise<IAvatarList[]> {
-    const clientAvatars = await this.clientsService.getClientsAvatarList();
-
-    const cannotDeleteAvatarList = ['default.png', ...clientAvatars];
-    const avatarsPath = path.join(this.baseUploadPath, 'avatars', 'clients');
-
-    const entries = await readdir(avatarsPath, { withFileTypes: true });
-    const imageExtensions = ['.jpg', '.jpeg', '.png'];
-
-    return entries
-      .filter((entry) => entry.isFile())
-      .filter((entry) => !entry.name.startsWith('.'))
-      .filter((entry) =>
-        imageExtensions.includes(path.extname(entry.name).toLowerCase()),
-      )
-      .map((entry) => {
-        return {
-          fileName: entry.name,
-          canDelete: !cannotDeleteAvatarList.includes(entry.name),
-        };
-      });
   }
 
   async findOneFile(id: number): Promise<IFileFullDetails> {
@@ -213,61 +186,6 @@ export class FilesService {
         severity: 'error',
         message: 'Błąd usuwania pliku. Plik Nie został usunięty!',
         fileName: fileToDelete.fileName,
-      };
-    }
-  }
-
-  async deleteAvatar(
-    fileName: string,
-    forLogError: IDataForLogErrors,
-  ): Promise<IDeletedFileResponse> {
-    const filePath = path.join(
-      this.baseUploadPath,
-      'avatars',
-      'clients',
-      fileName,
-    );
-
-    // security check to prevent path travelsal attacks
-    if (!filePath.startsWith(this.baseUploadPath)) {
-      throw new Error('Access denied');
-    }
-
-    // check if main file exists
-    try {
-      await fs.access(filePath);
-    } catch (err) {
-      return {
-        severity: 'warn',
-        message: 'Plik nie istnieje',
-        fileName,
-      };
-    }
-
-    // try to delete file
-    try {
-      // delete main file
-      await fs.unlink(filePath);
-
-      return {
-        severity: 'success',
-        message: `Plik ${fileName} został usunięty`,
-        fileName,
-      };
-    } catch (error) {
-      await this.filesErrorsService.logError({
-        fileName,
-        error,
-        source_file_name: 'files.service.ts',
-        source_file_function: 'deleteFile',
-        source_uuid: 'a3e1c7b9-4f6d-4a2c-9e1b-7d5f0a8c3b21',
-        ...forLogError,
-      });
-
-      return {
-        severity: 'error',
-        message: 'Błąd usuwania pliku. Plik Nie został usunięty!',
-        fileName,
       };
     }
   }

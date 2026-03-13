@@ -1,6 +1,5 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ClientsModule } from '../clients/clients.module';
 import { ErrorsModule } from '../errors/errors.module';
 import { FilesErrorsModule } from '../files-erros/files-erros.module';
 import { FilesController } from './files.controller';
@@ -12,7 +11,6 @@ import { FilesService } from './files.service';
     TypeOrmModule.forFeature([Files]),
     ErrorsModule,
     FilesErrorsModule,
-    forwardRef(() => ClientsModule),
   ],
   controllers: [FilesController],
   providers: [FilesService],

@@ -187,6 +187,7 @@ export class SetsService {
         .createQueryBuilder('set')
         .where('set.id = :id', { id: setId })
         .leftJoin('set.clientId', 'client')
+        .leftJoin('client.avatar', 'avatar')
         .addSelect([
           'client.id',
           'client.company',
@@ -194,8 +195,12 @@ export class SetsService {
           'client.secondEmail',
           'client.firstName',
           'client.lastName',
-          'client.avatar',
           'client.hash',
+
+          'avatar.id',
+          'avatar.fileName',
+          'avatar.path',
+          'avatar.type',
         ])
         .leftJoin('set.createdBy', 'createdBy')
         .addSelect(['createdBy.id', 'createdBy.name'])

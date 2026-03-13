@@ -1,3 +1,4 @@
+import { IAvatarFullDetails } from '../../avatar/types/IAvatarFullDetails';
 import { IBookmarksWithTableColumns } from '../../bookmarks/types/IBookmarksWithTableColumns';
 import { IComment } from '../../comments/types/IComment';
 import { IUnreadComments } from '../../comments/types/IUnreadComments';
@@ -26,7 +27,7 @@ export interface ISet {
     id: number;
     lastName: string;
     firstName: string;
-    avatar: string;
+    avatar: IAvatarFullDetails;
     email: string;
     secondEmail?: string;
     company: string;

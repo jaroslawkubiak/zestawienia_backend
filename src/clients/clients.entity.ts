@@ -49,4 +49,7 @@ export class Client {
   @ManyToOne(() => Avatar, { nullable: true })
   @JoinColumn({ name: 'avatarId' })
   avatar: Avatar;
+
+  @OneToMany(() => Avatar, (avatar) => avatar.client)
+avatars: Avatar[];
 }

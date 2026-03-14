@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Client } from 'src/clients/clients.entity';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('avatar')
 export class Avatar {
@@ -13,4 +14,11 @@ export class Avatar {
 
   @Column({ type: 'varchar', length: 5, nullable: false })
   type: string;
+
+  @ManyToOne(() => Client, (client) => client.avatars, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'clientId' })
+  client: Client;
 }

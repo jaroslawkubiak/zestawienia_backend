@@ -3,5 +3,6 @@ export interface IAvatarFullDetails {
   fileName: string;
   path: string;
   type: string;
-  canDelete?: boolean;
+  clientName?: string;
+  usageCount?: number;
 }

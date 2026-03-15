@@ -1,5 +1,5 @@
-import { Client } from 'src/clients/clients.entity';
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Client } from '../clients/clients.entity';
 
 @Entity('avatar')
 export class Avatar {

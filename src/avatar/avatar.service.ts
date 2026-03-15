@@ -2,8 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { promises as fs } from 'fs';
 import * as path from 'path';
-import { Repository } from 'typeorm';
+import { Brackets, Repository } from 'typeorm';
 import { Client } from '../clients/clients.entity';
+import { ClientsService } from '../clients/clients.service';
 import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
 import { IDataForLogErrors } from '../files/types/IDataForLogErrors';
@@ -25,6 +26,8 @@ export class AvatarService {
     private readonly clientRepo: Repository<Client>,
 
     private errorsService: ErrorsService,
+
+    private clientsService: ClientsService,
   ) {}
 
   async findOne(id: number): Promise<IAvatar> {
@@ -35,13 +38,49 @@ export class AvatarService {
     return result;
   }
 
+  async findByClientId(clientId: number): Promise<Avatar> {
+    const result = await this.avatarRepository
+      .createQueryBuilder('avatar')
+      .where('avatar.clientId = :clientId', { clientId })
+      .getOne();
+    return result;
+  }
+
   async removeFromDB(id: number): Promise<void> {
     await this.avatarRepository.delete(id);
   }
 
   async createFileEntry(file: IAvatar): Promise<IAvatarFullDetails> {
-    const newFile = this.avatarRepository.create(file);
+    // if client is sending avatar - they have limit to one avatar file, so we have to remove previuos one
+    const clientId = file.clientId;
+    let clientName = '';
+    if (clientId) {
+      const clientEntry = await this.clientRepo.findOne({
+        where: { id: clientId },
+      });
 
+      if (clientEntry) {
+        clientName = clientEntry.firstName + ' ' + clientEntry.lastName;
+      }
+
+      const clientDBEntry = await this.findByClientId(clientId);
+      const client = await this.clientsService.findOneClient(clientId);
+      // if client have avatar - delete it
+      if (clientDBEntry) {
+        if (clientDBEntry.id === client.avatar.id) {
+          await this.setAvatar(clientId, 1);
+        }
+
+        await this.removeFromDB(clientDBEntry.id);
+      }
+    }
+
+    const newFile = this.avatarRepository.create({
+      fileName: file.fileName,
+      type: file.type,
+      path: file.path,
+      client: clientId ? { id: Number(clientId) } : null,
+    });
     const response = await this.avatarRepository.save(newFile);
 
     const mappedFile: IAvatarFullDetails = {
@@ -49,32 +88,46 @@ export class AvatarService {
       fileName: response.fileName,
       type: response.type,
       path: response.path,
+      clientName,
     };
 
     return mappedFile;
   }
 
-  async getAvatars(): Promise<IAvatarFullDetails[]> {
-    return this.avatarRepository
+  async getAvatars(clientId: number | null): Promise<IAvatarFullDetails[]> {
+    const qb = this.avatarRepository
       .createQueryBuilder('avatar')
-      .leftJoin(Client, 'client', 'client.avatarId = avatar.id')
-      .select(['avatar.id', 'avatar.fileName', 'avatar.path'])
-      .addSelect('COUNT(client.id)', 'usageCount')
-      .groupBy('avatar.id')
-      .addGroupBy('avatar.fileName')
-      .addGroupBy('avatar.path')
-      .getRawMany()
-      .then((rows) =>
-        rows.map((row) => ({
-          id: row.avatar_id,
-          fileName: row.avatar_fileName,
-          path: row.avatar_path,
-          type: row.avatar_type,
-          canDelete:
-            row.avatar_fileName !== 'default.png' &&
-            Number(row.usageCount) === 0,
-        })),
+      .leftJoinAndSelect('avatar.client', 'client')
+      .addSelect((subQuery) => {
+        return subQuery
+          .select('COUNT(c.id)')
+          .from(Client, 'c')
+          .where('c.avatarId = avatar.id');
+      }, 'usageCount');
+
+    if (clientId !== null) {
+      qb.andWhere(
+        new Brackets((qb) => {
+          qb.where('avatar.clientId IS NULL').orWhere(
+            'avatar.clientId = :clientId',
+            { clientId },
+          );
+        }),
       );
+    }
+
+    const rows = await qb.getRawMany();
+
+    return rows.map((row) => ({
+      id: row.avatar_id,
+      fileName: row.avatar_fileName,
+      path: row.avatar_path,
+      type: row.avatar_type,
+      clientName: row.client_id
+        ? row.client_firstName + ' ' + row.client_lastName
+        : null,
+      usageCount: Number(row.usageCount) ?? 0,
+    }));
   }
 
   async deleteAvatar(
@@ -150,5 +203,11 @@ export class AvatarService {
         fileName: avatar.fileName,
       };
     }
+  }
+
+  async setAvatar(clientId: number, avatarId: number): Promise<IAvatar> {
+    await this.clientsService.updateClientAvatar(clientId, avatarId);
+
+    return this.findOne(avatarId);
   }
 }

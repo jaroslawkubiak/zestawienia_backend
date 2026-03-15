@@ -32,6 +32,7 @@ import { IDataForLogErrors } from './types/IDataForLogErrors';
 import { IDeletedFileResponse } from './types/IDeletedFileResponse';
 import { IFileDetails } from './types/IFileDetails';
 import { IFileFullDetails } from './types/IFileFullDetails';
+import { IFileUploadResponse } from './types/IFileUploadResponse';
 import { IProcessFile } from './types/IProcessFile';
 
 @Controller('files')
@@ -99,7 +100,9 @@ export class FilesController {
       }),
     }),
   )
-  async uploadFiles(@UploadedFiles() files: Express.Multer.File[]) {
+  async uploadFiles(
+    @UploadedFiles() files: Express.Multer.File[],
+  ): Promise<IFileUploadResponse> {
     if (!files || files.length === 0) {
       throw new BadRequestException('Nie przesłano żadnych plików');
     }
@@ -110,7 +113,6 @@ export class FilesController {
           dimensions: { width: 0, height: 0 },
           thumbnailFileName: '',
         };
-        file['type'] = file['type'].toUpperCase();
 
         const forLogError: IDataForLogErrors = {
           user_id: file['userId'],

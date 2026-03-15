@@ -54,6 +54,13 @@ NOWE:
 [x] gdy tworzysz pdf niech guzik znika - wyszarza się
 [x] checkbox do zaznaczania tylko plików z danego katalogu
 
+Avatrs:
+[x] limit na 1szt dla klienta
+[x] usunięcie poprzedniego avatara gdy wgrywa nowy plik
+[x] jeden folder w fileDirectoryLsit dla usera i clienta
+[x] po wgraniu nowego avatara - ustawić go jako domyślny
+[ ] usunąć avatary innych klientów w edycji klienta
+
 MOBILE VIEW:
 [x] notification jest lekko ucięta z lewej strony
 [x] powiększanie obrazów jest zbyt duże

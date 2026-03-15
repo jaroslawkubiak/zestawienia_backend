@@ -59,15 +59,24 @@ export class ClientsService {
     return await this.findOneClient(savedClient.id);
   }
 
+  async updateClientAvatar(clientId: number, avatarId: number): Promise<void> {
+    await this.clientsRepo
+      .createQueryBuilder()
+      .update('client')
+      .set({
+        avatar: { id: avatarId },
+      })
+      .where('id = :clientId', { clientId })
+      .execute();
+  }
+
   async updateClient(
     id: number,
     updateClientDto: UpdateClientDto,
   ): Promise<IClient> {
     const updateData = {
       ...updateClientDto,
-      avatar: updateClientDto.avatar
-        ? { id: updateClientDto.avatar.id }
-        : null,
+      avatar: updateClientDto.avatar ? { id: updateClientDto.avatar.id } : null,
     };
 
     await this.clientsRepo.update(id, updateData);

@@ -1,23 +1,27 @@
 import {
   BadRequestException,
+  Body,
   Controller,
   Delete,
   Get,
   Headers,
   Param,
+  Patch,
   Post,
+  Query,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import * as fs from 'fs';
 import * as iconv from 'iconv-lite';
-
 import { diskStorage } from 'multer';
 import * as path from 'path';
 import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
 import { IDataForLogErrors } from '../files/types/IDataForLogErrors';
+import { IDeletedFileResponse } from '../files/types/IDeletedFileResponse';
+import { IFileUploadResponse } from '../files/types/IFileUploadResponse';
 import { IProcessFile } from '../files/types/IProcessFile';
 import { convertHeicToJpg } from '../helpers/convertHeicToJpg';
 import { createImageThumbnail } from '../helpers/createImageThumbnail';
@@ -39,18 +43,31 @@ export class AvatarController {
   @UseInterceptors(
     FilesInterceptor('files', 30, {
       storage: diskStorage({
-        destination: (req, file, cb) => {
-          const baseUploadPath = process.env.UPLOAD_PATH;
-          //relative path on server
-          const relativePath = path.join('avatars', 'clients');
+        destination: async (req, file, cb) => {
+          const clientId = req.body.clientId;
+          const isClientsAvatar = !!clientId;
 
-          //absolute path to file on device
+          const baseUploadPath = process.env.UPLOAD_PATH;
+
+          //relative path on server
+          let relativePath = path.join('avatars');
+
+          if (isClientsAvatar) {
+            relativePath = path.join('avatars', 'clients', clientId);
+          }
+
           const absolutePath = path.resolve(baseUploadPath, relativePath);
 
-          // create dir if not exists
-          if (!fs.existsSync(absolutePath)) {
-            fs.mkdirSync(absolutePath, { recursive: true });
+          // remove old files in directory
+          if (isClientsAvatar && fs.existsSync(absolutePath)) {
+            await fs.promises.rm(absolutePath, {
+              recursive: true,
+              force: true,
+            });
           }
+
+          // create dir if not exists
+          fs.mkdirSync(absolutePath, { recursive: true });
 
           file['absoluteUploadPath'] = absolutePath;
           file['uploadPath'] = relativePath;
@@ -63,6 +80,7 @@ export class AvatarController {
             'utf8',
           );
           const parsed = path.parse(originalNameUtf8);
+
           const safeName =
             safeFileName(parsed.name) +
             '-' +
@@ -78,7 +96,10 @@ export class AvatarController {
       }),
     }),
   )
-  async uploadAvatarFiles(@UploadedFiles() files: Express.Multer.File[]) {
+  async uploadAvatarFiles(
+    @UploadedFiles() files: Express.Multer.File[],
+    @Body('clientId') clientId?: number,
+  ): Promise<IFileUploadResponse> {
     if (!files || files.length === 0) {
       throw new BadRequestException('Nie przesłano żadnych plików');
     }
@@ -91,7 +112,6 @@ export class AvatarController {
           dimensions: { width: 0, height: 0 },
           thumbnailFileName: '',
         };
-        file['type'] = file['type'].toUpperCase();
 
         try {
           if (file['type'] === 'HEIC') {
@@ -141,6 +161,7 @@ export class AvatarController {
           path: path
             .relative(process.cwd(), file['uploadPath'])
             .replace(/\\/g, '/'),
+          clientId,
         };
       }),
     );
@@ -158,13 +179,27 @@ export class AvatarController {
   }
 
   @Get('getAvatars')
-  async getAvatars(): Promise<IAvatarFullDetails[]> {
-    return this.avatarService.getAvatars();
+  async getAvatars(
+    @Query('clientId') clientId?: string,
+  ): Promise<IAvatarFullDetails[]> {
+    const parsedClientId = clientId ? Number(clientId) : null;
+
+    return this.avatarService.getAvatars(parsedClientId);
   }
 
-  //: Promise<IDeletedFileResponse>
+  @Patch(':clientId/:avatarId/setAvatar')
+  updateLastActiveUserBookmark(
+    @Param('clientId') clientId: string,
+    @Param('avatarId') avatarId: string,
+  ): Promise<IAvatar> {
+    return this.avatarService.setAvatar(+clientId, +avatarId);
+  }
+
   @Delete(':id/deleteAvatar')
-  deleteAvatar(@Param('id') id: number, @Headers('x-user-id') user_id: string) {
+  deleteAvatar(
+    @Param('id') id: number,
+    @Headers('x-user-id') user_id: string,
+  ): Promise<IDeletedFileResponse> {
     const forLogError: IDataForLogErrors = { user_id, set_id: '' };
     return this.avatarService.deleteAvatar(id, forLogError);
   }

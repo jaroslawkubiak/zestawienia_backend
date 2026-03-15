@@ -38,10 +38,9 @@ Poprawić:
 [x] miniatury każdego pliku do view files, a przy otwieraniu podglądu na full screen ściągać oryginał
 [ ] zamienić id na uuid?
 [ ] footer w pdf tylko na koniec danej zakładki.
-[ ] przy usuwaniu avatarów zablokować te uywane przez klientów
-[ ] wybór losowy avatara przy dodawaniu nowego klienta
-[ ] zmiana avatara przy edycji i dodawaniu klienta
-[ ] klient sam moe wgrać avatar - osobny katalog czy główny katalog?
+[x] przy usuwaniu avatarów zablokować te używane przez klientów
+[x] zmiana avatara przy edycji i dodawaniu klienta
+[x] klient sam może wgrać avatar - osobny katalog
 
 NOWE:
 [x] drugi email dla klienta - wwysyłanie wszsytkich powiadomień na oba adresy
@@ -59,7 +58,7 @@ Avatrs:
 [x] usunięcie poprzedniego avatara gdy wgrywa nowy plik
 [x] jeden folder w fileDirectoryLsit dla usera i clienta
 [x] po wgraniu nowego avatara - ustawić go jako domyślny
-[ ] usunąć avatary innych klientów w edycji klienta
+[x] usunąć avatary innych klientów w edycji klienta
 
 MOBILE VIEW:
 [x] notification jest lekko ucięta z lewej strony

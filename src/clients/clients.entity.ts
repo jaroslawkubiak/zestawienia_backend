@@ -51,5 +51,5 @@ export class Client {
   avatar: Avatar;
 
   @OneToMany(() => Avatar, (avatar) => avatar.client)
-avatars: Avatar[];
+  avatars: Avatar[];
 }

@@ -3,8 +3,8 @@ import { NestFactory } from '@nestjs/core';
 import * as cookieParser from 'cookie-parser';
 import * as express from 'express';
 import { Request, Response } from 'express';
-import { join } from 'path';
 import * as fs from 'fs';
+import { join } from 'path';
 import { AppModule } from './app.module';
 import { ErrorsService } from './errors/errors.service';
 import { QueryFailedExceptionFilter } from './filters/queryFailedException.filter';
@@ -28,7 +28,6 @@ async function bootstrap() {
     origin: [
       'http://localhost:4200',
       'https://zestawienia.zurawickidesign.pl',
-      'http://demo.host119403.stronawcal.pl',
     ],
     credentials: true,
     methods: 'GET,HEAD,POST,PUT,PATCH,DELETE,OPTIONS',

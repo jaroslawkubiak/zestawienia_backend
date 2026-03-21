@@ -36,8 +36,7 @@ Poprawić:
 [x] jak edytujesz klienta to na chwilę pojawia się możliwość usunięcia go
 [x] w widoku wszystkich komentarzy nie scroluje na doł
 [x] miniatury każdego pliku do view files, a przy otwieraniu podglądu na full screen ściągać oryginał
-[ ] zamienić id na uuid?
-[ ] footer w pdf tylko na koniec danej zakładki.
+[x] footer w pdf tylko na koniec danej zakładki.
 [x] przy usuwaniu avatarów zablokować te używane przez klientów
 [x] zmiana avatara przy edycji i dodawaniu klienta
 [x] klient sam może wgrać avatar - osobny katalog

@@ -28,8 +28,8 @@ import { SettingsService } from '../settings/settings.service';
 import { CreateIdDto } from '../shared/dto/createId.dto';
 import { LogEmailDto } from './dto/logEmail.dto';
 import { Email } from './email.entity';
-import { EmailTemplateDetailsList } from './EmailTemplateDetailsList';
 import { saveToSentFolder } from './emailSendCopy';
+import { EmailTemplateDetailsList } from './EmailTemplateDetailsList';
 import { TEmailAudience } from './types/EmailAudience.type';
 import { ICommentForEmail } from './types/ICommentForEmail';
 import { IEmailCommentsNotificationPayload } from './types/IEmailCommentsNotificationPayload';
@@ -120,7 +120,6 @@ export class EmailService {
 
     const set = await this.setsService.findOneSet(setId);
     const setName = set.name;
-    const createdAt = set.createdAt;
     const setHash = set.hash;
     const audienceHash = audienceType === 'client' ? set.clientId.hash : '';
     const linkToSet = this.createExternalLink(
@@ -128,18 +127,23 @@ export class EmailService {
       setHash,
       audienceHash,
     );
-
     const emailDetails = EmailTemplateDetailsList[type];
-
-    const emailSubject = emailDetails.emailSubject(setName);
-    const content = emailDetails.message({ client });
 
     if (!emailDetails) {
       throw new Error(`Unknown email template type: ${type}`);
     }
 
+    const emailSubject = emailDetails.emailSubject(setName);
+
+    const context =
+      emailDetails.audience === 'client'
+        ? { linkToSet }
+        : { client, linkToSet };
+
+    const content = emailDetails.message(context as any);
+
     const fullPayload: IEmailPreviewFullPayload = {
-      HTMLContent: content.replace(/\n/g, '<br/>'),
+      HTMLContent: content.replace(/\n/g, '<br />'),
       ASSETS_URL: this.ASSETS_URL,
       linkToSet,
       HTMLheader: emailDetails.HTMLHeader,

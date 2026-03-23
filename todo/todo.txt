@@ -54,6 +54,7 @@ NOWE:
 [ ] powiększanie zdjęć pozycji w widoku klienta?
 [x] gdy tworzysz pdf niech guzik znika - wyszarza się
 [x] checkbox do zaznaczania tylko plików z danego katalogu
+[ ] brak tabeli z komentarzami w powiadomienu na email
 
 Avatrs:
 [x] limit na 1szt dla klienta

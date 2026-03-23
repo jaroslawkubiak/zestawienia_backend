@@ -250,11 +250,15 @@ export class EmailService {
       positions,
     );
 
-    const HTMLheader = 'Nowe komentarze';
-    const HTMLContent = `${headerText} ${newComments.length} ${newComments.length === 1 ? ' komentarza' : ' komentarzy'} do Twojej inwestycji: <strong>${set.name}</strong>`;
+    const commentLabel = newComments.length === 1 ? 'komentarza' : 'komentarzy';
+    const ownerLabel = commentAuthorType === 'client' ? ' Twojej' : '';
+    const HTMLContent = `${headerText} ${newComments.length} ${commentLabel} do${ownerLabel} inwestycji: <strong>${set.name}</strong>`;
+
     const needsAttentionHeader = `Masz także ${needsAttentionCommentsList.length} ${createHeaderNeedsAttentionComments(
       needsAttentionCommentsList.length,
     )}`;
+    const HTMLheader = 'Nowe komentarze';
+
     const linkToSet = this.createExternalLink(
       'client',
       set.hash,

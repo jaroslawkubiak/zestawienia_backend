@@ -408,6 +408,8 @@ export class EmailService {
         'email.sendAtTimestamp',
         'email.content',
         'email.subject',
+        'email.to',
+        'email.secondEmail',
         'client.id',
         'client.company',
         'client.email',
@@ -434,6 +436,8 @@ export class EmailService {
       sendAtTimestamp: email.sendAtTimestamp,
       content: email.content,
       subject: email.subject,
+      to: email.to,
+      secondEmail: email.secondEmail,
       set: email.setId
         ? {
             id: email.setId.id,

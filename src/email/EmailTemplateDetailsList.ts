@@ -1,5 +1,8 @@
 import { EmailTemplateMap } from './types/EmailTemplateMap.type';
 
+function HTMLLinkToSet(link: string): string {
+  return `<a href="${link}" target="_blank" style='color: #3bbfa1; text-decoration:none; font-weight:bold; cursor: pointer;'>Link do panelu.</a>`;
+}
 export const EmailTemplateDetailsList = {
   clientFunctionalLayout: {
     audience: 'client',
@@ -9,7 +12,7 @@ export const EmailTemplateDetailsList = {
     message: ({
       linkToSet,
     }) => `Załączamy w panelu klienta w zakładce <strong>Załączniki -> Układy funkcjonalne</strong> 
-przygotowane przez nas warianty układów funkcjonalnych Inwestycji. <a href="${linkToSet}" target="_blank" style='text-decoration:none; font-weight:bold; cursor: pointer;'>Link do panelu.</a>
+przygotowane przez nas warianty układów funkcjonalnych Inwestycji. ${HTMLLinkToSet(linkToSet)}
 
 Każdy z nich pokazuje nieco inne podejście do organizacji przestrzeni i możliwych rozwiązań
 aranżacyjnych.
@@ -36,7 +39,7 @@ Kolejnym etapem po analizie układów funkcjonalnych będzie przygotowanie model
     message: ({
       linkToSet,
     }) => `Załączamy w panelu klienta w zakładce <strong>Załączniki -> Moodboardy</strong> przygotowane przez nas
-moodboardy inspiracyjne. <a href="${linkToSet}" target="_blank" style='text-decoration:none; font-weight:bold; cursor: pointer;'>Link do panelu.</a>
+moodboardy inspiracyjne. ${HTMLLinkToSet(linkToSet)}
 
 Są one swego rodzaju „mapą myśli” projektu - w formie kolażu zdjęć przedstawiają możliwe
 kierunki stylistyczne dla poszczególnych pomieszczeń oraz wybrane detale. Pokazują potencjalną
@@ -63,7 +66,7 @@ Kolejnym etapem po analizie moodboardów będzie przygotowanie modelu 3D wnętrz
     message: ({
       linkToSet,
     }) => `Załączamy w panelu klienta w zakładce <strong>Załączniki -> Faktury</strong> dokument - fakturę/proformę do
-opłacenia. <a href="${linkToSet}" target="_blank" style='text-decoration:none; font-weight:bold; cursor: pointer;'>Link do panelu.</a>
+opłacenia. ${HTMLLinkToSet(linkToSet)}
 
 Będziemy wdzięczni za jej terminowe uregulowanie.
 
@@ -78,8 +81,8 @@ potwierdzenia przelewu, co pozwoli nam sprawnie kontynuować kolejne etapy prac 
     emailSubject: (setName: string) => `Model 3D: ${setName} `,
     message: ({
       linkToSet,
-    }) => `Załączamy w panelu klienta w zakładce <strong>Załączniki -> Model 3D</strong> Model 3D przygotowane przez nas warianty
-modelu 3D dla projektowanego wnętrza. <a href="${linkToSet}" target="_blank" style='text-decoration:none; font-weight:bold; cursor: pointer;'>Link do panelu.</a>
+    }) => `Załączamy w panelu klienta w zakładce <strong>Załączniki -> Model 3D</strong> przygotowane przez nas warianty
+modelu 3D dla projektowanego wnętrza. ${HTMLLinkToSet(linkToSet)}
 
 Każdy z nich pokazuje nieco inne podejście do organizacji przestrzeni i możliwych rozwiązań
 aranżacyjnych.
@@ -122,7 +125,7 @@ wnętrza.
     message: ({
       linkToSet,
     }) => `Załączamy w panelu klienta w zakładce <strong>Załączniki -> Zestawienie</strong> przygotowane przez nas
-zestawienie produktowe dla projektowanego wnętrza. <a href="${linkToSet}" target="_blank" style='text-decoration:none; font-weight:bold; cursor: pointer;'>Link do panelu.</a>
+zestawienie produktowe dla projektowanego wnętrza. ${HTMLLinkToSet(linkToSet)}
 
 Dokument został podzielony na zakładki odpowiadające grupom produktowym, a pierwsza
 zakładka zawiera legendę - prosimy o zapoznanie się z nią, co ułatwi poruszanie się po całym
@@ -148,7 +151,7 @@ decyzji zakupowych.
       linkToSet,
     }) => `Prosimy o umieszczenie inspiracji dotyczących projektowanego wnętrza w panelu klienta w
 zakładce <strong>Załączniki -> Inspiracje</strong> - mogą to być zdjęcia znalezione w internecie, screeny itp., lub
-dostęp do tablicy Pinterest (w tym wypadku drogą mailową). <a href="${linkToSet}" target="_blank" style='text-decoration:none; font-weight:bold; cursor: pointer;'>Link do panelu.</a>
+dostęp do tablicy Pinterest (w tym wypadku drogą mailową). ${HTMLLinkToSet(linkToSet)}
 
 Wraz z wypełnioną ankietą umożliwi nam to pełniejsze zrozumienie Twoich/Waszych oczekiwań i
 preferencji oraz pozwoli przygotować projekt wnętrza zgodny z wizją, stylem i funkcjonalnymi
@@ -165,7 +168,7 @@ naszymi inspiracjami w moodboardach inspiracyjnych.
     message: ({
       linkToSet,
     }) => `Załączamy w panelu klienta w zakładce <strong>Załączniki -> Rysunki techniczne</strong> przygotowane przez
-nas rysunki techniczne dla projektowanego wnętrza. <a href="${linkToSet}" target="_blank" style='text-decoration:none; font-weight:bold; cursor: pointer;'>Link do panelu.</a>
+nas rysunki techniczne dla projektowanego wnętrza. ${HTMLLinkToSet(linkToSet)}
 
 Są to szczegółowe opracowania niezbędne do realizacji projektu, obejmujące m.in. instalacje
 elektryczne, hydrauliczne, rozkład płytek, zabudowy meblowe oraz inne kluczowe elementy.
@@ -186,7 +189,7 @@ wydrukowanej, aby zapewnić sprawną i zgodną z projektem realizację.
     message: ({
       linkToSet,
     }) => `Załączamy w panelu klienta w zakładce <strong>Załączniki -> Wizualizacje</strong> przygotowane przez nas
-fotorealistyczne wizualizacje dla projektowanego wnętrza. <a href="${linkToSet}" target="_blank" style='text-decoration:none; font-weight:bold; cursor: pointer;'>Link do panelu.</a>
+fotorealistyczne wizualizacje dla projektowanego wnętrza. ${HTMLLinkToSet(linkToSet)}
 
 Mają one charakter fotorealistyczny i w możliwie najpełniejszy sposób pokazują docelowy wygląd
 przestrzeni, jej klimat oraz założenia estetyczne.

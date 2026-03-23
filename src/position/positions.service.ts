@@ -114,7 +114,7 @@ export class PositionsService {
     );
   }
 
-  async update(
+  async updatePosition(
     userId: number,
     positions: UpdatePositionDto[],
     req: Request,
@@ -131,7 +131,7 @@ export class PositionsService {
           updatedAtTimestamp: Number(Date.now()),
         });
 
-        await this.positionsRepository.save(entity);
+        await this.updateOnePosition(entity);
       }
     } catch (err) {
       const newError: ErrorDto = {
@@ -156,20 +156,21 @@ export class PositionsService {
     }
   }
   private async updateOnePosition(
-    id: number,
     updatePosition: UpdatePositionDto,
-    url: string = 'null',
   ): Promise<void> {
     try {
-      const oldPosition = await this.findOne(id);
+      const oldPosition = await this.findOne(updatePosition.id);
       const oldSupplierId = oldPosition?.supplierId?.id;
+
       const updateResult = await this.positionsRepository.update(
-        id,
+        updatePosition.id,
         updatePosition,
       );
 
       if (updateResult?.affected === 0) {
-        throw new NotFoundException(`Position with ID ${id} not found`);
+        throw new NotFoundException(
+          `Position with ID ${updatePosition.id} not found`,
+        );
       } else {
         //update positionCount for new supplier
         const findSupplierId = updatePosition?.supplierId?.id;
@@ -186,7 +187,7 @@ export class PositionsService {
       const newError: ErrorDto = {
         type: ErrorsType.sql,
         message: 'Position: updateOnePosition()',
-        url,
+        url: '',
         error: JSON.stringify(err?.message) || 'null',
         query: JSON.stringify(err?.query) || 'null',
         parameters: JSON.stringify(err?.parameters?.[0]) || 'null',

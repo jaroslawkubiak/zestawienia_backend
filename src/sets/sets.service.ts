@@ -301,7 +301,7 @@ export class SetsService {
       }
 
       if (positions) {
-        await this.positionsService.update(userId, positions, req);
+        await this.positionsService.updatePosition(userId, positions, req);
       }
 
       const set = await this.findOneSet(setId);

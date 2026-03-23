@@ -40,6 +40,9 @@ Poprawić:
 [x] przy usuwaniu avatarów zablokować te używane przez klientów
 [x] zmiana avatara przy edycji i dodawaniu klienta
 [x] klient sam może wgrać avatar - osobny katalog
+[x] sortowanie klientów alfabetycznie przy dodawaniu nowego zestawienia
+[x] wyższy select z klientami przy dodawaniu nowego zestawienia
+[x] link przy klientach do dodania nowego zestawienia z wybranym już klientem
 
 NOWE:
 [x] drugi email dla klienta - wwysyłanie wszsytkich powiadomień na oba adresy

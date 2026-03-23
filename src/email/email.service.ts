@@ -44,7 +44,6 @@ import { ISendEmailDetails } from './types/ISendEmailDetails';
 @Injectable()
 export class EmailService {
   private transporter;
-  private APP_URL = 'https://zestawienia.zurawickidesign.pl';
   private ASSETS_URL = 'https://zestawienia.zurawickidesign.pl/assets/images';
   private socialColor: 'accent' | 'black' = 'accent';
   private currentYear = new Date().getFullYear();
@@ -477,7 +476,7 @@ export class EmailService {
     setHash: string,
     audienceHash: string,
   ): string {
-    return `${this.APP_URL}/open-for-${type}/${setHash}/${audienceHash}`;
+    return `${process.env.APP_URL}/open-for-${type}/${setHash}/${audienceHash}`;
   }
 
   private initializeTransporter() {

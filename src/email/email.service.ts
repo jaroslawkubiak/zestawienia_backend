@@ -115,12 +115,15 @@ export class EmailService {
   }
 
   async getEmailPreview(body: IEmailPreviewDetails): Promise<IEmailPreview> {
-    const { type, setId, audienceType, client } = body;
+    const { type, setId, audienceType, client, supplier } = body;
 
     const set = await this.setsService.findOneSet(setId);
     const setName = set.name;
     const setHash = set.hash;
-    const audienceHash = audienceType === 'client' ? set.clientId.hash : '';
+
+    const audienceHash =
+      audienceType === 'client' ? set.clientId.hash : supplier.hash;
+
     const linkToSet = this.createExternalLink(
       audienceType,
       setHash,

@@ -1,7 +1,11 @@
 import { EmailTemplateMap } from './types/EmailTemplateMap.type';
 
-function HTMLLinkToSet(link: string): string {
+function HTMLSetLinkToClient(link: string): string {
   return `<a href="${link}" target="_blank" style='color: #3bbfa1; text-decoration:none; font-weight:bold; cursor: pointer;'>Link do panelu.</a>`;
+}
+
+function HTMLSetLinkToSupplier(link: string): string {
+  return `<a href="${link}" target="_blank" style='color: #3bbfa1; text-decoration:none; font-weight:bold; cursor: pointer;'>Link do zestawienia.</a>`;
 }
 export const EmailTemplateDetailsList = {
   clientFunctionalLayout: {
@@ -12,7 +16,7 @@ export const EmailTemplateDetailsList = {
     message: ({
       linkToSet,
     }) => `Załączamy w panelu klienta w zakładce <strong>Załączniki -> Układy funkcjonalne</strong> 
-przygotowane przez nas warianty układów funkcjonalnych Inwestycji. ${HTMLLinkToSet(linkToSet)}
+przygotowane przez nas warianty układów funkcjonalnych Inwestycji. ${HTMLSetLinkToClient(linkToSet)}
 
 Każdy z nich pokazuje nieco inne podejście do organizacji przestrzeni i możliwych rozwiązań
 aranżacyjnych.
@@ -39,7 +43,7 @@ Kolejnym etapem po analizie układów funkcjonalnych będzie przygotowanie model
     message: ({
       linkToSet,
     }) => `Załączamy w panelu klienta w zakładce <strong>Załączniki -> Moodboardy</strong> przygotowane przez nas
-moodboardy inspiracyjne. ${HTMLLinkToSet(linkToSet)}
+moodboardy inspiracyjne. ${HTMLSetLinkToClient(linkToSet)}
 
 Są one swego rodzaju „mapą myśli” projektu - w formie kolażu zdjęć przedstawiają możliwe
 kierunki stylistyczne dla poszczególnych pomieszczeń oraz wybrane detale. Pokazują potencjalną
@@ -66,7 +70,7 @@ Kolejnym etapem po analizie moodboardów będzie przygotowanie modelu 3D wnętrz
     message: ({
       linkToSet,
     }) => `Załączamy w panelu klienta w zakładce <strong>Załączniki -> Faktury</strong> dokument - fakturę/proformę do
-opłacenia. ${HTMLLinkToSet(linkToSet)}
+opłacenia. ${HTMLSetLinkToClient(linkToSet)}
 
 Będziemy wdzięczni za jej terminowe uregulowanie.
 
@@ -82,7 +86,7 @@ potwierdzenia przelewu, co pozwoli nam sprawnie kontynuować kolejne etapy prac 
     message: ({
       linkToSet,
     }) => `Załączamy w panelu klienta w zakładce <strong>Załączniki -> Model 3D</strong> przygotowane przez nas warianty
-modelu 3D dla projektowanego wnętrza. ${HTMLLinkToSet(linkToSet)}
+modelu 3D dla projektowanego wnętrza. ${HTMLSetLinkToClient(linkToSet)}
 
 Każdy z nich pokazuje nieco inne podejście do organizacji przestrzeni i możliwych rozwiązań
 aranżacyjnych.
@@ -125,7 +129,7 @@ wnętrza.
     message: ({
       linkToSet,
     }) => `Załączamy w panelu klienta w zakładce <strong>Załączniki -> Zestawienie</strong> przygotowane przez nas
-zestawienie produktowe dla projektowanego wnętrza. ${HTMLLinkToSet(linkToSet)}
+zestawienie produktowe dla projektowanego wnętrza. ${HTMLSetLinkToClient(linkToSet)}
 
 Dokument został podzielony na zakładki odpowiadające grupom produktowym, a pierwsza
 zakładka zawiera legendę - prosimy o zapoznanie się z nią, co ułatwi poruszanie się po całym
@@ -151,7 +155,7 @@ decyzji zakupowych.
       linkToSet,
     }) => `Prosimy o umieszczenie inspiracji dotyczących projektowanego wnętrza w panelu klienta w
 zakładce <strong>Załączniki -> Inspiracje</strong> - mogą to być zdjęcia znalezione w internecie, screeny itp., lub
-dostęp do tablicy Pinterest (w tym wypadku drogą mailową). ${HTMLLinkToSet(linkToSet)}
+dostęp do tablicy Pinterest (w tym wypadku drogą mailową). ${HTMLSetLinkToClient(linkToSet)}
 
 Wraz z wypełnioną ankietą umożliwi nam to pełniejsze zrozumienie Twoich/Waszych oczekiwań i
 preferencji oraz pozwoli przygotować projekt wnętrza zgodny z wizją, stylem i funkcjonalnymi
@@ -168,7 +172,7 @@ naszymi inspiracjami w moodboardach inspiracyjnych.
     message: ({
       linkToSet,
     }) => `Załączamy w panelu klienta w zakładce <strong>Załączniki -> Rysunki techniczne</strong> przygotowane przez
-nas rysunki techniczne dla projektowanego wnętrza. ${HTMLLinkToSet(linkToSet)}
+nas rysunki techniczne dla projektowanego wnętrza. ${HTMLSetLinkToClient(linkToSet)}
 
 Są to szczegółowe opracowania niezbędne do realizacji projektu, obejmujące m.in. instalacje
 elektryczne, hydrauliczne, rozkład płytek, zabudowy meblowe oraz inne kluczowe elementy.
@@ -189,7 +193,7 @@ wydrukowanej, aby zapewnić sprawną i zgodną z projektem realizację.
     message: ({
       linkToSet,
     }) => `Załączamy w panelu klienta w zakładce <strong>Załączniki -> Wizualizacje</strong> przygotowane przez nas
-fotorealistyczne wizualizacje dla projektowanego wnętrza. ${HTMLLinkToSet(linkToSet)}
+fotorealistyczne wizualizacje dla projektowanego wnętrza. ${HTMLSetLinkToClient(linkToSet)}
 
 Mają one charakter fotorealistyczny i w możliwie najpełniejszy sposób pokazują docelowy wygląd
 przestrzeni, jej klimat oraz założenia estetyczne.
@@ -207,8 +211,13 @@ materialboard — to on najwierniej oddaje docelową wizję wnętrza.
     templateName: 'supplierOffer',
     HTMLHeader: 'Oferta',
     emailSubject: (setName: string) => `Oferta: ${setName} `,
-    message: () =>
-      'Prosimy o przygotowanie oferty, poniżej załączamy link do zestawienia',
+    message: ({
+      linkToSet,
+    }) => `Poprosimy o sporządzenie oferty na produkty z poniższego linka.
+
+${HTMLSetLinkToSupplier(linkToSet)}
+
+W razie pytań pozostajemy do dyspozycji.`,
   },
   supplierOrder: {
     audience: 'supplier',
@@ -217,7 +226,10 @@ materialboard — to on najwierniej oddaje docelową wizję wnętrza.
     emailSubject: (setName: string) => `Zamówienie: ${setName} `,
     message: ({
       client,
+      linkToSet,
     }) => `Proszę o realizację zamówienia zgodnie z przesłanym zestawieniem.
+
+${HTMLSetLinkToSupplier(linkToSet)}
 
 Prosimy o wystawienie proformy na poniższe dane:
 ${client?.firstName} ${client?.lastName}

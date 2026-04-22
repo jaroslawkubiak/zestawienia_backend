@@ -133,7 +133,7 @@ export class PositionsService {
 
         await this.updateOnePosition(entity);
       }
-    } catch (err) {
+    } catch (err: any) {
       const newError: ErrorDto = {
         type: ErrorsType.sql,
         message: 'Position: update()',
@@ -183,7 +183,7 @@ export class PositionsService {
           this.updatePositionCountBySupplierId(oldSupplierId);
         }
       }
-    } catch (err) {
+    } catch (err: any) {
       const newError: ErrorDto = {
         type: ErrorsType.sql,
         message: 'Position: updateOnePosition()',
@@ -248,7 +248,7 @@ export class PositionsService {
           throw new Error(`Zestawienie o ID ${setId} nie istnieje w bazie.`);
         }
       }
-    } catch (err) {
+    } catch (err: any) {
       const url = `/images/${setId}/${setHash}/${positionId}`;
       const newError: ErrorDto = {
         type: ErrorsType.sql,

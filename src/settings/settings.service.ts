@@ -53,7 +53,7 @@ export class SettingsService {
       }
 
       return { message: 'Ustawienia zapisane poprawnie' };
-    } catch (err) {
+    } catch (err: any) {
       const newError: ErrorDto = {
         type: ErrorsType.sql,
         message: 'Settings: saveSettings()',

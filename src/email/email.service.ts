@@ -200,7 +200,7 @@ export class EmailService {
       }
 
       return info;
-    } catch (err) {
+    } catch (err: any) {
       const message = emailDetails?.clientId ? 'client' : 'supplier';
       const recipientId = emailDetails?.clientId
         ? emailDetails.clientId

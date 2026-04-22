@@ -131,7 +131,7 @@ export class AvatarController {
               isAvatar,
             );
           }
-        } catch (error) {
+        } catch (error: any) {
           let message = `Nie udało się przetworzyć pliku "${file.originalname}" \nSprawdź nazwę pliku i spróbuj ponownie.`;
 
           const newError: ErrorDto = {

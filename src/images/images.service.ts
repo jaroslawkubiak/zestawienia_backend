@@ -61,7 +61,7 @@ export class ImagesService {
       );
 
       return { message: res, filename };
-    } catch (err) {
+    } catch (err: any) {
       let message = 'Wystąpił nieoczekiwany błąd.';
 
       if (err?.response?.error) {

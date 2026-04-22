@@ -173,7 +173,7 @@ export class CommentsService {
       }
 
       return this.mapCommentToIComment(savedComment);
-    } catch (err) {
+    } catch (err: any) {
       const newError: ErrorDto = {
         type: ErrorsType.sql,
         message: 'Comment: create()',
@@ -213,7 +213,7 @@ export class CommentsService {
       } else {
         return await this.findOne(commentId);
       }
-    } catch (err) {
+    } catch (err: any) {
       const newError: ErrorDto = {
         type: ErrorsType.sql,
         message: 'Comment: editComment()',
@@ -254,7 +254,7 @@ export class CommentsService {
         })
         .andWhere('seenAt IS NULL')
         .execute();
-    } catch (err) {
+    } catch (err: any) {
       const newError: ErrorDto = {
         type: ErrorsType.sql,
         message: 'Comment: markAllCommentsAsSeen()',
@@ -295,7 +295,7 @@ export class CommentsService {
       } else {
         return await this.findOne(id);
       }
-    } catch (err) {
+    } catch (err: any) {
       const newError: ErrorDto = {
         type: ErrorsType.sql,
         message: 'Comment: toggleCommentAsNeedAttention()',
@@ -333,7 +333,7 @@ export class CommentsService {
         .execute();
 
       return this.findAllCommentsByPositionId(positionId);
-    } catch (err) {
+    } catch (err: any) {
       const newError: ErrorDto = {
         type: ErrorsType.sql,
         message: 'Comment: markAllCommentsAsNeedsAttention()',

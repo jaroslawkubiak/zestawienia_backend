@@ -259,7 +259,7 @@ export class SetsService {
       };
 
       return savedSet;
-    } catch (err) {
+    } catch (err: any) {
       const newError: ErrorDto = {
         type: ErrorsType.sql,
         message: 'Set: create()',
@@ -318,7 +318,7 @@ export class SetsService {
       }
 
       return this.findOneSet(setId);
-    } catch (err) {
+    } catch (err: any) {
       const newError: ErrorDto = {
         type: ErrorsType.sql,
         message: 'Sets: update()',
@@ -577,7 +577,7 @@ export class SetsService {
       }
 
       return this.findOneSet(setId);
-    } catch (err) {
+    } catch (err: any) {
       const newError: ErrorDto = {
         type: ErrorsType.sql,
         message: 'Sets: updateLastUsedBookmark()',
@@ -612,7 +612,7 @@ export class SetsService {
       }
 
       return this.findOneSet(setId);
-    } catch (err) {
+    } catch (err: any) {
       const newError: ErrorDto = {
         type: ErrorsType.sql,
         message: 'Sets: updateSetStatus()',
@@ -651,7 +651,7 @@ export class SetsService {
       }
 
       return this.findOneSetByHash(setHash);
-    } catch (err) {
+    } catch (err: any) {
       if (err instanceof HttpException) {
         throw err;
       }

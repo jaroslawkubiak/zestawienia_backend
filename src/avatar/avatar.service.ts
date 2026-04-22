@@ -150,7 +150,7 @@ export class AvatarService {
     // check if file exists
     try {
       await fs.access(filePath);
-    } catch (error) {
+    } catch (error: any) {
       const newError: ErrorDto = {
         type: 'delete file',
         message: 'Avatar: deleteAvatar()',
@@ -182,7 +182,7 @@ export class AvatarService {
         message: `Plik ${avatar.fileName} został usunięty`,
         fileName: avatar.fileName,
       };
-    } catch (error) {
+    } catch (error: any) {
       const newError: ErrorDto = {
         type: 'delete file',
         message: 'Avatar: deleteAvatar()',

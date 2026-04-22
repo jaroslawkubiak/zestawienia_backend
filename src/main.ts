@@ -1,5 +1,6 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as express from 'express';
 import { Request, Response } from 'express';
@@ -11,7 +12,9 @@ import { QueryFailedExceptionFilter } from './filters/queryFailedException.filte
 import { ValidationExceptionFilter } from './filters/validationException.filter';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    bodyParser: false,
+  });
 
   // If the app runs behind a proxy (nginx, etc.), trust the proxy so
   // `req.secure` and `x-forwarded-*` headers are respected.
@@ -21,21 +24,17 @@ async function bootstrap() {
     expressInstance.set('trust proxy', true);
   }
 
+  app.use(bodyParser.json({ limit: '10mb' }));
+  app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
+
   app.use(cookieParser());
 
   // enable CORS
   app.enableCors({
-    origin: [
-      'http://localhost:4200',
-      'https://zestawienia.zurawickidesign.pl',
-    ],
+    origin: ['http://localhost:4200', 'https://zestawienia.zurawickidesign.pl'],
     credentials: true,
     methods: 'GET,HEAD,POST,PUT,PATCH,DELETE,OPTIONS',
-    allowedHeaders: [
-      'Content-Type',
-      'Authorization',
-      'x-user-id',
-    ],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-user-id'],
   });
 
   // global pipes

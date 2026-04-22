@@ -46,7 +46,7 @@ export class LoginController {
       httpOnly: true,
       secure: cookieSecure,
       sameSite: cookieSecure ? 'none' : 'lax',
-      maxAge: 60 * 60 * 1000, // 60 * 60 * 1000 = 1h
+      maxAge: 10 * 60 * 60 * 1000, // 10 * 60 * 60 * 1000 = 10h
     });
 
     return loggedUser;

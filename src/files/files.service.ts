@@ -47,7 +47,7 @@ export class FilesService {
         .where('id IN (:...ids)', { ids })
         .andWhere('seenAt IS NULL')
         .execute();
-    } catch (err) {
+    } catch (err: any) {
       const newError: ErrorDto = {
         type: ErrorsType.sql,
         message: 'Files: markFilesAsSeen()',

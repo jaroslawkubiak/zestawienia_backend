@@ -145,7 +145,7 @@ export class FilesController {
               file['absoluteUploadPath'],
             );
           }
-        } catch (error) {
+        } catch (error: any) {
           if (error instanceof ThumbnailError) {
             await this.filesErrorsService.logError({
               fileName: file.originalname,
@@ -169,7 +169,7 @@ export class FilesController {
           let message = `Nie udało się przetworzyć pliku "${file.originalname}" \nSprawdź nazwę pliku i spróbuj ponownie.`;
 
           // chceck if PDF is encrypted
-          if (/is encrypted/i.test(error.message)) {
+          if (error.message && /is encrypted/i.test(error.message)) {
             message = `Plik PDF "${file.originalname}" jest zaszyfrowany.`;
           }
 

@@ -34,6 +34,7 @@ export class UpdatePositionDto {
 
   @IsNumber()
   @IsOptional()
+  @Type(() => Number)
   ilosc?: number;
 
   @IsNumber()

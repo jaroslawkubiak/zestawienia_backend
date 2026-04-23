@@ -33,7 +33,7 @@ export class Position {
   @Column({ type: 'varchar', length: 150, nullable: true })
   kolor: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'double', nullable: true })
   ilosc: number;
 
   @Column({ type: 'double', nullable: true })

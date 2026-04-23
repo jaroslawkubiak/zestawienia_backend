@@ -62,8 +62,8 @@ export class PositionsService {
         .addSelect([
           'supplier.id',
           'supplier.company',
-          'supplier.firstName',
-          'supplier.lastName',
+          'supplier.email',
+          'supplier.telephone',
         ])
         .leftJoin('position.createdBy', 'createdBy')
         .addSelect(['createdBy.id', 'createdBy.name'])

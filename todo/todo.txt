@@ -8,8 +8,10 @@ Poprawić:
 [x] wydłużyć czas sesji do 10h
 [ ] zapisywanie zmian zestawienia co 1min
 [x] zapisywanie zestawienia przy każdym przełączaniu zakładki 
-[x] guzik zapisz zestawienie także na dole listy
-[ ] inna wysykość tabeli - dostosowana do ekranu laptopa
+[x] inna wysykość tabeli - dostosowana do ekranu laptopa
+[ ] wysokosc tabeli dostępna z DB usera?
+[x] uwagi widoczne dla dostawców
+[x] imię inazwisko dostawcy nie obowiązkowe
 [x] klik poza modalem zamyka go
 [x] gdy usuwasz klienta bez nazwy firmy - pusto w komunikacie
 [x] kopiuj link do klienta otwiera okno emaila

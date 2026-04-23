@@ -458,6 +458,7 @@ export class SetsService {
           'position.pomieszczenie',
           'position.link',
           'position.image',
+          'position.uwagi',
         ])
         .where('position.setId = :setId', { setId: set.id })
         .andWhere('position.supplierId = :supplierId', {
@@ -474,8 +475,6 @@ export class SetsService {
         supplier: {
           id: supplier.id,
           company: supplier.company,
-          firstName: supplier.firstName,
-          lastName: supplier.lastName,
         },
         client: {
           id: set.client?.id ?? null,

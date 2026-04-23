@@ -10,11 +10,11 @@ export class CreateSupplierDto {
   address?: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   firstName: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   lastName: string;
 
   @IsString()

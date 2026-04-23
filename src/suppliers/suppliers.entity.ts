@@ -15,10 +15,10 @@ export class Supplier {
   @Column({ type: 'text', nullable: true })
   address: string;
 
-  @Column({ type: 'varchar', length: 50, nullable: false })
+  @Column({ type: 'varchar', length: 50, nullable: true })
   firstName: string;
 
-  @Column({ type: 'varchar', length: 50, nullable: false })
+  @Column({ type: 'varchar', length: 100, nullable: true })
   lastName: string;
 
   @Column({ type: 'varchar', length: 100, nullable: false, unique: true })

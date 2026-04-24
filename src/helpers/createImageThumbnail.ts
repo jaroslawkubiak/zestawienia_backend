@@ -1,5 +1,5 @@
 import * as path from 'path';
-import * as sharp from 'sharp';
+import sharp from 'sharp';
 import * as fs from 'fs';
 
 import { ThumbnailError } from '../files/ThumbnailError';
@@ -83,15 +83,15 @@ export async function createImageThumbnail(
       if (isAvatar) {
         await fs.promises.rename(outputPath, file.path);
       }
-    } catch (error) {
-      throw error;
+    } catch (err: any) {
+      throw err;
     }
 
     processFile.thumbnailFileName = thumbnailFileName || '';
     processFile.thumbnailPath = outputPath || '';
 
     return processFile;
-  } catch (error) {
-    throw new ThumbnailError(error, '6512bd43-d9ca-4f98-8c7a-3b2e1f4d9a88');
+  } catch (err: any) {
+    throw new ThumbnailError(err, '6512bd43-d9ca-4f98-8c7a-3b2e1f4d9a88');
   }
 }

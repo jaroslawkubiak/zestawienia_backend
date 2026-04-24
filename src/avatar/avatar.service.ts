@@ -150,12 +150,12 @@ export class AvatarService {
     // check if file exists
     try {
       await fs.access(filePath);
-    } catch (error: any) {
+    } catch (err: any) {
       const newError: ErrorDto = {
         type: 'delete file',
         message: 'Avatar: deleteAvatar()',
         url: filePath || '',
-        error: JSON.stringify(error?.message) || 'null',
+        error: JSON.stringify(err?.message) || 'null',
         query: `Plik "${avatar.fileName}" nie istnieje`,
         parameters: avatar.fileName,
         sql: `user_id=${forLogError.user_id}`,
@@ -182,12 +182,12 @@ export class AvatarService {
         message: `Plik ${avatar.fileName} został usunięty`,
         fileName: avatar.fileName,
       };
-    } catch (error: any) {
+    } catch (err: any) {
       const newError: ErrorDto = {
         type: 'delete file',
         message: 'Avatar: deleteAvatar()',
         url: filePath || '',
-        error: JSON.stringify(error?.message) || 'null',
+        error: JSON.stringify(err?.message) || 'null',
         query: 'Błąd usuwania pliku. Plik Nie został usunięty!',
         parameters: avatar.fileName,
         sql: `user_id=${forLogError.user_id}`,

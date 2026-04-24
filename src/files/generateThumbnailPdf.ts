@@ -53,7 +53,7 @@ export async function generateThumbnailPdf(
     await fs.promises.unlink(tempPdfPath);
 
     return `${safeFileNameForThumb}.jpg`;
-  } catch (error) {
-    throw new ThumbnailError(error, 'd3d94468-9a6f-4c11-8a21-2f3e4d5c6b77');
+  } catch (err: any) {
+    throw new ThumbnailError(err, 'd3d94468-9a6f-4c11-8a21-2f3e4d5c6b77');
   }
 }

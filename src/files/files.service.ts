@@ -146,7 +146,7 @@ export class FilesService {
     // check if main file exists
     try {
       await fs.access(filePath);
-    } catch (err) {
+    } catch (err: any) {
       return {
         severity: 'warn',
         message: 'Plik nie istnieje',
@@ -172,10 +172,10 @@ export class FilesService {
         message: `Plik ${fileToDelete.fileName} został usunięty`,
         fileName: fileToDelete.fileName,
       };
-    } catch (error) {
+    } catch (err: any) {
       await this.filesErrorsService.logError({
         fileName: fileToDelete.originalName,
-        error,
+        error: err,
         source_file_name: 'files.service.ts',
         source_file_function: 'deleteFile',
         source_uuid: 'c9f0f895-6f7a-4a1d-8b3a-1f0e9c7d2a44',
@@ -261,20 +261,20 @@ export class FilesService {
       fileDetails.thumbnailPath = path
         .relative(process.cwd(), thumbFileName)
         .replace(/\\/g, '/');
-    } catch (error) {
-      if (error instanceof ThumbnailError) {
+    } catch (err: any) {
+      if (err instanceof ThumbnailError) {
         await this.filesErrorsService.logError({
           fileName: file.originalname,
-          error: error.originalError,
+          error: err.originalError,
           source_file_name: 'generateThumbnailPdf.ts',
           source_file_function: 'generateThumbnailPdf',
-          source_uuid: error.source_uuid,
+          source_uuid: err.source_uuid,
           ...forLogError,
         });
       } else {
         await this.filesErrorsService.logError({
           fileName: file.originalname,
-          error,
+          error: err,
           source_file_name: 'files.service.ts',
           source_file_function: 'processPdf',
           source_uuid: '45c48cce-2e2d-4b6f-9e0a-7d3f1b2c8a55',

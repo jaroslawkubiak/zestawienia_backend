@@ -38,7 +38,7 @@ export class UserLogsService {
 
     try {
       await this.userLogsRepo.save(createEnry);
-    } catch (err) {
+    } catch (err: any) {
       // Log DB save errors for diagnosis but don't break auth flow
       // eslint-disable-next-line no-console
       console.error('Failed to save login entry', err, createEnry);

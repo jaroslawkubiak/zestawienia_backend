@@ -58,7 +58,7 @@ export class SupplierLogsService {
 
     try {
       await this.supplierLogsRepository.save(entry);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error saving supplier login entry:', err);
     }
   }

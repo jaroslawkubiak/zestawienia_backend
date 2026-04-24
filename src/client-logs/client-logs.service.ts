@@ -45,7 +45,7 @@ export class ClientLogsService {
 
     try {
       await this.clientLogsRepository.save(entry);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error saving client login entry:', err);
     }
   }

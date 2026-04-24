@@ -16,7 +16,7 @@ export class ErrorsService {
     try {
       const createdError = this.errosRepo.create(newError);
       return await this.errosRepo.save(createdError);
-    } catch (err) {
+    } catch (err: any) {
       console.error('❌ Error service ❌ Błąd zapisu błędu:', err);
       throw new Error('Nie udało się zapisać błędu do bazy');
     }

@@ -131,14 +131,14 @@ export class AvatarController {
               isAvatar,
             );
           }
-        } catch (error: any) {
+        } catch (err: any) {
           let message = `Nie udało się przetworzyć pliku "${file.originalname}" \nSprawdź nazwę pliku i spróbuj ponownie.`;
 
           const newError: ErrorDto = {
             type: 'upload file',
             message: 'Avatar: uploadAvatarFiles()',
             url: file.path || '',
-            error: JSON.stringify(error?.message) || 'null',
+            error: JSON.stringify(err?.message) || 'null',
             query: message,
             parameters: file.filename,
             sql: '',

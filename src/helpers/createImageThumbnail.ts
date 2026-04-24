@@ -58,7 +58,7 @@ export async function createImageThumbnail(
     const outputPath = isAvatar
       ? file.path + '.tmp'
       : path.join(uploadPath, thumbnailFileName);
-    console.log(`######## ResizeOptions #########`);
+
     const resizeOptions: ResizeOptions = isAvatar
       ? {
           width: AVATAR_DIMENSION,

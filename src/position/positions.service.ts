@@ -125,6 +125,24 @@ export class PositionsService {
           id: position.id,
         });
 
+        const oldImage = entity.image;
+        const newImage = position.image;
+
+        // remove image file if image name was deleted
+        if (oldImage && newImage === '') {
+          const positionWithSet = await this.positionsRepository.findOne({
+            where: { id: position.id },
+            loadRelationIds: true,
+          });
+          const setId = Number(positionWithSet.setId);
+          const set = await this.setsService.findOneSet(setId);
+
+          const setHash = set.hash;
+          await this.removePositionImageDir(setId, setHash, position.id);
+
+          entity.thumbnail = '';
+        }
+
         Object.assign(entity, position, {
           updatedBy: { id: userId },
           updatedAt: getFormatedDate(),
@@ -284,19 +302,7 @@ export class PositionsService {
     }
 
     if (position.image) {
-      const basePath = process.env.UPLOAD_PATH || 'uploads';
-
-      const dirPath = path.join(
-        process.cwd(),
-        basePath,
-        'sets',
-        String(setId),
-        setHash,
-        'positions',
-        String(id),
-      );
-
-      await removeDirSafe(dirPath);
+      await this.removePositionImageDir(setId, setHash, id);
     }
 
     await this.positionsRepository.delete(id);
@@ -375,6 +381,26 @@ export class PositionsService {
     };
 
     await this.suppliersService.updateSupplier(supplierId, updateSupplier);
+  }
+
+  async removePositionImageDir(
+    setId: number,
+    setHash: string,
+    positionId: number,
+  ) {
+    const basePath = process.env.UPLOAD_PATH || 'uploads';
+
+    const dirPath = path.join(
+      process.cwd(),
+      basePath,
+      'sets',
+      String(setId),
+      setHash,
+      'positions',
+      String(positionId),
+    );
+
+    await removeDirSafe(dirPath);
   }
 }
 

@@ -1,6 +1,8 @@
 import * as path from 'path';
-import sharp from 'sharp';
 import * as fs from 'fs';
+import type { ResizeOptions } from 'sharp';
+
+const sharp = require('sharp');
 
 import { ThumbnailError } from '../files/ThumbnailError';
 import { IProcessFile } from '../files/types/IProcessFile';
@@ -56,8 +58,8 @@ export async function createImageThumbnail(
     const outputPath = isAvatar
       ? file.path + '.tmp'
       : path.join(uploadPath, thumbnailFileName);
-
-    const resizeOptions: sharp.ResizeOptions = isAvatar
+    console.log(`######## ResizeOptions #########`);
+    const resizeOptions: ResizeOptions = isAvatar
       ? {
           width: AVATAR_DIMENSION,
           height: AVATAR_DIMENSION,

@@ -4,12 +4,13 @@ TODO LIST
 [x] Zmiana hasła przez usera
 
 Poprawić:
+[ ] wyśrodkować obrazy w linku do dostawców
 [x] przy dodaniu pozycji z innej lub klonowaniu - wyłączyć przewijanie ekranu
 [x] wydłużyć czas sesji do 10h
 [ ] zapisywanie zmian zestawienia co 1min
 [x] zapisywanie zestawienia przy każdym przełączaniu zakładki 
 [x] inna wysykość tabeli - dostosowana do ekranu laptopa
-[ ] wysokosc tabeli dostępna z DB usera?
+[x] wysokosc tabeli dostępna dla każdego usera osobno
 [x] uwagi widoczne dla dostawców
 [x] imię inazwisko dostawcy nie obowiązkowe
 [x] klik poza modalem zamyka go

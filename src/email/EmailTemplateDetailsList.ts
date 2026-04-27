@@ -128,7 +128,7 @@ wnętrza.
     emailSubject: (setName: string) => `Zestawienie: ${setName} `,
     message: ({
       linkToSet,
-    }) => `Załączamy w panelu klienta w zakładce <strong>Załączniki -> Zestawienie</strong> przygotowane przez nas
+    }) => `Załączamy w panelu klienta w zakładce <strong>Załączniki -> Zestawienie w PDF</strong> przygotowane przez nas
 zestawienie produktowe dla projektowanego wnętrza. ${HTMLSetLinkToClient(linkToSet)}
 
 Dokument został podzielony na zakładki odpowiadające grupom produktowym, a pierwsza

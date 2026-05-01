@@ -4,7 +4,7 @@ TODO LIST
 [x] Zmiana hasła przez usera
 
 Poprawić:
-[ ] wyśrodkować obrazy w linku do dostawców
+[x] wyśrodkować obrazy w linku do dostawców
 [x] przy dodaniu pozycji z innej lub klonowaniu - wyłączyć przewijanie ekranu
 [x] wydłużyć czas sesji do 10h
 [ ] zapisywanie zmian zestawienia co 1min
@@ -54,6 +54,7 @@ Poprawić:
 [x] link przy klientach do dodania nowego zestawienia z wybranym już klientem
 
 NOWE:
+[ ] loader gdy generujemy set pdf, może jakiś progress bar?
 [x] drugi email dla klienta - wwysyłanie wszsytkich powiadomień na oba adresy
 [x] nie pobiera się pdf z plików
 [x] oznaczanie nowych plików - podobnie jak komentarze
@@ -63,7 +64,7 @@ NOWE:
 [ ] powiększanie zdjęć pozycji w widoku klienta?
 [x] gdy tworzysz pdf niech guzik znika - wyszarza się
 [x] checkbox do zaznaczania tylko plików z danego katalogu
-[ ] brak tabeli z komentarzami w powiadomienu na email
+[x] brak tabeli z komentarzami w powiadomienu na email
 
 Avatrs:
 [x] limit na 1szt dla klienta
@@ -277,23 +278,15 @@ obgadać:
 - KOLORY! Design itp :)
 - jaki design dla klientów? jaki layout?
 
-npx typeorm-model-generator -h localhost -d zestawienia -u root -x -e mysql
-
-PRODUCTION ISSUE:
-[x] Przy przejściu na pustą stronę, gdy jestem zalogowany, pokazuje login page
-[x] nie ładuje podglądu obrazów
-[x] pliki ładuje do katalogu src/uploads, a nie od razu do uploads
-[x] widoczne menu bez logowania
-
 backend:
 [ ] logowania błędów
 [ ] intereceptor dla wszystkich 400 i 500 
 
 Doprecyzować:
 [ ] kolory statusów
-[ ] PDF - legenda w podsumowaniu?
+[x] PDF - legenda w podsumowaniu
 [x] PDF - tryb: zapis, otwórz, FTP?
-[ ] Domyślne treści emaili: do klienta, do dostawcy, z podsumowaniem komentarzy
+[x] Domyślne treści emaili: do klienta, do dostawcy, z podsumowaniem komentarzy
 
 
 [ ] wysysłam email z aplikacji nestjs. email zawiera obrazki które po otwarciu emaila nie są widoczne dopóki nie kliknę wczytaj zawartość. można to jakoś obejść?
@@ -308,17 +301,3 @@ Admin:
 [ ] lista błędów
 [x] zapisywanie wysłanych emaili z powiadomieniami o komentarzach
 [ ] zapisanie aktywnych timerów od powiadomień o komentarzach które wyjdą z platformy
-
-
-::ng-deep .p-button {
-  width: 40px !important;
-  height: 40px !important;
-  padding: 0 !important;
-  border: 0px solid rgb(0, 0, 0) !important;
-  border-radius: 10px !important;
-  margin: 2px !important;
-}
-
-::ng-deep .p-button-icon {
-  font-size: 16px !important;
-}

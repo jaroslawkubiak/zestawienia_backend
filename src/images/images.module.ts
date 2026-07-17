@@ -1,11 +1,16 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { ImagesService } from './images.service';
-import { ImagesController } from './images.controller';
-import { SetsModule } from '../sets/sets.module';
+import { PositionLogsModule } from '../position-logs/position-logs.module';
 import { PositionsModule } from '../position/positions.module';
+import { SetsModule } from '../sets/sets.module';
+import { ImagesController } from './images.controller';
+import { ImagesService } from './images.service';
 
 @Module({
-  imports: [forwardRef(() => SetsModule), forwardRef(() => PositionsModule)],
+  imports: [
+    forwardRef(() => SetsModule),
+    forwardRef(() => PositionsModule),
+    forwardRef(() => PositionLogsModule),
+  ],
   controllers: [ImagesController],
   providers: [ImagesService],
   exports: [ImagesService],

@@ -36,6 +36,8 @@ import { ImagesModule } from './images/images.module';
 import { ImagesService } from './images/images.service';
 import { NotificationTimer } from './notification-timer/notification-timer.entity';
 import { NotificationTimerModule } from './notification-timer/notification-timer.module';
+import { PositionLogs } from './position-logs/position-logs.entity';
+import { PositionLogsModule } from './position-logs/position-logs.module';
 import { Position } from './position/positions.entity';
 import { PositionsModule } from './position/positions.module';
 import { Set } from './sets/sets.entity';
@@ -101,6 +103,7 @@ if (!(global as any).crypto) {
             User,
             NotificationTimer,
             CommentNotificationLogs,
+            PositionLogs
           ],
           synchronize: config.get<string>('TYPEORM_SYNCHRONIZE') === 'true',
           extra: {
@@ -134,6 +137,7 @@ if (!(global as any).crypto) {
     NotificationTimerModule,
     CommentNotificationLogsModule,
     FilesErrorsModule,
+    PositionLogsModule,
   ],
   controllers: [AppController, ImagesController, FilesController],
   providers: [AppService, ImagesService],

@@ -8,6 +8,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { IProcessFile } from '../files/types/IProcessFile';
 import { createImageThumbnail } from '../helpers/createImageThumbnail';
+import { PositionLogsService } from '../position-logs/position-logs.service';
 import { PositionsService } from '../position/positions.service';
 import { ISavedFiles } from './types/ISavedFiles';
 
@@ -16,6 +17,7 @@ export class ImagesService {
   constructor(
     @Inject(forwardRef(() => PositionsService))
     private readonly positionsService: PositionsService,
+    private readonly positionLogsService: PositionLogsService,
   ) {}
 
   async saveImage(
@@ -59,6 +61,9 @@ export class ImagesService {
         filename,
         processFile.thumbnailFileName,
       );
+
+      // store position image logs
+      this.positionLogsService.createEntry(positionId, filename);
 
       return { message: res, filename };
     } catch (err: any) {

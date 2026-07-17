@@ -4,6 +4,7 @@ TODO LIST
 [x] Zmiana hasła przez usera
 
 Poprawić:
+[ ] w safari nie działa zmiana treści template emaili
 [x] wyśrodkować obrazy w linku do dostawców
 [x] przy dodaniu pozycji z innej lub klonowaniu - wyłączyć przewijanie ekranu
 [x] wydłużyć czas sesji do 10h

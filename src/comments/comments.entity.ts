@@ -5,6 +5,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+
+import { Files } from '../files/files.entity';
 import { Position } from '../position/positions.entity';
 import { Set } from '../sets/sets.entity';
 import { TAuthorType } from './types/authorType.type';
@@ -17,7 +19,10 @@ export class Comment {
   @Column({ type: 'text', nullable: false })
   comment: string;
 
-  @Column({ type: 'enum', enum: ['client', 'user'] })
+  @Column({
+    type: 'enum',
+    enum: ['client', 'user'],
+  })
   authorType: TAuthorType;
 
   @Column({ type: 'int' })
@@ -39,10 +44,18 @@ export class Comment {
   createdAtTimestamp: number | null;
 
   @ManyToOne(() => Position, (position) => position.comments, {
+    nullable: true,
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'positionId', referencedColumnName: 'id' })
-  positionId: Position;
+  positionId: Position | null;
+
+  @ManyToOne(() => Files, (file) => file.comments, {
+    nullable: true,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'fileId', referencedColumnName: 'id' })
+  fileId: Files | null;
 
   @ManyToOne(() => Set, (set) => set.comments, {
     onDelete: 'SET NULL',

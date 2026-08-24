@@ -4,8 +4,10 @@ import {
   Column,
   JoinColumn,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 import { Set } from '../sets/sets.entity';
+import { Comment } from '../comments/comments.entity';
 
 @Entity('files')
 export class Files {
@@ -53,4 +55,9 @@ export class Files {
   })
   @JoinColumn({ name: 'setId', referencedColumnName: 'id' })
   setId: Set;
+
+  @OneToMany(() => Comment, (comment) => comment.fileId, {
+    onDelete: 'CASCADE',
+  })
+  comments: Comment[];
 }

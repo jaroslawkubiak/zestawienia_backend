@@ -24,6 +24,7 @@ import { IMarkAllComments } from './dto/markAllComments.dto';
 import { IComment } from './types/IComment';
 import { IUnreadComments } from './types/IUnreadComments';
 import { TAuthorType } from './types/authorType.type';
+import { TCommentType } from './types/commentType.type';
 
 @Injectable()
 export class CommentsService {
@@ -83,12 +84,14 @@ export class CommentsService {
   async countUnreadBySetId(
     setId: number,
     authorType: TAuthorType,
+    commentType: TCommentType,
   ): Promise<IUnreadComments> {
     const unreadCount = await this.commentRepository
       .createQueryBuilder('comment')
       .where('comment.setId = :setId', { setId })
       .andWhere('comment.authorType = :authorType', { authorType })
       .andWhere('comment.seenAt IS NULL')
+      .andWhere(`comment.${commentType} IS NOT NULL`)
       .getCount();
 
     const needAttentionCount = await this.commentRepository
@@ -96,11 +99,13 @@ export class CommentsService {
       .where('comment.setId = :setId', { setId })
       .andWhere('comment.authorType = :authorType', { authorType })
       .andWhere('comment.needsAttention = true')
+      .andWhere(`comment.${commentType} IS NOT NULL`)
       .getCount();
 
     const allCommentsCount = await this.commentRepository
       .createQueryBuilder('comment')
       .where('comment.setId = :setId', { setId })
+      .andWhere(`comment.${commentType} IS NOT NULL`)
       .getCount();
 
     return {
@@ -115,6 +120,43 @@ export class CommentsService {
       .createQueryBuilder('comment')
       .leftJoinAndSelect('comment.positionId', 'position')
       .where('comment.positionId = :positionId', { positionId })
+      .select()
+      .orderBy('comment.id', 'ASC')
+      .getMany();
+
+    const updatedComments = await Promise.all(
+      comments.map(async (item) => {
+        return this.mapCommentToIComment(item);
+      }),
+    );
+
+    return updatedComments;
+  }
+
+  async findAllCommentsByFileId(fileId: number): Promise<IComment[]> {
+    const comments = await this.commentRepository
+      .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.fileId', 'position')
+      .where('comment.fileId = :fileId', { fileId })
+      .select()
+      .orderBy('comment.id', 'ASC')
+      .getMany();
+
+    const updatedComments = await Promise.all(
+      comments.map(async (item) => {
+        return this.mapCommentToIComment(item);
+      }),
+    );
+
+    return updatedComments;
+  }
+
+  async getAllCommentsForFiles(setId: number): Promise<IComment[]> {
+    const comments = await this.commentRepository
+      .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.fileId', 'file')
+      .where('comment.setId = :setId', { setId })
+      .andWhere('comment.fileId IS NOT NULL')
       .select()
       .orderBy('comment.id', 'ASC')
       .getMany();
@@ -157,7 +199,10 @@ export class CommentsService {
         ...createCommentDto,
         positionId: {
           id: createCommentDto.positionId,
-        } as DeepPartial<Position>,
+        } as DeepPartial<Position> | null,
+        fileId: {
+          id: createCommentDto.fileId,
+        } as DeepPartial<Position> | null,
         setId: {
           id: setId,
         } as DeepPartial<Set>,
@@ -485,6 +530,7 @@ export class CommentsService {
       createdAt: comment.createdAt,
       createdAtTimestamp: comment.createdAtTimestamp,
       positionId: comment.positionId?.id,
+      fileId: comment.fileId?.id,
       setId: comment.setId?.id,
     };
   }

@@ -105,6 +105,7 @@ export class SetsService {
     const newCommentsCount = await this.commentsService.countUnreadBySetId(
       set.id,
       'client',
+      'positionId',
     );
 
     return this.mapSetToDto(set, newCommentsCount);
@@ -134,6 +135,7 @@ export class SetsService {
     const newCommentsCount = await this.commentsService.countUnreadBySetId(
       set.id,
       'user',
+      'positionId',
     );
 
     return this.mapSetToDto(set, newCommentsCount);
@@ -172,6 +174,7 @@ export class SetsService {
         const newCommentsCount = await this.commentsService.countUnreadBySetId(
           set.id,
           'client',
+          'positionId',
         );
 
         return this.mapSetToDto(set, newCommentsCount);
@@ -223,7 +226,11 @@ export class SetsService {
         }
 
         return from(
-          this.commentsService.countUnreadBySetId(setId, authorType),
+          this.commentsService.countUnreadBySetId(
+            setId,
+            authorType,
+            'positionId',
+          ),
         ).pipe(
           map((newCommentsCount) => this.mapSetToDto(set, newCommentsCount)),
         );
@@ -701,6 +708,7 @@ export class SetsService {
         createdAt: comment.createdAt,
         createdAtTimestamp: comment.createdAtTimestamp,
         positionId: comment.positionId?.id,
+        fileId: comment.fileId?.id,
         setId: comment.setId?.id,
       })),
 

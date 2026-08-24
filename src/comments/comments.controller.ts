@@ -33,6 +33,16 @@ export class CommentsController {
     return this.commentsService.findAllCommentsByPositionId(+positionId);
   }
 
+  @Get(':fileId/getCommentsForFile')
+  findByFileId(@Param('fileId') fileId: string): Promise<IComment[]> {
+    return this.commentsService.findAllCommentsByFileId(+fileId);
+  }
+
+  @Get(':setId/getAllCommentsForFiles')
+  findAllCommentsForFiles(@Param('setId') setId: string): Promise<IComment[]> {
+    return this.commentsService.getAllCommentsForFiles(+setId);
+  }
+
   @Get(':setId/getCommentsForSet')
   findBySetId(@Param('setId') setId: string): Promise<IComment[]> {
     return this.commentsService.findAllCommentsBySetId(+setId);

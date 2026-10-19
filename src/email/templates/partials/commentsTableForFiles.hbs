@@ -6,8 +6,8 @@
   cellpadding='0'
   style='padding:10px 0;'
 >
-  <p style='font-size: 16px; font-weight:bold; padding:32px 0px 8px 0px;'>
-    {{needsAttentionHeader}}
+  <p style='font-size: 16px; font-weight:bold; padding:8px 0px;'>
+    Nieprzeczytane komentarze dla plików:
   </p>
 
   <table
@@ -16,16 +16,16 @@
     style='width:100%; border-collapse:collapse; border:1px solid #212121;'
   >
     <tr style='background:#3bbfa1; color:#fff;'>
-      <td style='width:30%; padding:8px; font-size: 16px;'>Produkt</td>
+      <td style='width:30%; padding:8px; font-size: 16px;'>Plik</td>
       <td style='width:55%; padding:8px; font-size: 16px;'>Komentarz</td>
       <td
-        style='width:15%; padding:8px; text-align:center; font-size: 16px;'
+        style='width:15%; padding:8px; font-size: 16px; text-align:center;'
       >Data</td>
     </tr>
 
-    {{#each needsAttentionCommentsList}}
+    {{#each newCommentsForFiles}}
       <tr>
-        <td style='padding:8px; font-size: 16px;'>{{product}}</td>
+        <td style='padding:8px; font-size: 16px;'>{{fileName}}</td>
         <td style='padding:8px; font-size: 16px;'>{{comment}}</td>
         <td
           style='padding:8px; text-align:center; font-size: 16px;'

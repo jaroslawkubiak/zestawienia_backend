@@ -4,11 +4,22 @@
       <p style="padding: 0;">{{{HTMLContent}}}</p>
       <a href="{{{linkToSet}}}" target="_blank" style='color: #3bbfa1; text-decoration:none; font-weight:bold; cursor: pointer;'>Link do panelu</a>
 
-      {{> commentsTable}}
-
-      {{#if needsAttentionCommentsList.length}}
-      {{> needsAttentionTable}}
+      {{#if newCommentsForPositions.length}}
+      {{> commentsTableForPositions}}
       {{/if}}
+
+      {{#if needsAttentionCommentsForPositions.length}}
+      {{> needsAttentionTableForPositions}}
+      {{/if}}
+
+      {{#if newCommentsForFiles.length}}
+      {{> commentsTableForFiles}}
+      {{/if}}
+
+      {{#if needsAttentionCommentsForFiles.length}}
+      {{> needsAttentionTableForFiles}}
+      {{/if}}      
+
     </td>
   </tr>
 </table>

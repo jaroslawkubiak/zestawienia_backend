@@ -102,13 +102,21 @@ export class SetsService {
       .addSelect(['lastActiveUserBookmark.id'])
       .getOne();
 
-    const newCommentsCount = await this.commentsService.countUnreadBySetId(
-      set.id,
-      'client',
-      'positionId',
-    );
+    const newCommentsCountForPositions =
+      await this.commentsService.countUnreadBySetId(
+        set.id,
+        'client',
+        'positionId',
+      );
 
-    return this.mapSetToDto(set, newCommentsCount);
+    const newCommentsCountForFiles =
+      await this.commentsService.countUnreadBySetId(set.id, 'client', 'fileId');
+
+    return this.mapSetToDto(
+      set,
+      newCommentsCountForPositions,
+      newCommentsCountForFiles,
+    );
   }
 
   async findOneSetByHash(hash: string): Promise<ISet> {
@@ -138,7 +146,10 @@ export class SetsService {
       'positionId',
     );
 
-    return this.mapSetToDto(set, newCommentsCount);
+    const newCommentsCountForFiles =
+      await this.commentsService.countUnreadBySetId(set.id, 'client', 'fileId');
+
+    return this.mapSetToDto(set, newCommentsCount, newCommentsCountForFiles);
   }
 
   async getSets(): Promise<ISet[]> {
@@ -176,8 +187,18 @@ export class SetsService {
           'client',
           'positionId',
         );
+        const newCommentsCountForFiles =
+          await this.commentsService.countUnreadBySetId(
+            set.id,
+            'client',
+            'fileId',
+          );
 
-        return this.mapSetToDto(set, newCommentsCount);
+        return this.mapSetToDto(
+          set,
+          newCommentsCount,
+          newCommentsCountForFiles,
+        );
       }),
     );
 
@@ -225,14 +246,25 @@ export class SetsService {
           set.files.sort((a, b) => b.createdAtTimestamp - a.createdAtTimestamp);
         }
 
-        return from(
-          this.commentsService.countUnreadBySetId(
-            setId,
-            authorType,
-            'positionId',
+        return forkJoin({
+          newCommentsCount: from(
+            this.commentsService.countUnreadBySetId(
+              setId,
+              authorType,
+              'positionId',
+            ),
           ),
-        ).pipe(
-          map((newCommentsCount) => this.mapSetToDto(set, newCommentsCount)),
+          newCommentsCountForFiles: from(
+            this.commentsService.countUnreadBySetId(
+              setId,
+              authorType,
+              'fileId',
+            ),
+          ),
+        }).pipe(
+          map(({ newCommentsCount, newCommentsCountForFiles }) =>
+            this.mapSetToDto(set, newCommentsCount, newCommentsCountForFiles),
+          ),
         );
       }),
     );
@@ -683,7 +715,11 @@ export class SetsService {
     }
   }
 
-  private mapSetToDto(set: Set, newCommentsCount: IUnreadComments): ISet {
+  private mapSetToDto(
+    set: Set,
+    newCommentsCountForPositions: IUnreadComments,
+    newCommentsCountForFiles: IUnreadComments,
+  ): ISet {
     return {
       id: set.id,
       name: set.name,
@@ -692,7 +728,8 @@ export class SetsService {
       hash: set.hash,
       clientId: set.clientId,
 
-      newCommentsCount,
+      newCommentsCountForPositions,
+      newCommentsCountForFiles,
 
       lastActiveUserBookmark: { id: set.lastActiveUserBookmark.id },
       lastActiveClientBookmarkId: set.lastActiveClientBookmarkId,

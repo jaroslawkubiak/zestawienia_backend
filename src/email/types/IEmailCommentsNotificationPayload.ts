@@ -1,9 +1,12 @@
-import { ICommentForEmail } from './ICommentForEmail';
+import { IEmailCommentRow } from './IEmailCommentRow';
 import { IEmailPreviewFullPayload } from './IEmailPreviewFullPayload';
 
 export interface IEmailCommentsNotificationPayload
   extends IEmailPreviewFullPayload {
-  newCommentsList: ICommentForEmail[];
-  needsAttentionHeader?: string;
-  needsAttentionCommentsList?: ICommentForEmail[];
+  newCommentsForPositions: IEmailCommentRow[];
+  needsAttentionCommentsForPositions?: IEmailCommentRow[];
+  needsAttentionHeaderForPositions?: string;
+  newCommentsForFiles: IEmailCommentRow[];
+  needsAttentionCommentsForFiles?: IEmailCommentRow[];
+  needsAttentionHeaderForFiles?: string;
 }

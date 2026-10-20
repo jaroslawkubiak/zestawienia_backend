@@ -52,6 +52,7 @@ export class CommentsService {
     const comments = await this.commentRepository
       .createQueryBuilder('comment')
       .leftJoin('comment.positionId', 'position')
+      .leftJoin('comment.fileId', 'file')
       .leftJoin('comment.setId', 'set')
       .select([
         'comment.id AS id',
@@ -64,6 +65,7 @@ export class CommentsService {
         'comment.createdAt AS createdAt',
         'comment.createdAtTimestamp AS createdAtTimestamp',
         'position.id AS positionId',
+        'file.id AS fileId',
         'set.id AS setId',
       ])
       .where('comment.setId = :setId', { setId })
@@ -285,7 +287,7 @@ export class CommentsService {
     body: IMarkAllAsSeen,
     req?: Request,
   ): Promise<void> {
-    const { positionId, authorType } = { ...body };
+    const { positionId, fileId, authorType } = { ...body };
     const oppositeAuthorType = authorType === 'client' ? 'user' : 'client';
 
     try {
@@ -293,7 +295,10 @@ export class CommentsService {
         .createQueryBuilder()
         .update(Comment)
         .set({ seenAt: () => 'CURRENT_TIMESTAMP' })
-        .where('positionId = :positionId', { positionId })
+        .where(
+          positionId != null ? 'positionId = :positionId' : 'fileId = :fileId',
+          positionId != null ? { positionId } : { fileId },
+        )
         .andWhere('authorType = :authorType', {
           authorType: oppositeAuthorType,
         })

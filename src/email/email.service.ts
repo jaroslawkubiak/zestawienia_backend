@@ -18,6 +18,8 @@ import { IComment } from '../comments/types/IComment';
 import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
 import { ErrorsType } from '../errors/types/Errors';
+import { FilesService } from '../files/files.service';
+import { IFileFullDetails } from '../files/types/IFileFullDetails';
 import { getFormatedDate } from '../helpers/getFormatedDate';
 import { minifyHtml } from '../helpers/minifyHtml';
 import { ENotificationDirection } from '../notification-timer/types/notification-direction.enum';
@@ -31,7 +33,7 @@ import { Email } from './email.entity';
 import { saveToSentFolder } from './emailSendCopy';
 import { EmailTemplateDetailsList } from './EmailTemplateDetailsList';
 import { TEmailAudience } from './types/EmailAudience.type';
-import { ICommentForEmail } from './types/ICommentForEmail';
+import { IEmailCommentRow } from './types/IEmailCommentRow';
 import { IEmailCommentsNotificationPayload } from './types/IEmailCommentsNotificationPayload';
 import { IEmailPreview } from './types/IEmailPreview';
 import { IEmailPreviewDetails } from './types/IEmailPreviewDetails';
@@ -56,6 +58,7 @@ export class EmailService {
     @InjectRepository(Email)
     private readonly emailRepository: Repository<Email>,
     private readonly errorsService: ErrorsService,
+    private readonly filesService: FilesService,
     private readonly settingsService: SettingsService,
 
     @Inject(forwardRef(() => SetsService))
@@ -245,21 +248,37 @@ export class EmailService {
     const positions = await firstValueFrom(
       this.positionService.getPositions(setId, commentAuthorType),
     );
+    const files = await this.filesService.findFiles(setId);
 
     // match comments with positions
-    const newCommentsList = matchCommentToPosition(newComments, positions);
-    const needsAttentionCommentsList = matchCommentToPosition(
+    const newCommentsForPositions = matchCommentToPosition(
+      newComments,
+      positions,
+    );
+    const needsAttentionCommentsForPositions = matchCommentToPosition(
       needsAttentionComments,
       positions,
     );
+
+    const needsAttentionHeaderForPositions = `Masz także ${needsAttentionCommentsForPositions.length} ${createHeaderNeedsAttentionComments(
+      needsAttentionCommentsForPositions.length,
+    )} dla pozycji`;
+
+    // match comments with files
+    const newCommentsForFiles = matchCommentToFile(newComments, files);
+    const needsAttentionCommentsForFiles = matchCommentToFile(
+      needsAttentionComments,
+      files,
+    );
+
+    const needsAttentionHeaderForFiles = `Masz także ${needsAttentionCommentsForFiles.length} ${createHeaderNeedsAttentionComments(
+      needsAttentionCommentsForFiles.length,
+    )} dla plików`;
 
     const commentLabel = newComments.length === 1 ? 'komentarza' : 'komentarzy';
     const ownerLabel = commentAuthorType === 'client' ? ' Twojej' : '';
     const HTMLContent = `${headerText} ${newComments.length} ${commentLabel} do${ownerLabel} inwestycji: <strong>${set.name}</strong>`;
 
-    const needsAttentionHeader = `Masz także ${needsAttentionCommentsList.length} ${createHeaderNeedsAttentionComments(
-      needsAttentionCommentsList.length,
-    )}`;
     const HTMLheader = 'Nowe komentarze';
 
     const linkToSet = this.createExternalLink(
@@ -274,9 +293,12 @@ export class EmailService {
       HTMLheader,
       linkToSet,
       HTMLContent,
-      newCommentsList,
-      needsAttentionCommentsList,
-      needsAttentionHeader,
+      newCommentsForPositions,
+      needsAttentionCommentsForPositions,
+      needsAttentionHeaderForPositions,
+      newCommentsForFiles,
+      needsAttentionCommentsForFiles,
+      needsAttentionHeaderForFiles,
       ASSETS_URL,
       socialColor,
       currentYear,
@@ -310,7 +332,7 @@ export class EmailService {
         notificationDirection: notificationDirection,
         content: mailOptions.html,
         unreadComments: newComments.length,
-        needsAttentionComments: needsAttentionCommentsList.length,
+        needsAttentionComments: needsAttentionCommentsForPositions.length,
         sendAt: getFormatedDate(),
         sendAtTimestamp: Number(Date.now()),
         setId: setId,
@@ -520,16 +542,33 @@ function createHeaderNeedsAttentionComments(count: number): string {
 function matchCommentToPosition(
   newComments: IComment[],
   positions: IPosition[],
-): ICommentForEmail[] {
-  return newComments.map((comment) => {
-    if (!comment.positionId) return;
+): IEmailCommentRow[] {
+  return newComments
+    .filter((comment) => comment.positionId !== null)
+    .map((comment) => {
+      const position = positions.find((item) => item.id === comment.positionId);
 
-    const position = positions.find((item) => item.id === comment.positionId);
+      return {
+        name: position?.produkt || '',
+        comment: comment.comment,
+        createdAt: comment.createdAt,
+      };
+    });
+}
 
-    return {
-      product: position?.produkt || '',
-      comment: comment.comment,
-      createdAt: comment.createdAt,
-    };
-  });
+function matchCommentToFile(
+  newComments: IComment[],
+  files: IFileFullDetails[],
+): IEmailCommentRow[] {
+  return newComments
+    .filter((comment) => comment.fileId !== null)
+    .map((comment) => {
+      const file = files.find((item) => item.id === comment.fileId);
+
+      return {
+        name: file?.fileName || '',
+        comment: comment.comment,
+        createdAt: comment.createdAt,
+      };
+    });
 }

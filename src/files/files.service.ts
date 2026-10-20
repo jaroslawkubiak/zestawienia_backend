@@ -79,6 +79,22 @@ export class FilesService {
     return returnedFile;
   }
 
+  async findFiles(setId: number): Promise<IFileFullDetails[]> {
+    const files = await this.filesRepository.find({
+      where: {
+        setId: { id: setId },
+      },
+      relations: ['setId'],
+    });
+
+    return files.map((file) => ({
+      ...file,
+      seenAt: formatDateToString(file.seenAt),
+      createdAtTimestamp: Number(file.createdAtTimestamp),
+      setId: file.setId?.id ?? null,
+    }));
+  }
+
   // find one file in set for download
   async findOneFileInSet(setId: number, fileId: number): Promise<Files> {
     return this.filesRepository

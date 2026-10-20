@@ -7,11 +7,7 @@ import { Files } from './files.entity';
 import { FilesService } from './files.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Files]),
-    ErrorsModule,
-    FilesErrorsModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Files]), ErrorsModule, FilesErrorsModule],
   controllers: [FilesController],
   providers: [FilesService],
   exports: [FilesService],

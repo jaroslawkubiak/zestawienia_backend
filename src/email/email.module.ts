@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommentNotificationLogsModule } from '../comment-notification-logs/comment-notification-logs.module';
 import { CommentsModule } from '../comments/comments.module';
 import { ErrorsModule } from '../errors/errors.module';
+import { FilesModule } from '../files/files.module';
 import { PositionsModule } from '../position/positions.module';
 import { SetsModule } from '../sets/sets.module';
 import { SettingsModule } from '../settings/settings.module';
@@ -18,6 +19,7 @@ import { EmailService } from './email.service';
     forwardRef(() => CommentsModule),
     forwardRef(() => SettingsModule),
     forwardRef(() => SetsModule),
+    forwardRef(() => FilesModule),
     forwardRef(() => PositionsModule),
   ],
   controllers: [EmailController],

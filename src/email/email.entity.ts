@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Client } from '../clients/clients.entity';
-import { Set } from '../sets/sets.entity';
+import { ClientSet } from '../sets/sets.entity';
 import { Supplier } from '../suppliers/suppliers.entity';
 import { User } from '../user/user.entity';
 
@@ -30,11 +30,11 @@ export class Email {
   @Column({ type: 'text', nullable: false })
   link: string;
 
-  @ManyToOne(() => Set, (set) => set.email, {
+  @ManyToOne(() => ClientSet, (set) => set.email, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'setId', referencedColumnName: 'id' })
-  setId: Set;
+  setId: ClientSet;
 
   @ManyToOne(() => Client, (client) => client.logEmail, {
     onDelete: 'CASCADE',

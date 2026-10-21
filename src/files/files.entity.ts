@@ -1,13 +1,13 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
+  Entity,
   JoinColumn,
   ManyToOne,
   OneToMany,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Set } from '../sets/sets.entity';
 import { Comment } from '../comments/comments.entity';
+import { ClientSet } from '../sets/sets.entity';
 
 @Entity('files')
 export class Files {
@@ -50,11 +50,11 @@ export class Files {
   @Column({ type: 'bigint', nullable: true })
   createdAtTimestamp: number | null;
 
-  @ManyToOne(() => Set, (set) => set.files, {
+  @ManyToOne(() => ClientSet, (set) => set.files, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'setId', referencedColumnName: 'id' })
-  setId: Set;
+  setId: ClientSet;
 
   @OneToMany(() => Comment, (comment) => comment.fileId, {
     onDelete: 'CASCADE',

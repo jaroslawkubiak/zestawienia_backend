@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Set } from '../sets/sets.entity';
 import { Client } from '../clients/clients.entity';
-import { Supplier } from '../suppliers/suppliers.entity';
 import { generateHash } from '../helpers/generateHash';
+import { ClientSet } from '../sets/sets.entity';
+import { Supplier } from '../suppliers/suppliers.entity';
 
 @Injectable()
 export class HashService {
   constructor(
-    @InjectRepository(Set)
-    private readonly setRepo: Repository<Set>,
+    @InjectRepository(ClientSet)
+    private readonly setRepo: Repository<ClientSet>,
     @InjectRepository(Client)
     private readonly clientRepo: Repository<Client>,
     @InjectRepository(Supplier)

@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { Bookmark } from '../bookmarks/bookmarks.entity';
 import { Comment } from '../comments/comments.entity';
-import { Set } from '../sets/sets.entity';
+import { ClientSet } from '../sets/sets.entity';
 import { Supplier } from '../suppliers/suppliers.entity';
 import { User } from '../user/user.entity';
 import { IPositionStatus } from './types/IPositionStatus';
@@ -78,11 +78,11 @@ export class Position {
   @OneToMany(() => Comment, (comment) => comment.positionId)
   comments: Comment[];
 
-  @ManyToOne(() => Set, (set) => set.position, {
+  @ManyToOne(() => ClientSet, (set) => set.position, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'setId', referencedColumnName: 'id' })
-  setId: Set;
+  setId: ClientSet;
 
   @ManyToOne(() => Bookmark, (bookmark) => bookmark.position)
   @JoinColumn({ name: 'bookmarkId', referencedColumnName: 'id' })

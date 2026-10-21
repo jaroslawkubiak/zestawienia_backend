@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Email } from '../email/email.entity';
 import { Position } from '../position/positions.entity';
-import { Set } from '../sets/sets.entity';
+import { ClientSet } from '../sets/sets.entity';
 import { UserLogs } from '../user-logs/user-logs.entity';
 import { Role } from './types/role.type';
 
@@ -25,11 +25,11 @@ export class User {
   @Column({ type: 'varchar', length: 30, nullable: false })
   name: string;
 
-  @OneToMany(() => Set, (set) => set.createdBy)
-  createdSet: Set[];
+  @OneToMany(() => ClientSet, (set) => set.createdBy)
+  createdSet: ClientSet[];
 
-  @OneToMany(() => Set, (set) => set.updatedBy)
-  updatedSet: Set[];
+  @OneToMany(() => ClientSet, (set) => set.updatedBy)
+  updatedSet: ClientSet[];
 
   @OneToMany(() => Position, (position) => position.createdBy)
   createdBy: Position[];

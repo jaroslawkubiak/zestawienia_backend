@@ -14,12 +14,12 @@ import { SupplierLogsModule } from '../supplier-logs/supplier-logs.module';
 import { Supplier } from '../suppliers/suppliers.entity';
 import { User } from '../user/user.entity';
 import { SetsController } from './sets.controller';
-import { Set } from './sets.entity';
+import { ClientSet } from './sets.entity';
 import { SetsService } from './sets.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Set, User, Position, Comment, Supplier]),
+    TypeOrmModule.forFeature([ClientSet, User, Position, Comment, Supplier]),
     ErrorsModule,
     FilesModule,
     HashModule,

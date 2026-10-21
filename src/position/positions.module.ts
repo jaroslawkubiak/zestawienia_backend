@@ -5,7 +5,7 @@ import { Comment } from '../comments/comments.entity';
 import { EmailModule } from '../email/email.module';
 import { ErrorsModule } from '../errors/errors.module';
 import { ImagesModule } from '../images/images.module';
-import { Set } from '../sets/sets.entity';
+import { ClientSet } from '../sets/sets.entity';
 import { SetsModule } from '../sets/sets.module';
 import { Supplier } from '../suppliers/suppliers.entity';
 import { SuppliersModule } from '../suppliers/suppliers.module';
@@ -15,7 +15,7 @@ import { PositionsService } from './positions.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Position, Set, Client, Supplier, Comment]),
+    TypeOrmModule.forFeature([Position, ClientSet, Client, Supplier, Comment]),
     ErrorsModule,
     forwardRef(() => SetsModule),
     forwardRef(() => SuppliersModule),

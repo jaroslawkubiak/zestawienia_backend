@@ -40,7 +40,7 @@ import { PositionLogs } from './position-logs/position-logs.entity';
 import { PositionLogsModule } from './position-logs/position-logs.module';
 import { Position } from './position/positions.entity';
 import { PositionsModule } from './position/positions.module';
-import { Set } from './sets/sets.entity';
+import { ClientSet } from './sets/sets.entity';
 import { SetsModule } from './sets/sets.module';
 import { Setting } from './settings/settings.entity';
 import { SettingsModule } from './settings/settings.module';
@@ -95,7 +95,7 @@ if (!(global as any).crypto) {
             Files,
             FileErrors,
             Position,
-            Set,
+            ClientSet,
             Setting,
             SupplierLogs,
             Supplier,
@@ -103,7 +103,7 @@ if (!(global as any).crypto) {
             User,
             NotificationTimer,
             CommentNotificationLogs,
-            PositionLogs
+            PositionLogs,
           ],
           synchronize: config.get<string>('TYPEORM_SYNCHRONIZE') === 'true',
           extra: {

@@ -43,7 +43,7 @@ import { User } from '../user/user.entity';
 import { NewSetDto } from './dto/NewSet.dto';
 import { UpdateSetDto } from './dto/updateSet.dto';
 import { UpdateSetAndPositionDto } from './dto/updateSetAndPosition.dto';
-import { Set } from './sets.entity';
+import { ClientSet } from './sets.entity';
 import { ISavedSet } from './types/ISavedSet';
 import { ISet } from './types/ISet';
 import { ISetForSupplier } from './types/ISetForSupplier';
@@ -57,8 +57,8 @@ export class SetsService {
     private readonly errorsService: ErrorsService,
     private readonly hashService: HashService,
 
-    @InjectRepository(Set)
-    private readonly setsRepository: Repository<Set>,
+    @InjectRepository(ClientSet)
+    private readonly setsRepository: Repository<ClientSet>,
 
     @InjectRepository(Supplier)
     private readonly supplierRepository: Repository<Supplier>,
@@ -275,7 +275,7 @@ export class SetsService {
     const minBookmarkId = Math.min(...bookmarks.map((b) => b.id));
 
     try {
-      const newSet: DeepPartial<Set> = {
+      const newSet: DeepPartial<ClientSet> = {
         ...createSet,
         createdBy: { id: createSet.createdBy } as DeepPartial<User>,
         updatedBy: { id: createSet.createdBy } as DeepPartial<User>,
@@ -716,7 +716,7 @@ export class SetsService {
   }
 
   private mapSetToDto(
-    set: Set,
+    set: ClientSet,
     newCommentsCountForPositions: IUnreadComments,
     newCommentsCountForFiles: IUnreadComments,
   ): ISet {

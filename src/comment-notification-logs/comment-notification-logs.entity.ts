@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { Client } from '../clients/clients.entity';
 import { ENotificationDirection } from '../notification-timer/types/notification-direction.enum';
-import { Set } from '../sets/sets.entity';
+import { ClientSet } from '../sets/sets.entity';
 
 @Entity('comment-notification-logs')
 export class CommentNotificationLogs {
@@ -40,9 +40,9 @@ export class CommentNotificationLogs {
   @Column({ type: 'bigint', nullable: false })
   sendAtTimestamp: number;
 
-  @ManyToOne(() => Set, { onDelete: 'CASCADE' })
+  @ManyToOne(() => ClientSet, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'setId' })
-  set: Set;
+  set: ClientSet;
 
   @ManyToOne(() => Client, { onDelete: 'CASCADE', nullable: false })
   @JoinColumn({ name: 'clientId' })

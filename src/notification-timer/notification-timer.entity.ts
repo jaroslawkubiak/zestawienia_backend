@@ -5,21 +5,20 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Set } from '../sets/sets.entity';
+import { ClientSet } from '../sets/sets.entity';
 import { ENotificationDirection } from './types/notification-direction.enum';
 import { TTimerStatus } from './types/TimerStatus.type';
-
 
 @Entity('notification-timer')
 export class NotificationTimer {
   @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
   id: number;
 
-  @ManyToOne(() => Set, (set) => set.notificationTimers, {
+  @ManyToOne(() => ClientSet, (set) => set.notificationTimers, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'setId', referencedColumnName: 'id' })
-  setId: Set;
+  setId: ClientSet;
 
   @Column({
     type: 'enum',

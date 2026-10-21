@@ -16,7 +16,7 @@ import { Position } from '../position/positions.entity';
 import { User } from '../user/user.entity';
 
 @Entity('set')
-export class Set {
+export class ClientSet {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
 

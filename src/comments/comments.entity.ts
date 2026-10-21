@@ -8,7 +8,7 @@ import {
 
 import { Files } from '../files/files.entity';
 import { Position } from '../position/positions.entity';
-import { Set } from '../sets/sets.entity';
+import { ClientSet } from '../sets/sets.entity';
 import { TAuthorType } from './types/authorType.type';
 
 @Entity('comment')
@@ -57,9 +57,9 @@ export class Comment {
   @JoinColumn({ name: 'fileId', referencedColumnName: 'id' })
   fileId: Files | null;
 
-  @ManyToOne(() => Set, (set) => set.comments, {
+  @ManyToOne(() => ClientSet, (set) => set.comments, {
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'setId', referencedColumnName: 'id' })
-  setId: Set;
+  setId: ClientSet;
 }

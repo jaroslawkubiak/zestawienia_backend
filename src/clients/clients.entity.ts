@@ -9,7 +9,7 @@ import {
 import { Avatar } from '../avatar/avatar.entity';
 import { ClientLogs } from '../client-logs/client-logs.entity';
 import { Email } from '../email/email.entity';
-import { Set } from '../sets/sets.entity';
+import { ClientSet } from '../sets/sets.entity';
 
 @Entity('client')
 export class Client {
@@ -34,8 +34,8 @@ export class Client {
   @Column({ type: 'varchar', length: 50, nullable: true })
   telephone: string;
 
-  @OneToMany(() => Set, (set) => set.clientId)
-  set: Set[];
+  @OneToMany(() => ClientSet, (set) => set.clientId)
+  set: ClientSet[];
 
   @OneToMany(() => Email, (email) => email.clientId)
   logEmail: Email[];

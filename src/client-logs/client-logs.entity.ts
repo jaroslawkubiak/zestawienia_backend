@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Client } from '../clients/clients.entity';
-import { Set } from '../sets/sets.entity';
+import { ClientSet } from '../sets/sets.entity';
 
 @Entity('client-logs')
 export class ClientLogs {
@@ -37,11 +37,11 @@ export class ClientLogs {
   @Column({ type: 'text', nullable: true })
   user_agent: string | null;
 
-  @ManyToOne(() => Set, (set) => set.position, {
+  @ManyToOne(() => ClientSet, (set) => set.position, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'setId', referencedColumnName: 'id' })
-  set: Set;
+  set: ClientSet;
 
   @ManyToOne(() => Client, (client) => client.clientLogs, {
     onDelete: 'CASCADE',

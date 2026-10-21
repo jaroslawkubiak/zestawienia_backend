@@ -1,4 +1,5 @@
 import { TAuthorType } from './authorType.type';
+import { IUnreadComments } from './IUnreadComments';
 
 export interface IComment {
   id: number;
@@ -13,4 +14,5 @@ export interface IComment {
   positionId: number | null;
   fileId: number | null;
   setId: number;
+  newCommentsCount?: IUnreadComments;
 }

@@ -13,7 +13,9 @@ import { CommentsService } from './comments.service';
 import { CreateCommentDto, UpdateCommentDto } from './dto/comment.dto';
 import { IMarkAllAsSeen } from './dto/markAllAsSeen.dto';
 import { IMarkAllComments } from './dto/markAllComments.dto';
+import { TAuthorType } from './types/authorType.type';
 import { IComment } from './types/IComment';
+import { ICommentsWithSummary } from './types/ICommentsWithSummary';
 import { IUnreadComments } from './types/IUnreadComments';
 
 @Controller('comments')
@@ -38,9 +40,9 @@ export class CommentsController {
     return this.commentsService.findAllCommentsByFileId(+fileId);
   }
 
-  @Get(':setId/getAllCommentsForFiles')
-  findAllCommentsForFiles(@Param('setId') setId: string): Promise<IComment[]> {
-    return this.commentsService.getAllCommentsForFiles(+setId);
+  @Get(':setId/:who/getAllCommentsForFiles')
+  findAllCommentsForFiles(@Param('setId') setId: string, @Param('who') who: TAuthorType): Promise<ICommentsWithSummary> {
+    return this.commentsService.getAllCommentsForFiles(+setId, who);
   }
 
   @Get(':setId/getCommentsForSet')

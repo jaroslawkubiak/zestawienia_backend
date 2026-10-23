@@ -241,11 +241,6 @@ export class SetsService {
         if (!set) {
           return throwError(() => new Error('Set not found'));
         }
-
-        if (Array.isArray(set.files)) {
-          set.files.sort((a, b) => b.createdAtTimestamp - a.createdAtTimestamp);
-        }
-
         return forkJoin({
           newCommentsCount: from(
             this.commentsService.countUnreadBySetId(

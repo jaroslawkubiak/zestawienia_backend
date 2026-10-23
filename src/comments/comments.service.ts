@@ -24,7 +24,6 @@ import { IMarkAllComments } from './dto/markAllComments.dto';
 import { TAuthorType } from './types/authorType.type';
 import { TCommentType } from './types/commentType.type';
 import { IComment } from './types/IComment';
-import { ICommentsWithSummary } from './types/ICommentsWithSummary';
 import { IFilesWithUnreadComments } from './types/IFilesWithUnreadComments';
 import { IUnreadComments } from './types/IUnreadComments';
 
@@ -193,44 +192,33 @@ export class CommentsService {
     return updatedComments;
   }
 
-  async getAllCommentsForFiles(
+  async countCommentsForFiles(
     setId: number,
     who: TAuthorType,
-  ): Promise<ICommentsWithSummary> {
-    const allComments = await this.commentRepository
+  ): Promise<IFilesWithUnreadComments[]> {
+    const rows = await this.commentRepository
       .createQueryBuilder('comment')
-      .leftJoinAndSelect('comment.fileId', 'file')
-      .where('comment.setId = :setId', { setId })
-      .andWhere('comment.fileId IS NOT NULL')
-      .select()
-      .orderBy('comment.id', 'ASC')
-      .getMany();
+      .select('DISTINCT comment.fileId', 'fileId')
+      .where('comment.fileId IS NOT NULL')
+      .getRawMany();
 
-    const comments = await Promise.all(
-      allComments.map(async (item) => {
-        return this.mapCommentToIComment(item);
-      }),
-    );
-
-    const uniqueFileIds = [...new Set(comments.map((item) => item.fileId))];
-
-    const unreadComments: IFilesWithUnreadComments[] = await Promise.all(
-      uniqueFileIds.map(async (item) => {
+    const unreadCommentsCount = await Promise.all(
+      rows.map(async (item) => {
         const unread = await this.countUnreadByFileId(
           setId,
-          item,
+          item.fileId,
           who,
           'fileId',
         );
 
         return {
-          fileId: item,
+          fileId: item.fileId,
           unreadComments: unread,
         };
       }),
     );
 
-    return { comments, files: unreadComments };
+    return unreadCommentsCount;
   }
 
   async findAllCommentsBySetId(setId: number): Promise<IComment[]> {

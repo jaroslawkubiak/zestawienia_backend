@@ -26,6 +26,7 @@ import { TCommentType } from './types/commentType.type';
 import { IComment } from './types/IComment';
 import { IFilesWithUnreadComments } from './types/IFilesWithUnreadComments';
 import { IUnreadComments } from './types/IUnreadComments';
+import { IWelcomeScreenUnread } from './types/IWelcomeScreenUnread';
 
 @Injectable()
 export class CommentsService {
@@ -459,22 +460,36 @@ export class CommentsService {
     await this.commentRepository.delete(id);
   }
 
-  async unreadComments(): Promise<IUnreadComments> {
+  async unreadComments(): Promise<IWelcomeScreenUnread> {
     const result = await this.commentRepository
       .createQueryBuilder('comment')
       .leftJoin('comment.setId', 'set')
       .select([
-        `SUM(CASE WHEN comment.seenAt IS NULL THEN 1 ELSE 0 END) AS unread`,
-        `SUM(CASE WHEN comment.needsAttention = true THEN 1 ELSE 0 END) AS needsAttention`,
+        `SUM(CASE WHEN comment.positionId IS NOT NULL AND comment.seenAt IS NULL THEN 1 ELSE 0 END) AS unreadForPositions`,
+        `SUM(CASE WHEN comment.positionId IS NOT NULL AND comment.needsAttention = true THEN 1 ELSE 0 END) AS needsAttentionForPositions`,
+        `SUM(CASE WHEN comment.fileId IS NOT NULL AND comment.seenAt IS NULL THEN 1 ELSE 0 END) AS unreadForFiles`,
+        `SUM(CASE WHEN comment.fileId IS NOT NULL AND comment.needsAttention = true THEN 1 ELSE 0 END) AS needsAttentionForFiles`,
       ])
-      .where('comment.authorType = :authorType', { authorType: 'client' })
-      .andWhere('set.status != :closedStatus', { closedStatus: 'Zamknięte' })
+      .where('comment.authorType = :authorType', {
+        authorType: 'client',
+      })
+      .andWhere('set.status != :closedStatus', {
+        closedStatus: 'Zamknięte',
+      })
+      .andWhere(
+        '(comment.positionId IS NOT NULL OR comment.fileId IS NOT NULL)',
+      )
       .getRawOne();
 
     return {
-      unread: Number(result.unread),
-      needsAttention: Number(result.needsAttention),
-      all: 0,
+      positions: {
+        unreadForPositions: Number(result.unreadForPositions),
+        needsAttentionForPositions: Number(result.needsAttentionForPositions),
+      },
+      files: {
+        unreadForFiles: Number(result.unreadForFiles),
+        needsAttentionForFiles: Number(result.needsAttentionForFiles),
+      },
     };
   }
 

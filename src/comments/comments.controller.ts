@@ -16,7 +16,7 @@ import { IMarkAllComments } from './dto/markAllComments.dto';
 import { TAuthorType } from './types/authorType.type';
 import { IComment } from './types/IComment';
 import { IFilesWithUnreadComments } from './types/IFilesWithUnreadComments';
-import { IUnreadComments } from './types/IUnreadComments';
+import { IWelcomeScreenUnread } from './types/IWelcomeScreenUnread';
 
 @Controller('comments')
 export class CommentsController {
@@ -24,7 +24,7 @@ export class CommentsController {
 
   // for welcome screen
   @Get('unreadComments')
-  async unreadComments(): Promise<IUnreadComments> {
+  async unreadComments(): Promise<IWelcomeScreenUnread> {
     return this.commentsService.unreadComments();
   }
 

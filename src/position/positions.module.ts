@@ -5,6 +5,7 @@ import { Comment } from '../comments/comments.entity';
 import { EmailModule } from '../email/email.module';
 import { ErrorsModule } from '../errors/errors.module';
 import { ImagesModule } from '../images/images.module';
+import { PositionLogsModule } from '../position-logs/position-logs.module';
 import { ClientSet } from '../sets/sets.entity';
 import { SetsModule } from '../sets/sets.module';
 import { Supplier } from '../suppliers/suppliers.entity';
@@ -21,6 +22,7 @@ import { PositionsService } from './positions.service';
     forwardRef(() => SuppliersModule),
     forwardRef(() => ImagesModule),
     forwardRef(() => EmailModule),
+     forwardRef(() => PositionLogsModule),
   ],
   controllers: [PositionsController],
   providers: [PositionsService],

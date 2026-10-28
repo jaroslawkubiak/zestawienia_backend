@@ -5,6 +5,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import * as fs from 'fs';
+import { randomUUID } from 'node:crypto';
 import * as path from 'path';
 import { IProcessFile } from '../files/types/IProcessFile';
 import { createImageThumbnail } from '../helpers/createImageThumbnail';
@@ -30,6 +31,19 @@ export class ImagesService {
     if (!file) {
       throw new Error('Plik nie został przesłany');
     }
+    let filename = file.originalname;
+
+    // store position image logs
+    const uploadId = randomUUID();
+    await this.positionLogsService.createEntry({
+      uploadId,
+      event: 'started',
+      userId,
+      setId,
+      positionId,
+      image: filename,
+    });
+
     const innerPath = `/sets/${setId}/${setHash}/positions/${positionId}`;
 
     const basePath = process.env.UPLOAD_PATH || 'uploads';
@@ -40,10 +54,24 @@ export class ImagesService {
 
       fs.mkdirSync(uploadPath, { recursive: true });
 
-      let filename = `${positionId}--${Date.now()}--${file.originalname}`;
+      filename = `${positionId}--${Date.now()}--${file.originalname}`;
       const filePath = path.join(uploadPath, filename);
       // save original file
       fs.writeFileSync(filePath, file.buffer);
+
+      // store position image logs
+      await this.positionLogsService.createEntry({
+        uploadId,
+        event: 'file_saved',
+        userId,
+        setId,
+        positionId,
+        image: filename,
+        details: {
+          size: file.size,
+          mimetype: file.mimetype,
+        },
+      });
 
       // generating thumbnail
       const processFile: IProcessFile = await createImageThumbnail(
@@ -51,6 +79,29 @@ export class ImagesService {
         filename,
         uploadPath,
       );
+
+      // store position image logs
+      await this.positionLogsService.createEntry({
+        uploadId,
+        event: 'thumbnail_created',
+        userId,
+        setId,
+        positionId,
+        image: filename,
+        details: {
+          thumbnailFileName: processFile.thumbnailFileName,
+        },
+      });
+
+      // store position image logs
+      await this.positionLogsService.createEntry({
+        uploadId,
+        event: 'db_update_started',
+        userId,
+        setId,
+        positionId,
+        image: filename,
+      });
 
       // save filename (org or mini) in db
       const res = await this.positionsService.updateImage(
@@ -60,10 +111,18 @@ export class ImagesService {
         positionId,
         filename,
         processFile.thumbnailFileName,
+        uploadId,
       );
 
       // store position image logs
-      this.positionLogsService.createEntry(positionId, filename);
+      await this.positionLogsService.createEntry({
+        uploadId,
+        event: 'completed',
+        userId,
+        setId,
+        positionId,
+        image: filename,
+      });
 
       return { message: res, filename };
     } catch (err: any) {
@@ -75,17 +134,35 @@ export class ImagesService {
         message = err.message;
       }
 
+      const errorMessage = err instanceof Error ? err.message : String(err);
+
+      await this.positionLogsService.createEntry({
+        uploadId,
+        event: 'failed',
+        userId,
+        setId,
+        positionId,
+        logs: errorMessage,
+        details: {
+          stage: 'saveImage',
+          error: errorMessage,
+          stack: err instanceof Error ? err.stack : undefined,
+        },
+      });
+
       if (err instanceof InternalServerErrorException) {
         console.error('❌ Błąd bazy danych:', err.message);
 
         // remove saved file
         this.removeFolderContent(uploadPath);
 
-        throw new InternalServerErrorException({
+        const errorLog = {
           message: 'Wystąpił problem podczas aktualizacji pozycji.',
           error: message,
           details: err,
-        });
+        };
+
+        throw new InternalServerErrorException(errorLog);
       } else {
         console.error('❌ Inny błąd:', err);
         throw new InternalServerErrorException('Wystąpił nieoczekiwany błąd.');

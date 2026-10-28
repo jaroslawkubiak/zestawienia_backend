@@ -15,8 +15,8 @@ import { TAuthorType } from '../comments/types/authorType.type';
 import { ErrorDto } from '../errors/dto/error.dto';
 import { ErrorsService } from '../errors/errors.service';
 import { ErrorsType } from '../errors/types/Errors';
-import { IProcessFile } from '../files/types/IProcessFile';
 import { getFormatedDate } from '../helpers/getFormatedDate';
+import { PositionLogsService } from '../position-logs/position-logs.service';
 import { SetsService } from '../sets/sets.service';
 import { SuppliersService } from '../suppliers/suppliers.service';
 import { User } from '../user/user.entity';
@@ -39,6 +39,7 @@ export class PositionsService {
     private readonly suppliersService: SuppliersService,
 
     private readonly errorsService: ErrorsService,
+    private readonly positionLogsService: PositionLogsService,
   ) {}
 
   findOne(id: number): Promise<IPosition> {
@@ -231,40 +232,108 @@ export class PositionsService {
     positionId: number,
     filename: string,
     thumbnail: string,
+    uploadId: string,
   ) {
     try {
       const updatedByUser = { id: userId } as DeepPartial<User>;
       const positionFromDB = await this.findOne(positionId);
       const setFromDB = await this.setsService.findOneSet(setId);
 
-      if (positionFromDB && setFromDB) {
-        const query = await this.positionsRepository
-          .createQueryBuilder()
-          .update(Position)
-          .set({
-            image: filename,
-            thumbnail,
-            updatedAt: getFormatedDate(),
-            updatedAtTimestamp: Number(Date.now()),
-            updatedBy: updatedByUser,
-          })
-          .where('setId = :setId AND id = :positionId', {
-            setId: setId,
-            positionId: positionId,
-          })
-          .execute();
+      if (!positionFromDB) {
+        const errorMessage = `Pozycja o ID ${positionId} nie istnieje w bazie.`;
 
-        if (query?.affected !== 0) {
-          return 'Obraz został przesłany na serwer.';
-        }
-      } else {
-        if (!positionFromDB) {
-          throw new Error(`Pozycja o ID ${positionId} nie istnieje w bazie.`);
-        }
+        // store position image logs
+        await this.positionLogsService.createEntry({
+          uploadId,
+          event: 'position_not_found',
+          userId,
+          setId,
+          positionId,
+          image: filename,
+          logs: errorMessage,
+        });
+        throw new Error(errorMessage);
+      }
 
-        if (!setFromDB) {
-          throw new Error(`Zestawienie o ID ${setId} nie istnieje w bazie.`);
-        }
+      if (!setFromDB) {
+        const errorMessage = `Zestawienie o ID ${setId} nie istnieje w bazie.`;
+
+        // store position image logs
+        await this.positionLogsService.createEntry({
+          uploadId,
+          event: 'set_not_found',
+          userId,
+          setId,
+          positionId,
+          image: filename,
+          logs: errorMessage,
+        });
+        throw new Error(errorMessage);
+      }
+
+      const queryBuilder = this.positionsRepository
+        .createQueryBuilder()
+        .update(Position)
+        .set({
+          image: filename,
+          thumbnail,
+          updatedAt: getFormatedDate(),
+          updatedAtTimestamp: Number(Date.now()),
+          updatedBy: updatedByUser,
+        })
+        .where('setId = :setId AND id = :positionId', {
+          setId,
+          positionId,
+        });
+
+      const [sql, parameters] = queryBuilder.getQueryAndParameters();
+
+      const query = await queryBuilder.execute();
+
+      if (query.affected === 1) {
+        // store position image logs
+        await this.positionLogsService.createEntry({
+          uploadId,
+          event: 'db_update_success',
+          userId,
+          setId,
+          positionId,
+          image: filename,
+          logs: JSON.stringify({
+            sql,
+            parameters,
+            affected: query.affected ?? null,
+          }),
+          details: {
+            sql,
+            parameters,
+            affected: query.affected ?? null,
+          },
+        });
+
+        return 'Obraz został przesłany na serwer.';
+      }
+
+      if (query.affected !== 1) {
+        const errorMessage =
+          `Nie zaktualizowano pozycji ${positionId}. ` +
+          `Affected: ${query.affected ?? 'undefined'}`;
+
+        // store position image logs
+        await this.positionLogsService.createEntry({
+          uploadId,
+          event: 'db_update_unexpected_affected',
+          userId,
+          setId,
+          positionId,
+          image: filename,
+          logs: errorMessage,
+          details: {
+            affected: query.affected ?? null,
+          },
+        });
+
+        throw new Error(errorMessage);
       }
     } catch (err: any) {
       const url = `/images/${setId}/${setHash}/${positionId}`;

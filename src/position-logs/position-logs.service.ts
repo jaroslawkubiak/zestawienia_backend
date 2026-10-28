@@ -12,10 +12,9 @@ export class PositionLogsService {
     private readonly positionLogsRepo: Repository<PositionLogs>,
   ) {}
 
-  async createEntry(positionId: number, fileName: string) {
+  async createEntry(entry: IPositionLogs) {
     const createEnry: IPositionLogs = {
-      positionId,
-      image: fileName,
+      ...entry,
       createdAt: getFormatedDate(),
       createdAtTimestamp: Number(Date.now()),
     };

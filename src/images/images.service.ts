@@ -54,7 +54,7 @@ export class ImagesService {
 
       fs.mkdirSync(uploadPath, { recursive: true });
 
-      filename = `${positionId}--${Date.now()}--${file.originalname}`;
+      filename = `${positionId}--${Date.now()}`;
       const filePath = path.join(uploadPath, filename);
       // save original file
       fs.writeFileSync(filePath, file.buffer);

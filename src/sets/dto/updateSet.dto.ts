@@ -9,6 +9,7 @@ import {
 } from 'class-validator';
 import { BookmarkDto } from '../../bookmarks/dto/bookmark.dto';
 import { LastActiveUserBookmarkDto } from './lastActiveUserBookmark.dto';
+import { SetVisibilityDto } from './setVisibility.dto';
 
 export class UpdateSetDto {
   @IsString()
@@ -16,6 +17,11 @@ export class UpdateSetDto {
 
   @IsString()
   address: string;
+
+  @IsDefined()
+  @ValidateNested()
+  @Type(() => SetVisibilityDto)
+  visibility: SetVisibilityDto;
 
   @IsDefined()
   @ValidateNested()

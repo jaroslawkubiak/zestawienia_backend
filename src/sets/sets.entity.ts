@@ -14,6 +14,7 @@ import { Files } from '../files/files.entity';
 import { NotificationTimer } from '../notification-timer/notification-timer.entity';
 import { Position } from '../position/positions.entity';
 import { User } from '../user/user.entity';
+import { ISetVisibility } from './types/ISetVisibility';
 
 @Entity('set')
 export class ClientSet {
@@ -31,6 +32,14 @@ export class ClientSet {
 
   @Column({ type: 'json', nullable: false })
   bookmarks: any;
+
+  @Column({
+    type: 'json',
+    nullable: false,
+    default: () =>
+      `('{"bookmarks":{"visible":true,"label":"Zakładki"},"files":{"visible":true,"label":"Załączniki"},"comments":{"visible":true,"label":"Komentarze"}}')`,
+  })
+  visibility: ISetVisibility;
 
   @ManyToOne(() => Bookmark, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'lastActiveUserBookmark' })

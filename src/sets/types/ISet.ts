@@ -3,6 +3,7 @@ import { IBookmarksWithTableColumns } from '../../bookmarks/types/IBookmarksWith
 import { IComment } from '../../comments/types/IComment';
 import { IUnreadComments } from '../../comments/types/IUnreadComments';
 import { IFileFullDetails } from '../../files/types/IFileFullDetails';
+import { ISetVisibility } from './ISetVisibility';
 
 export interface ISet {
   id: number;
@@ -19,6 +20,7 @@ export interface ISet {
     id: number;
   };
   lastActiveClientBookmarkId: number;
+  visibility: ISetVisibility;
   files?: IFileFullDetails[];
   comments?: IComment[];
   newCommentsCountForPositions?: IUnreadComments;

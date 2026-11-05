@@ -20,7 +20,7 @@ export interface ISet {
     id: number;
   };
   lastActiveClientBookmarkId: number;
-  visibility: ISetVisibility;
+  visibility: ISetVisibility[];
   files?: IFileFullDetails[];
   comments?: IComment[];
   newCommentsCountForPositions?: IUnreadComments;

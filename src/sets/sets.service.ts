@@ -722,6 +722,7 @@ export class SetsService {
       status: set.status,
       hash: set.hash,
       clientId: set.clientId,
+      visibility: set.visibility,
 
       newCommentsCountForPositions,
       newCommentsCountForFiles,

@@ -37,9 +37,9 @@ export class ClientSet {
     type: 'json',
     nullable: false,
     default: () =>
-      `('{"bookmarks":{"visible":true,"label":"Zakładki"},"files":{"visible":true,"label":"Załączniki"},"comments":{"visible":true,"label":"Komentarze"}}')`,
+      `('[{"property":"avatars","visible":true,"label":"Avatary"},{"property":"bookmarks","visible":true,"label":"Zakładki"},{"property":"files","visible":true,"label":"Załączniki"}]')`,
   })
-  visibility: ISetVisibility;
+  visibility: ISetVisibility[];
 
   @ManyToOne(() => Bookmark, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'lastActiveUserBookmark' })

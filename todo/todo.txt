@@ -4,11 +4,16 @@ TODO LIST
 [x] Zmiana hasła przez usera
 
 Poprawić:
+[ ] gdy są wsystkie zakłądki w zestawieniu to przycisk zapisz nachodzi na ostatnią
+[x] welcome screen - dodać nowe komentarze do plików
+[x] client - przy otwieraniu załączników - pobiera komentarze i policzone ilości do plików, a potem przy otwarciu dialogu z komentarzami ponownie pobiera komentarze - usunąć wcześniej wszystkie komentarze z response
+[x] client - dodawanie plików - nie odświeża ich w widoku
+[x] client - odświeżanie badge po dodaniu komentarza
+[x] user - w zestawieniu nie działa odświeżanie badge komentarzy dla plików
 [ ] w safari nie działa zmiana treści template emaili
 [x] wyśrodkować obrazy w linku do dostawców
 [x] przy dodaniu pozycji z innej lub klonowaniu - wyłączyć przewijanie ekranu
 [x] wydłużyć czas sesji do 10h
-[ ] zapisywanie zmian zestawienia co 1min
 [x] zapisywanie zestawienia przy każdym przełączaniu zakładki 
 [x] inna wysykość tabeli - dostosowana do ekranu laptopa
 [x] wysokosc tabeli dostępna dla każdego usera osobno
@@ -169,6 +174,9 @@ Generowanie zestawienia w formie PDF:
 [x] zakładka podsumowanie w PDF
 [x] w nazwie pdf dodać nazwę inwestycji
 [x] pdf automatycznie na ftp i ma się dodawać każdy kolejny pdf, nie usuwać poprzednich
+[ ] legenda ze statusami? klient nie wie o co chodzi z kolorowymi tłami
+[ ] większy margines przy przenoszeniu na nową stronę
+[ ] footer ma być accentColor?
 
 Emails:
 [x] wysyłka zestawienia via email w postaci HTML do klienta z linkiem do podglądu
@@ -223,6 +231,7 @@ comments:
 [x] usuwanie komentarzy usera
 [x] oznaczanie które komentarze klienta są nieprzeczytane
 [ ] ogólne komentarze dla całego zestawienia, nie pod konkretną pozycję.
+[x] komentarze możliwe dla każdego dodanego pliku
 [x] linki w komentarzach. mają działać
 [x] usuwanie komantarza - w potwierdzeniu usunięcia dodać aby enter domyślnie zaznaczał "tak"
 

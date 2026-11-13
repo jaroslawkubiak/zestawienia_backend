@@ -4,7 +4,7 @@ TODO LIST
 [x] Zmiana hasła przez usera
 
 Poprawić:
-[ ] gdy są wsystkie zakłądki w zestawieniu to przycisk zapisz nachodzi na ostatnią
+[x] gdy są wsystkie zakłądki w zestawieniu to przycisk zapisz nachodzi na ostatnią
 [x] welcome screen - dodać nowe komentarze do plików
 [x] client - przy otwieraniu załączników - pobiera komentarze i policzone ilości do plików, a potem przy otwarciu dialogu z komentarzami ponownie pobiera komentarze - usunąć wcześniej wszystkie komentarze z response
 [x] client - dodawanie plików - nie odświeża ich w widoku
@@ -58,28 +58,189 @@ Poprawić:
 [x] sortowanie klientów alfabetycznie przy dodawaniu nowego zestawienia
 [x] wyższy select z klientami przy dodawaniu nowego zestawienia
 [x] link przy klientach do dodania nowego zestawienia z wybranym już klientem
+[x] zmiana dostawcy w zestawieniach na ostatniej pozycji - menu się chowa pod tabele
+[x] klienci i dostawcy - form nie walidny - pokaż errors,
+[x] przerobić form klientów i dostawców na nowy styl z new set
+[x] oznaczyć pola obowiązkowe
 
 NOWE:
-[ ] loader gdy generujemy set pdf, może jakiś progress bar?
+[x] loader gdy generujemy set pdf, może jakiś progress bar?
 [x] drugi email dla klienta - wwysyłanie wszsytkich powiadomień na oba adresy
 [x] nie pobiera się pdf z plików
 [x] oznaczanie nowych plików - podobnie jak komentarze
 [x] oznaczanie nowych plików - podobnie jak komentarze
 [x] kolumny LP zmienić na L.P.
 [x] mini wersje obrazów pozycji w widoku klienta
-[ ] powiększanie zdjęć pozycji w widoku klienta?
+[ ] powiększanie zdjęć pozycji w widoku klienta? może galeria
 [x] gdy tworzysz pdf niech guzik znika - wyszarza się
 [x] checkbox do zaznaczania tylko plików z danego katalogu
 [x] brak tabeli z komentarzami w powiadomienu na email
 
-Avatrs:
+##########################################
+###  ZESTAWIENIA - PANEL UŻYTKOWNIKÓW  ###
+##########################################
+
+EKRAN POWITALNY PO ZALOGOWANIU:
+[x] Podsumowanie nowych - nieprzeczytanych komentarzy
+[x] Gdy klient skończy dodawać komentarze - wysłać email z powiadomieniem do biura
+
+ZAKŁADKA ZESTAWIENIA:
+[x] Lista zestawień klientów
+[x] checkbox do pokazania statusu zamkniętych zestawień (domyślnie zamknięte nie będą pobierane)
+
+DODAWANIE NOWEGO ZESTAWIENIA:
+[x] dodawanie nowego zestawienia
+[x] przekierowanie do edit-set
+[x] zapis pozycji do db
+[x] aktualizacja setCount w klientach
+[x] adres inwestycji: textarea
+[x] zapamiętywanie ostatnio aktywnej zakładki i wczytywanie jej przy ponownym otwarciu zestawienia
+[ ] ogólne komentarze dla całego zestawienia, nie pod konkretną pozycję.
+
+STATUSY ZESTAWIENIA:
+[x] nowe zestawienie ze statusem nowe, przy dodaniu pierwszej pozycji zmiana statusu na w przygotowaniu i blokada usuwania
+[x] zmiana status na wysłane, gdy klient otrzyma pierwszy email
+[x] zmiana status na odczytane gdy klient pierwszy raz otworzy link z zestawieniem
+
+EDYCJA NAGŁÓWKA ZESTAWIENIA:
+[x] zmiana statusu
+[x] zmiana ilości zakładek (bookmarks)
+[x] obiekt z szerokościami zapisywany na etapie dodawania nowego zestawienia z domyślnymi wartościami
+[x] odczyt i zapis szerokości kolumn dla każdej zakładki i dla każdego zestawienia
+[x] dołączyć listę szerokości do obiektu bookmarks w zestwieniach
+[x] lista elementów ukrytych dla danego zestawienia - klient ich wtedy nie widzi
+
+EDYCJA POZYCJI W ZESTAWIENIU:
+[x] zmiana pozycji poprzed drag and drop i update property kolejność w db
+[x] domyślnie sortowanie po kolejności gdy wyświetlane są pozycje
+[x] dodanie pustej pozycji
+[x] dodanie pustej pozycji gdy na zakładce nie ma ani jednej pozycji
+[x] klonowanie wybranej pozycji
+[x] usuwanie pozycji
+[x] update cen gdy zmienimy ilosc lub cene netto
+[x] przy edycji pozycji - aktualizacja positionCount w dostawcach
+[x] statusy do zestawień: w przygotowaniu, gotowy, otwarty, w realizacji, zamknięty
+[x] status pozycji: (inne tło w zależności od statusu)
+[x] wklejanie obrazów do pozycji ze schowka
+[x] możliwość wpisywania ceny netto lub brutto.
+[x] usunąć z footer ilość, netto i brutto
+[x] pola w pozycji jako textarea
+[x] podgląd obrazków pozycji na całej stronie: ikona lupy albo coś podobnego
+[x] przy każdym przełączeniu zakładki - zrobić request i zapisać bieżącą zakładkę
+[x] legenda statusy/kolory:
+- biały - domyślny (sumować)
+- różowy - W trakcie wyceny (nie sumować)
+- żółty - zamiennik (nie sumować)
+- jasnozielony - produk zaakceptowany (sumować)
+- czerwony - produkt niezakupiony (sumować)
+- zielone - produkt zakupiony (sumować)
+
+FOOTER ZESTAWIENIA:
+[x] obliczanie ceny brutto, wartości netto i wartości brutto
+[x] update footera z sumami poszczególnych kolumn
+
+ZAŁĄCZNIKI - PLIKI DODAWANE DO ZESTAWIEŃ:
+[x] zapis plików w DB: nazwa pliku, data doodania, kto dodał, rozszerzenie, folder (będzie kilka)
+[x] wybór folderu przy uploadzie plików
+[x] foldery: moodboard, model3d, rysunki wykonawcze, wizualizacje.
+[x] widok listy z sortowaniem
+[x] osobny folder: robocze - niewidoczny dla klienta
+[x] załączniki: pobierz wszystkie, najlepiej w zip
+[x] konwersja heic na jpg?
+[x] gdy wrzucasz nowy załącznik z poziomu zestawienia nie odświeża się ilość w badge
+[x] wysyłanie obrazów i innych plikó do katalogów /uploads/sets/SETID/POSITIONID/ FILENAME
+[x] podgląd minatur pliku pdf
+[x] pobieranie załączników na dysk
+[x] usuwanie załączników
+[ ] dodawanie opisów do załączników - np żeby pod dołączoną inspiracją napisać co konkretnie nam się podoba
+
+GENEROWANIE ZESTAWIENIA W FORMIE PDF:
+[x] generowanie PDF! :)
+[x] umieszczanie obrazów w odpowiedniej kolumnie
+[x] nagłowek i stopka na każdej stronie pdf
+[x] footer z podsumowaniem tylko na końcu tabeli - nie na każdej stronie
+[x] przy generowaniu pdf możliwe 3 scenariusze: 1 - otwiera pdf w nowej zakłądce, 2 - zapisuje pdf na dysku, 3 - wysyła pdf na serwer ftp
+[x] różne tło wiersza w zależności od statusu
+[x] zakładka podsumowanie w PDF
+[x] w nazwie pdf dodać nazwę inwestycji
+[x] footer w pdf wkleja się na każdej stronie zamiast po całej tabeli
+[x] pdf automatycznie na ftp i ma się dodawać każdy kolejny pdf, nie usuwać poprzednich
+[X] większy margines przy przenoszeniu na nową stronę
+[ ] legenda ze statusami? klient nie wie o co chodzi z kolorowymi tłami
+[x] PDF - legenda w podsumowaniu
+[x] PDF - tryb: zapis, otwórz, FTP?
+
+
+MOŻLIWOŚĆ WYSYŁANIA SCHEMATÓW EMAILI DO KLIENTÓW I DOSTAWCÓW:
+[x] wysyłka zestawienia via email w postaci HTML do klienta z linkiem do podglądu
+[x] wysyłka zestawień do wybranego dostawcy, do różnych dostawców, linki z hashami dostawców i id zestawienia
+[x] generowanie menu z listą dostawców dla danego zestawienia - po zmianie i zapisaniu zmian, menu się odświeża
+[x] data ostatniego wysłanego emaila do klienta i dostawców w menu
+[x] Email do biura z informacją o dodaniu komentarzy przez klienta
+[x] linki do aplikazji w emailach z komentarzami
+[x] dwie templatki z emailem do dostawców: oferta domyślna, zamówienie jako drugie.
+Tytuł zamówienie
+message: Proszę o realizację zamówienia zgodnie z przesłanym zestawieniem. Prosimy o wystawienie proformy na dane klienta. (wkleić tu dane klienta)
+[x] logo w emailu na lewo, sociale na lewo. dodać rodo
+[x] zebrać template z frontu i backendu w jedno miejsce: stopka, header z logo itp. handlebars na backendzie
+
+KOMENTARZE DO POZYCJI:
+[x] powiadomienie przy guziku komentarzy o ilości:
+[x] w komentarzach po kliknięciu na nazwę pozycji przenosi do eydcji
+[x] dodawanie komentarzy przez klientów
+[x] edycja komentarzy przez klientów
+[x] modyfikacja statusu odczynia komentarzy przez klientów
+[x] notyfikacja o nowych komentarzach
+[x] odpowiedź na komentarze w formie iMessage :)
+[x] edycja komentarzy usera
+[x] usuwanie komentarzy usera
+[x] oznaczanie które komentarze klienta są nieprzeczytane
+[x] komentarze możliwe dla każdego dodanego pliku
+[x] linki w komentarzach. mają działać
+[x] usuwanie komantarza - w potwierdzeniu usunięcia dodać aby enter domyślnie zaznaczał "tak"
+
+ZAKŁADKA KLIENCI:
+[x] dodawanie nowych klientów
+[x] edycja klienta
+[x] usuwanie klienta
+[x] jedno pole rozszerzone textarea z: firma z nip, adres, ulica, miasto, kod, email, telefon
+[x] guzik kopiowania adresu do schowka
+[x] widok dla klienta z zakładkami do przełączania, podsumowanie wart netto i brutto
+[x] wysyłka email z linkiem do części pozycji do której przypisany jest dostawaca (/setId/setHash/SupplierHash)
+[x] lista wysłanych emaili do klientów z podglądem wysłanej wiadomości
+[x] przed wysyłką możliwa edycja wiadomości
+
+ZAKŁADKA DOSTAWCY:
+[x] dodawanie nowych dostawców
+[x] edycja dostawcy
+[x] usuwanie dostawcy
+[x] email wymagany
+[x] hash generowany do linków
+[x] nowa kolumna dane firmy: adres, nip - textarea
+[x] guzik kopiowania adresu do schowka
+[x] gdy nie ma wpisanego linku produktu to nadal mam napis link w tabeli
+[x] dostawca ma widzieć wszystkie dane klienta i nazwę inwestycji
+[x] dostawca: kolejność kolumna taka sama, ukryć: ceny i wartości, status, footer
+[x] usunąć powyższe usunięte kolumny ze zwracanych danych
+
+ZAKŁADKA USTAWIENIA
+Avatars:
 [x] limit na 1szt dla klienta
 [x] usunięcie poprzedniego avatara gdy wgrywa nowy plik
 [x] jeden folder w fileDirectoryLsit dla usera i clienta
 [x] po wgraniu nowego avatara - ustawić go jako domyślny
 [x] usunąć avatary innych klientów w edycji klienta
 
-MOBILE VIEW:
+######################################
+###  ZESTAWIENIA - PANEL KLIENTÓW  ###
+######################################
+LINK Z ZESTAWIENIEM DLA KLIENTA:
+[x] działający link bez logowania hash łączony z id zestawienia do podglądu dla klientów np: /:id_zestawienia/:hash_zestawienia
+[x] działający link bez logowania do podglądu dla dostawców np: /:id_zestawienia/:hash_zestawienia/:hash_dostawcy
+[x] dodać zapamiętywanie ostatnio otwartej zakładki dla klienów - external
+[x] przenieść wszystki external endpoint do nowego modułu
+
+MOBILE VIEW DLA KLIENTÓW:
 [x] notification jest lekko ucięta z lewej strony
 [x] powiększanie obrazów jest zbyt duże
 [ ] brak podglądu PDF - tylko na iPhone
@@ -101,154 +262,16 @@ SPRAWDZIĆ NA PROD:
 [x] brak miniatur PDF na iPhone
 [x] w widoku dużych ikon brak domyślnej ikony pdf
 
-
-Po zalogowaniu:
-[x] Podsumowanie nowych - nieprzeczytanych komentarzy
-[x] Gdy klient skończy dodawać komentarze - wysłać email z powiadomieniem do biura
-
-Zakładka zestawienia:
-[x] Lista zestawień klientów
-[x] checkbox do pokazania statusu zamkniętych zestawień (domyślnie zamknięte nie będą pobierane)
-
-Nowe zestawienie
-[x] dodawanie nowego zestawienia
-[x] przekierowanie do edit-set
-[x] zapis pozycji do db
-[x] aktualizacja setCount w klientach
-[x] adres inwestycji: textarea
-[x] zapamiętywanie ostatnio aktywnej zakładki i wczytywanie jej przy ponownym otwarciu zestawienia
-
-Edycja zestawienia:
-[x] zmiana pozycji poprzed drag and drop i update property kolejność w db
-[x] domyślnie sortowanie po kolejności gdy wyświetlane są pozycje
-[x] dodanie pustej pozycji
-[x] dodanie pustej pozycji gdy na zakładce nie ma ani jednej pozycji
-[x] klonowanie wybranej pozycji
-[x] usuwanie pozycji
-[x] update cen gdy zmienimy ilosc lub cene netto
-[x] przy edycji pozycji - aktualizacja positionCount w dostawcach
-[x] statusy do zestawień: w przygotowaniu, gotowy, otwarty, w realizacji, zamknięty
-[x] status pozycji: (inne tło w zależności od statusu)
-[x] wklejanie obrazów do pozycji ze schowka
-[x] możliwość wpisywania ceny netto lub brutto.
-[x] usunąć z footer ilość, netto i brutto
-[x] pola w pozycji jako textarea
-[x] podgląd obrazków pozycji na całej stronie: ikona lupy albo coś podobnego
-[x] przy każdym przełączeniu zakładki - zrobić request i zapisać bieżącą zakładkę
-
-[x] nowe Bookmarks:
+Lista Bookmarks:
 1 PODSUMOWANIE
 2 OŚWIETLENIE, OSPRZĘT ELEKTRYCZNY
 3 ŁAZIENKA
 4 KUCHNIA
 5 PŁYTKI CERAMICZNE
-6 MEBLE NA WYMIAR
-7 MEBLE GOTOWE
+6 MEBLE GOTOWE
+7 MEBLE NA WYMIAR
 8 ŚCIANY, SUFITY, PODŁOGI
-
-Edycja nagłówka zestawienia:
-[x] zmiana statusu
-[x] zmiana ilości zakładek (bookmarks)
-[x] obiekt z szerokościami zapisywany na etapie dodawania nowego zestawienia z domyślnymi wartościami
-[x] odczyt i zapis szerokości kolumn dla każdej zakładki i dla każdego zestawienia
-[x] dołączyć listę szerokości do obiektu bookmarks w zestwieniach
-
-Footer zestawienia:
-[x] obliczanie ceny brutto, wartości netto i wartości brutto
-[x] update footera z sumami poszczególnych kolumn
-
-Załączniki zestawienia:
-[x] wysyłanie obrazów i innych plikó do katalogów /uploads/sets/SETID/POSITIONID/ FILENAME
-[x] podgląd minatur pliku pdf
-[x] pobieranie załączników na dysk
-[x] usuwanie załączników
-[ ] dodawanie opisów do załączników - np żeby pod dołączoną inspiracją napisać co konkretnie nam się podoba
-
-Generowanie zestawienia w formie PDF:
-[x] generowanie PDF! :)
-[x] umieszczanie obrazów w odpowiedniej kolumnie
-[x] nagłowek i stopka na każdej stronie pdf
-[x] footer z podsumowaniem tylko na końcu tabeli - nie na każdej stronie
-[x] przy generowaniu pdf możliwe 3 scenariusze: 1 - otwiera pdf w nowej zakłądce, 2 - zapisuje pdf na dysku, 3 - wysyła pdf na serwer ftp
-[x] różne tło wiersza w zależności od statusu
-[x] zakładka podsumowanie w PDF
-[x] w nazwie pdf dodać nazwę inwestycji
-[x] pdf automatycznie na ftp i ma się dodawać każdy kolejny pdf, nie usuwać poprzednich
-[ ] legenda ze statusami? klient nie wie o co chodzi z kolorowymi tłami
-[ ] większy margines przy przenoszeniu na nową stronę
-[ ] footer ma być accentColor?
-
-Emails:
-[x] wysyłka zestawienia via email w postaci HTML do klienta z linkiem do podglądu
-[x] wysyłka zestawień do wybranego dostawcy, do różnych dostawców, linki z hashami dostawców i id zestawienia
-[x] generowanie menu z listą dostawców dla danego zestawienia - po zmianie i zapisaniu zmian, menu się odświeża
-[x] data ostatniego wysłanego emaila do klienta i dostawców w menu
-[x] Email do biura z informacją o dodaniu komentarzy przez klienta
-[x] linki do aplikazji w emailach z komentarzami
-[x] dwie templatki z emailem do dostawców: oferta domyślna, zamówienie jako drugie.
-Tytuł zamówienie
-message: Proszę o realizację zamówienia zgodnie z przesłanym zestawieniem. Prosimy o wystawienie proformy na dane klienta. (wkleić tu dane klienta)
-[x] logo w emailu na lewo, sociale na lewo. dodać rodo
-[x] zebrać template z frontu i backendu w jedno miejsce: stopka, header z logo itp. handlebars na backendzie
-
-Klienci:
-[x] dodawanie nowych klientów
-[x] edycja klienta
-[x] usuwanie klienta
-[x] jedno pole rozszerzone textarea z: firma z nip, adres, ulica, miasto, kod, email, telefon
-[x] guzik kopiowania adresu do schowka
-[x] widok dla klienta z zakładkami do przełączania, podsumowanie wart netto i brutto
-[x] działający link bez logowania hash łączony z id zestawienia do podglądu dla klientów np: /:id_zestawienia/:hash_zestawienia
-[x] wysyłka email z linkiem do części pozycji do której przypisany jest dostawaca (/setId/setHash/SupplierHash)
-[x] lista wysłanych emaili do klientów z podglądem wysłanej wiadomości
-[x] przed wysyłką możliwa edycja wiadomości
-[x] działający link bez logowania do podglądu dla dostawców np: /:id_zestawienia/:hash_zestawienia/:hash_dostawcy
-[x] dodać zapamiętywanie ostatnio otwartej zakładki dla klienów - external
-[x] przenieść wszystki external endpoint do nowego modułu
-
-Dostawcy:
-[x] dodawanie nowych dostawców
-[x] edycja dostawcy
-[x] usuwanie dostawcy
-[x] email wymagany
-[x] hash generowany do linków
-[x] nowa kolumna dane firmy: adres, nip - textarea
-[x] guzik kopiowania adresu do schowka
-[x] gdy nie ma wpisanego linku produktu to nadal mam napis link w tabeli
-[x] dostawca ma widzieć wszystkie dane klienta i nazwę inwestycji
-[x] dostawca: kolejność kolumna taka sama, ukryć: ceny i wartości, status, footer
-[x] usunąć powyższe usunięte kolumny ze zwracanych danych
-
-comments:
-[x] powiadomienie przy guziku komentarzy o ilości:
-[x] w komentarzach po kliknięciu na nazwę pozycji przenosi do eydcji
-[x] dodawanie komentarzy przez klientów
-[x] edycja komentarzy przez klientów
-[x] modyfikacja statusu odczynia komentarzy przez klientów
-[x] notyfikacja o nowych komentarzach
-[x] odpowiedź na komentarze w formie iMessage :)
-[x] edycja komentarzy usera
-[x] usuwanie komentarzy usera
-[x] oznaczanie które komentarze klienta są nieprzeczytane
-[ ] ogólne komentarze dla całego zestawienia, nie pod konkretną pozycję.
-[x] komentarze możliwe dla każdego dodanego pliku
-[x] linki w komentarzach. mają działać
-[x] usuwanie komantarza - w potwierdzeniu usunięcia dodać aby enter domyślnie zaznaczał "tak"
-
-status:
-[x] nowe zestawienie ze statusem nowe, przy dodaniu pierwszej pozycji zmiana statusu na w przygotowaniu i blokada usuwania
-[x] zmiana status na wysłane, gdy klient otrzyma pierwszy email
-[x] zmiana status na odczytane gdy klient pierwszy raz otworzy link z zestawieniem
-
-załączniki:
-[x] zapis plików w DB: nazwa pliku, data doodania, kto dodał, rozszerzenie, folder (będzie kilka)
-[x] wybór folderu przy uploadzie plików
-[x] foldery: moodboard, model3d, rysunki wykonawcze, wizualizacje.
-[x] widok listy z sortowaniem
-[x] osobny folder: robocze - niewidoczny dla klienta
-[x] załączniki: pobierz wszystkie, najlepiej w zip
-[x] konwersja heic na jpg?
-[x] gdy wrzucasz nowy załącznik z poziomu zestawienia nie odświeża się ilość w badge
+9 WYKONAWCA
 
 DB:
 [x] zestawienia nagłówek: id, nr zestawienia, id klienta, id usera, data dodania (w czytelnym formacie), created by, create date (timestamp), update by, updated date (timestamp)
@@ -265,40 +288,6 @@ różne:
 [x] przenieść rodo do db settings
 [x] przerobic status na obiekt JSON i tak zapisywać w DB - nie będzie potrzeby przerabiania go w kilku miejscach
 [x] zamienić const headers = new HttpHeaders w serwisach na headers: this.HTTP_HEADERS, jak w edit-set.service
-
-issue:
-[x] zmiana dostawcy w zestawieniach na ostatniej pozycji - menu się chowa pod tabele
-[x] klienci i dostawcy - form nie walidny - pokaż errors,
-[x] przerobić form klientów i dostawców na nowy styl z new set
-[x] oznaczyć pola obowiązkowe
-[x] footer w pdf wkleja się na każdej stronie zamiast po całej tabeli
-
-[x] legenda statusy/kolory:
-
-- biały - domyślny (sumować)
-- różowy - W trakcie wyceny (nie sumować)
-- żółty - zamiennik (nie sumować)
-- jasnozielony - produk zaakceptowany (sumować)
-- czerwony - produkt niezakupiony (sumować)
-- zielone - produkt zakupiony (sumować)
-
-obgadać:
-
-- email: tytuły i treść emaili do klientów i dostawców
-- KOLORY! Design itp :)
-- jaki design dla klientów? jaki layout?
-
-backend:
-[ ] logowania błędów
-[ ] intereceptor dla wszystkich 400 i 500 
-
-Doprecyzować:
-[ ] kolory statusów
-[x] PDF - legenda w podsumowaniu
-[x] PDF - tryb: zapis, otwórz, FTP?
-[x] Domyślne treści emaili: do klienta, do dostawcy, z podsumowaniem komentarzy
-
-
 [ ] wysysłam email z aplikacji nestjs. email zawiera obrazki które po otwarciu emaila nie są widoczne dopóki nie kliknę wczytaj zawartość. można to jakoś obejść?
 
 Admin:
@@ -311,3 +300,8 @@ Admin:
 [ ] lista błędów
 [x] zapisywanie wysłanych emaili z powiadomieniami o komentarzach
 [ ] zapisanie aktywnych timerów od powiadomień o komentarzach które wyjdą z platformy
+[ ] podgląd position-logs - każde wrzucenie obrazu do pozycji to 6 wpisów w DB
+
+backend:
+[ ] logowania błędów
+[ ] intereceptor dla wszystkich 400 i 500 

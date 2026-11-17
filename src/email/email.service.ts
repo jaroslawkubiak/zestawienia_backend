@@ -180,51 +180,40 @@ export class EmailService {
       html: content,
     };
 
-    try {
-      const info = await this.transporter.sendMail(mailOptions);
+    const message = emailDetails?.clientId ? 'client' : 'supplier';
+    const recipientId = emailDetails?.clientId
+      ? emailDetails.clientId
+      : emailDetails?.supplierId;
 
-      if (info.response.includes('OK')) {
-        // log email in DB
-        const newEmailLog: LogEmailDto = {
-          ...emailDetails,
-          sendAt: getFormatedDate(),
-          sendAtTimestamp: Number(Date.now()),
-          sendBy: { id: emailDetails.userId } as CreateIdDto,
-          setId: { id: emailDetails.setId } as CreateIdDto,
-          clientId: emailDetails?.clientId
-            ? { id: emailDetails?.clientId }
-            : (null as CreateIdDto),
-          supplierId: emailDetails?.supplierId
-            ? { id: emailDetails?.supplierId }
-            : (null as CreateIdDto),
-        };
-
-        await this.createEmailLog(newEmailLog);
-
-        // send copy email do Sent folder
-        await saveToSentFolder(mailOptions);
-      }
-
-      return info;
-    } catch (err: any) {
-      const message = emailDetails?.clientId ? 'client' : 'supplier';
-      const recipientId = emailDetails?.clientId
-        ? emailDetails.clientId
-        : emailDetails?.supplierId;
-
+    // Helper for saving errors
+    const saveError = async (
+      err: any,
+      stage: 'SMTP_SEND' | 'DATABASE_LOG' | 'SAVE_TO_SENT',
+      response?: string,
+    ) => {
       const newError: ErrorDto = {
         type: ErrorsType.email,
-        message: `Failed to send email to ${message}`,
-        error: JSON.stringify(err?.message) || 'null',
+        message: `Failed to ${stage} for ${message}`,
+        error: JSON.stringify(err?.message || err) || 'null',
         setId: emailDetails.setId,
         recipientId,
         recipientEmail: to,
+        query: `STAGE: ${stage} | RESPONSE: ${response || 'No response received'}`,
         link: emailDetails.link,
         createdAt: getFormatedDate() || new Date().toISOString(),
         createdAtTimestamp: Number(Date.now()),
       };
 
       await this.errorsService.prepareError(newError);
+    };
+
+    // send email via SMTP
+    let info: any;
+
+    try {
+      info = await this.transporter.sendMail(mailOptions);
+    } catch (err: any) {
+      await saveError(err, 'SMTP_SEND', info?.response);
 
       throw new InternalServerErrorException({
         message: `Nie udało się wysłać email na adres: ${to}`,
@@ -232,6 +221,46 @@ export class EmailService {
         details: err,
       });
     }
+
+    // SMTP was succes - save log in DB
+    if (info?.accepted?.length > 0) {
+      const newEmailLog: LogEmailDto = {
+        ...emailDetails,
+        sendAt: getFormatedDate(),
+        sendAtTimestamp: Number(Date.now()),
+        sendBy: { id: emailDetails.userId } as CreateIdDto,
+        setId: { id: emailDetails.setId } as CreateIdDto,
+        clientId: emailDetails?.clientId
+          ? { id: emailDetails.clientId }
+          : (null as CreateIdDto),
+        supplierId: emailDetails?.supplierId
+          ? { id: emailDetails.supplierId }
+          : (null as CreateIdDto),
+      };
+
+      try {
+        await this.createEmailLog(newEmailLog);
+      } catch (err: any) {
+        await saveError(err, 'DATABASE_LOG', info?.response);
+        info = {
+          ...info,
+          createEmailLog: `Nie udało się stworzyć logu do DB z informacją o wysłaniu tego e-maila!`,
+        };
+      }
+
+      // save copy email in sent folder
+      try {
+        await saveToSentFolder(mailOptions);
+      } catch (err: any) {
+        await saveError(err, 'SAVE_TO_SENT', info?.response);
+        info = {
+          ...info,
+          saveToSentFolder: `Nie udało się zapisać tego e-maila w skrzynce nadawczej!`,
+        };
+      }
+    }
+
+    return info;
   }
 
   private async sendEmailAboutNewComments(options: ISendEmailAboutNewComments) {

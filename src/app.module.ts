@@ -34,6 +34,8 @@ import { HashModule } from './hash/hash.module';
 import { ImagesController } from './images/images.controller';
 import { ImagesModule } from './images/images.module';
 import { ImagesService } from './images/images.service';
+import { NotificationLogs } from './notification-logs/notification-logs.entity';
+import { NotificationLogsModule } from './notification-logs/notification-logs.module';
 import { NotificationTimer } from './notification-timer/notification-timer.entity';
 import { NotificationTimerModule } from './notification-timer/notification-timer.module';
 import { PositionLogs } from './position-logs/position-logs.entity';
@@ -104,6 +106,7 @@ if (!(global as any).crypto) {
             NotificationTimer,
             CommentNotificationLogs,
             PositionLogs,
+            NotificationLogs,
           ],
           synchronize: config.get<string>('TYPEORM_SYNCHRONIZE') === 'true',
           extra: {
@@ -138,6 +141,7 @@ if (!(global as any).crypto) {
     CommentNotificationLogsModule,
     FilesErrorsModule,
     PositionLogsModule,
+    NotificationLogsModule,
   ],
   controllers: [AppController, ImagesController, FilesController],
   providers: [AppService, ImagesService],
